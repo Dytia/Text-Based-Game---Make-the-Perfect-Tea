@@ -1,7 +1,54 @@
 {
     "Start":{
-        "1" : "Starting room",
-        "2" : "Vase position",
-        "3" : ""
+        "startingRoom" : {
+            "up": "vase",
+            "down":"",
+            "left":"",
+            "right":"",
+            "properties":"",
+            "data":""
+        },
+        "vase" : {
+            "up": "corner",
+            "down":"starting room",
+            "left":"",
+            "right":"",
+            "properties":"",
+            "data":""
+        },
+        "splitPath1" : {
+            "up": "",
+            "down":"vase",
+            "left":"splitPath2",
+            "right":"ricketyBridge",
+            "properties":"",
+            "data":""                
+        },
+        "splitPath2":{
+            "up": "cornerToStairs",
+            "down":"vasePlace",
+            "left":"",
+            "right":"splitPath1",
+            "properties":"",
+            "data":"" 
+        },
+        "vasePlace":{
+            "up": "splitPath2",
+            "down":"cornerToDark",
+            "left":"",
+            "right":"",
+            "properties":"",
+            "data":""
+        },
+        "cornerToDark":{
+            "up": "vasePlace",
+            "down":"",
+            "left":"DarkCorridor",
+            "right":"",
+            "properties":"",
+            "data":""
+        }
+
+
     }
 }
