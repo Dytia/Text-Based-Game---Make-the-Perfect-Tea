@@ -28,15 +28,81 @@ class Level:
         "data":""
     },    
     '''
-    def __init__(self, jsonLocation):
+    def __init__(self, jsonLocation, level):
+        '''
+        1: location of config file
+        2: what level this object is focused on
+        '''
+        self._levelChoice = level
         self._jsonLocation = jsonLocation
+        self._values = [
+            "up",
+            "down",
+            "left",
+            "right",
+            "properties",
+            "data"
+            ]
 
     def read_json(self):
+        '''
+        Reads the config file and returns all the data in it
+        '''
         with open(self._jsonLocation, "r") as f:
             data = json.load(f)
-            print(data["Start"])
+            #print(data["Start"])
             #data["Start"] for starting area
         return data
+
+    def write_json(self, data):
+        '''
+        using the data got from the read_json() function,
+        it will save any data changed
+
+        Do NOT change:
+        "up"
+        "down"
+        "left"
+        "right"
+        "properties"
+        '''
+        with open(self._jsonLocation, "w") as f:
+            json.dump(data, f, indent=2)
+        return 1
+
+    def get_room_values(self, room):
+        data = self.read_json()
+        data_value = data[self._levelChoice][room]
+        return data_value
+
+    def check_valid_move(self, room, choice):
+        '''
+        using the room name and the move, 
+        this validates if the move command is valid, if it isnt it
+        returns 0
+
+        room = "startingRoom"
+        choice = "up"
+        if it is a valid choice and valid move it returns 1
+        if there is a wall, it returns 2
+        '''
+        for i in self._values:
+            if choice == str(i):
+                success = True
+                break
+            else:
+                success = False
+
+        if success:
+            data = self.get_room_values(room)
+            if data[choice] == "":
+                return 2
+            else:
+                return 1
+        else:
+            return 0
+            
+
 
 def user_input(situation):
     '''
@@ -50,9 +116,20 @@ def user_input(situation):
 
 print("Hello, welcome to the game. Press Enter key to continue")
 input()
-a = Level(jsonFileLocation)
+a = Level(jsonFileLocation, "Start")
 data = a.read_json()
-print(data["Start"]["startingRoom"])
+d = a.get_room_values("startingRoom")
+print(d)
+b = input()
+c = a.check_valid_move("startingRoom",b)
+if c == 1:
+    print("moved to: ", d[b] )
+if c == 2:
+    print("you walk into a wall, it hurts for 10 dmg")
+#if b == "di":
+tmp = data["Start"]["vase"]
+print(tmp["up"], tmp["down"])
+#print(data["Start"]["startingRoom"])
 #os.system("CLS")
 print("a")
 
