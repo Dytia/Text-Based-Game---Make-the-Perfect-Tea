@@ -5,124 +5,124 @@
     },
     "Start":{
         "startingRoom" : {
-            "up": "vase",
-            "down":"",
-            "left":"",
-            "right":"",
-            "properties":"",
-            "data":""
+            "north": "vase",
+            "south":"",
+            "west":"",
+            "east":"",
+            "properties":{},
+            "data":{}
         },
         "vase" : {
-            "up": "splitPath1",
-            "down":"startingRoom",
-            "left":"",
-            "right":"secretRoom",
-            "properties":"",
-            "data":""
+            "north": "splitPath1",
+            "south":"startingRoom",
+            "west":"",
+            "east":"secretRoom",
+            "properties":{},
+            "data":{}
         },
         "splitPath1" : {
-            "up": "",
-            "down":"vase",
-            "left":"splitPath2",
-            "right":"ricketyBridge",
-            "properties":"",
-            "data":""                
+            "north": "",
+            "south":"vase",
+            "west":"splitPath2",
+            "east":"rickyBridge",
+            "properties":{},
+            "data":{}                
         },
         "splitPath2":{
-            "up": "cornerToStairs",
-            "down":"vasePlace",
-            "left":"",
-            "right":"splitPath1",
-            "properties":"",
-            "data":"" 
+            "north": "cornerToStairs",
+            "south":"vasePlace",
+            "west":"",
+            "east":"splitPath1",
+            "properties":{},
+            "data":{} 
         },
         "vasePlace":{
-            "up": "splitPath2",
-            "down":"cornerToDark",
-            "left":"",
-            "right":"",
-            "properties":"",
-            "data":""
+            "north": "splitPath2",
+            "south":"cornerToDark",
+            "west":"",
+            "east":"",
+            "properties":{},
+            "data":{}
         },
         "cornerToDark":{
-            "up": "vasePlace",
-            "down":"",
-            "left":"darkCorridor",
-            "right":"",
-            "properties":"",
-            "data":""
+            "north": "vasePlace",
+            "south":"",
+            "west":"darkCorridor",
+            "east":"",
+            "properties":{},
+            "data":{}
         },
         "darkCorridor":{
-            "up": "",
-            "down":"",
-            "left":"saveRoom1",
-            "right":"cornerToDark",
-            "properties":"",
-            "data":""
+            "north": "",
+            "south":"",
+            "west":"saveRoom1",
+            "east":"cornerToDark",
+            "properties":{},
+            "data":{}
         },    
         "saveRoom1":{
-            "up": "",
-            "down":"",
-            "left":"",
-            "right":"darkCorridor",
-            "properties":"",
-            "data":""
+            "north": "",
+            "south":"",
+            "west":"",
+            "east":"darkCorridor",
+            "properties":{},
+            "data":{}
         },
         "secretRoom":{
-            "up": "",
-            "down":"Vase",
-            "left":"rickyBridge",
-            "right":"",
-            "properties":"",
-            "data":""
+            "north": "",
+            "south":"Vase",
+            "west":"rickyBridge",
+            "east":"",
+            "properties":{},
+            "data":{}
         },
-        "ricketyBridge":{
-            "up": "",
-            "down":"",
-            "left":"splitPath1",
-            "right":"",
-            "properties":"",
-            "data":""
+        "rickyBridge":{
+            "north": "",
+            "south":"",
+            "west":"splitPath1",
+            "east":"",
+            "properties":{},
+            "data":{}
         },
         "cornerToStairs":{
-            "up": "",
-            "down":"splitPath2",
-            "left":"stairs",
-            "right":"",
-            "properties":"",
-            "data":""
+            "north": "",
+            "south":"splitPath2",
+            "west":"stairs",
+            "east":"",
+            "properties":{},
+            "data":{}
         },
         "stairs":{
-            "up": "",
-            "down":"",
-            "left":"splitPathSecret",
-            "right":"cornerToStairs",
-            "properties":"",
-            "data":""
+            "north": "",
+            "south":"",
+            "west":"splitPathSecret",
+            "east":"cornerToStairs",
+            "properties":{},
+            "data":{}
         },
         "splitPathSecret":{
-            "up": "stairs",
-            "down":"secret1",
-            "left":"",
-            "right":"stairs2",
-            "properties":"",
-            "data":""
+            "north": "stairs",
+            "south":"secret",
+            "west":"",
+            "east":"stairs2",
+            "properties":{},
+            "data":{}
         },
         "stairs2":{
-            "up": "startingRoom",
-            "down":"splitPathSecret",
-            "left":"",
-            "right":"",
-            "properties":"",
-            "data":""
+            "north": "startingRoom",
+            "south":"splitPathSecret",
+            "west":"",
+            "east":"",
+            "properties":{},
+            "data":{}
         },
         "secret":{
-            "up": "splitPathSecret",
-            "down":"",
-            "left":"",
-            "right":"",
-            "properties":"",
-            "data":""
+            "north": "splitPathSecret",
+            "south":"",
+            "west":"",
+            "east":"",
+            "properties":{},
+            "data":{}
         }
 
 

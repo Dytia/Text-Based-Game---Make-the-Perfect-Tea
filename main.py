@@ -15,22 +15,22 @@ class Level:
     # impassable = no value
     '''
     "sample room":{
-        "up": "room1",
-        "down":"",
-        "left":"room2",
-        "right":"",
+        "north": "room1",
+        "south":"",
+        "west":"room2",
+        "east":"",
         "properties":"item",
         "data":"you see",
     }
 
     blank template:
     "":{
-        "up": "",
-        "down":"",
-        "left":"",
-        "right":"",
-        "properties":"",
-        "data":""
+        "north": "",
+        "south":"",
+        "west":"",
+        "east":"",
+        "properties":{},
+        "data":{}
     },    
     '''
     def __init__(self, jsonLocation, level):
@@ -41,10 +41,10 @@ class Level:
         self._levelChoice = level
         self._jsonLocation = jsonLocation
         self._values = [
-            "up",
-            "down",
-            "left",
-            "right",
+            "north",
+            "south",
+            "west",
+            "east",
             "properties",
             "data"
             ]
@@ -65,10 +65,10 @@ class Level:
         it will save any data changed
 
         Do NOT change:
-        "up"
-        "down"
-        "left"
-        "right"
+        "north"
+        "south"
+        "west"
+        "east"
         "properties"
         '''
         with open(self._jsonLocation, "w") as f:
@@ -78,7 +78,7 @@ class Level:
     def get_room_values(self, room):
         '''
         Gets the values of the selected room
-        e.g. up, down, left, etc
+        e.g. north, south, west, etc
         '''
         data = self.read_json()
         data_value = data[self._levelChoice][room]
@@ -91,7 +91,7 @@ class Level:
         returns 0
 
         room = "startingRoom"
-        choice = "up"
+        choice = "north"
         if it is a valid choice and valid move it returns 1
         if there is a wall, it returns 2
         '''
@@ -137,9 +137,23 @@ if c == 2:
     print("you walk into a wall, it hurts a little")
 #if b == "di":
 tmp = data["Start"]["vase"]
-print(tmp["up"], tmp["down"])
+print(tmp["north"], tmp["south"])
 #print(data["Start"]["startingRoom"])
 #os.system("CLS")
 print("a")
+room = "startingRoom"
+
+while True:
+    room_values = a.get_room_values(room)
+    print(room_values)
+    print(room)
+    playerInput = input("make move: ")
+    checkedPlayerInput = a.check_valid_move(room, playerInput)
+    if checkedPlayerInput==1:
+        room = room_values[playerInput]
+        print("you moved to: ", room)
+    elif checkedPlayerInput == 2:
+        room = room
+        print("wall")
 
 input()
