@@ -6,6 +6,11 @@ import json
 a = 1
 jsonFileLocation = "./config/positions.json"
 
+class Player:
+    def __init__(self):
+        self._baseHealth = 100
+
+
 class Level:
     # impassable = no value
     '''
@@ -71,6 +76,10 @@ class Level:
         return 1
 
     def get_room_values(self, room):
+        '''
+        Gets the values of the selected room
+        e.g. up, down, left, etc
+        '''
         data = self.read_json()
         data_value = data[self._levelChoice][room]
         return data_value
@@ -125,7 +134,7 @@ c = a.check_valid_move("startingRoom",b)
 if c == 1:
     print("moved to: ", d[b] )
 if c == 2:
-    print("you walk into a wall, it hurts for 10 dmg")
+    print("you walk into a wall, it hurts a little")
 #if b == "di":
 tmp = data["Start"]["vase"]
 print(tmp["up"], tmp["down"])
