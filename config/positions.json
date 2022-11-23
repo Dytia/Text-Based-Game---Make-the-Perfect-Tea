@@ -10,7 +10,10 @@
             "west":"",
             "east":"",
             "properties":{},
-            "data":{}
+            "data":{
+                "passable":"1",
+                "secret":""
+            }
         },
         "vase" : {
             "north": "splitPath1",
