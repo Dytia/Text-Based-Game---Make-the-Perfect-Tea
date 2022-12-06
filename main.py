@@ -2,7 +2,7 @@ import time
 import os
 import json
 
-
+#https://en.wikipedia.org/wiki/ANSI_escape_code#Colors
 a = 1
 jsonFileLocation = "./config/positions.json"
 
@@ -10,6 +10,16 @@ class Player:
     def __init__(self):
         self._baseHealth = 100
 
+class bcolors:
+    MAGENTA = '\033[95m'
+    OKBLUE = '\033[94m'
+    OKCYAN = '\033[96m'
+    OKGREEN = '\033[92m'
+    YELLOW = '\033[93m'
+    BRIGHTRED = '\033[91m'
+    ENDC = '\033[0m'
+    BOLD = '\033[1m'
+    UNDERLINE = '\033[4m'
 
 class Level:
     # impassable = no value
@@ -103,9 +113,9 @@ class Level:
 
         if success:
             data = self.get_room_values(room)
-            if data[choice] == "": return 2
-            else: return 1
-        else:     return 0
+            if data[choice] == "": return 2 # 2 means wall
+            else: return 1                  # 1 means valid
+        else:     return 0                  # 0 means not even a move
             
 
 
@@ -127,10 +137,8 @@ d = a.get_room_values("startingRoom")
 print(d)
 b = input()
 c = a.check_valid_move("startingRoom",b)
-if c == 1:
-    print("moved to: ", d[b] )
-if c == 2:
-    print("you walk into a wall, it hurts a little")
+if c == 1: print("moved to: ", d[b] )
+if c == 2: print("you walk into a wall, it hurts a little")
 #if b == "di":
 tmp = data["Start"]["vase"]
 print(tmp["north"], tmp["south"])
@@ -141,6 +149,8 @@ room = "startingRoom"
 
 while True:
     room_values = a.get_room_values(room)
+    secretItem = room_values["data"]["secretItem"]
+    if secretItem != "": print(f"{bcolors.MAGENTA}" + secretItem +f"{bcolors.ENDC}")
     print(room_values)
     print(room)
     playerInput = input("make move: ")
