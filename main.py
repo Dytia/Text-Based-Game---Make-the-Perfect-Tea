@@ -99,17 +99,13 @@ class Level:
             if choice == str(i):
                 success = True
                 break
-            else:
-                success = False
+            else: success = False
 
         if success:
             data = self.get_room_values(room)
-            if data[choice] == "":
-                return 2
-            else:
-                return 1
-        else:
-            return 0
+            if data[choice] == "": return 2
+            else: return 1
+        else:     return 0
             
 
 
