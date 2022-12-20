@@ -116,7 +116,9 @@
             "south":"",
             "west":"splitPath1",
             "east":"",
-            "properties":{},
+            "properties":{
+                "lock-msg":"locked"
+            },
             "data":{
                 "passable":"0",
                 "secretItem":""
@@ -175,7 +177,9 @@
             "south":"",
             "west":"",
             "east":"",
-            "properties":{},
+            "properties":{
+                "lock-msg":"locked"
+            },
             "data":{
                 "passable":"0",
                 "secretItem":"Fancy China Teapot",
