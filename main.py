@@ -154,6 +154,8 @@ while True:
     print(room_values)
     print(room)
     playerInput = input("make move: ")
+    if playerInput == "exit":
+        break
     checkedPlayerInput = a.check_valid_move(room, playerInput)
     if checkedPlayerInput==1:
         room = room_values[playerInput]
@@ -162,4 +164,4 @@ while True:
         room = room
         print("wall")
 
-input()
+#input()
