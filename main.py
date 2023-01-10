@@ -5,10 +5,28 @@ import json
 #https://en.wikipedia.org/wiki/ANSI_escape_code#Colors
 a = 1
 jsonFileLocation = "./config/positions.json"
+jsonFileLocationOptional = "./config/optional.json"
+
+'''
+vase = "" | "held" | "correct" (made in china)
+'''
+
 
 class Player:
-    def __init__(self):
+    def __init__(self, jsonFileLocationOptional):
         self._baseHealth = 100
+        self._jsonLocation = jsonFileLocationOptional
+        self._options = [
+            "inspect",
+            "pick up",
+            "put down"
+        ]
+    
+    def check_valid_option(self, user_option):
+        for i in self._options:
+            if i == user_option:
+                return True
+
 
 class bcolors:
     MAGENTA = '\033[95m'
@@ -147,21 +165,39 @@ print(tmp["north"], tmp["south"])
 print("a")
 room = "startingRoom"
 
+playerData = Player(jsonFileLocationOptional)
+
 while True:
     room_values = a.get_room_values(room)
+
+    item = room_values["data"]["item"]
+    if item != "":
+        print("item: " + item)
+
     secretItem = room_values["data"]["secretItem"]
     if secretItem != "": print(f"{bcolors.MAGENTA}" + secretItem +f"{bcolors.ENDC}")
     print(room_values)
     print(room)
     playerInput = input("make move: ")
+    print("")
     if playerInput == "exit":
         break
+    
     checkedPlayerInput = a.check_valid_move(room, playerInput)
+    if checkedPlayerInput == 0:
+        if playerData.check_valid_option(playerInput):
+            if room_values["data"]["item"] != "" and playerInput != "put down":
+                
+                
+
     if checkedPlayerInput==1:
         room = room_values[playerInput]
         print("you moved to: ", room)
+
     elif checkedPlayerInput == 2:
         room = room
         print("wall")
+
+        
 
 #input()

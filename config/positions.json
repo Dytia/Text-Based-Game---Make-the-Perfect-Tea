@@ -11,6 +11,7 @@
             "east":"",
             "properties":{},
             "data":{
+                "kills":"no",
                 "passable":"1",
                 "secretItem":"",
                 "item":""
@@ -23,6 +24,7 @@
             "east":"secretRoom",
             "properties":{},
             "data":{
+                "kills":"no",
                 "passable":"1",
                 "secretItem":"",
                 "item":"vase"
@@ -35,6 +37,7 @@
             "east":"rickyBridge",
             "properties":{},
             "data":{
+                "kills":"no",
                 "passable":"1",
                 "secretItem":"",
                 "item":""
@@ -47,6 +50,7 @@
             "east":"splitPath1",
             "properties":{},
             "data":{
+                "kills":"no",
                 "passable":"1",
                 "secretItem":"",
                 "item":""
@@ -59,6 +63,7 @@
             "east":"",
             "properties":{},
             "data":{
+                "kills":"no",
                 "passable":"1",
                 "secretItem":"vase"
             }
@@ -70,6 +75,7 @@
             "east":"",
             "properties":{},
             "data":{
+                "kills":"no",
                 "passable":"1",
                 "secretItem":"",
                 "item":""
@@ -82,6 +88,7 @@
             "east":"cornerToDark",
             "properties":{},
             "data":{
+                "kills":"no",
                 "passable":"1",
                 "secretItem":"",
                 "item":""
@@ -94,6 +101,7 @@
             "east":"darkCorridor",
             "properties":{},
             "data":{
+                "kills":"no",
                 "passable":"1",
                 "secretItem":"",
                 "item":""
@@ -106,6 +114,7 @@
             "east":"",
             "properties":{},
             "data":{
+                "kills":"no",
                 "passable":"1",
                 "secretItem":"",
                 "item":""
@@ -120,8 +129,10 @@
                 "lock-msg":"locked"
             },
             "data":{
+                "kills":"no",
                 "passable":"0",
-                "secretItem":""
+                "secretItem":"",
+                "item":""
             }
         },
         "cornerToStairs":{
@@ -131,6 +142,7 @@
             "east":"",
             "properties":{},
             "data":{
+                "kills":"no",
                 "passable":"1",
                 "secretItem":"",
                 "item":""
@@ -143,6 +155,7 @@
             "east":"cornerToStairs",
             "properties":{},
             "data":{
+                "kills":"no",
                 "passable":"1",
                 "secretItem":"",
                 "item":""
@@ -155,6 +168,7 @@
             "east":"stairs2",
             "properties":{},
             "data":{
+                "kills":"no",
                 "passable":"1",
                 "secretItem":"",
                 "item":""
@@ -167,6 +181,7 @@
             "east":"",
             "properties":{},
             "data":{
+                "kills":"no",
                 "passable":"1",
                 "secretItem":"",
                 "item":""
@@ -181,6 +196,7 @@
                 "lock-msg":"locked"
             },
             "data":{
+                "kills":"no",
                 "passable":"0",
                 "secretItem":"Fancy China Teapot",
                 "item":""
