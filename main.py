@@ -4,8 +4,8 @@ import json
 
 #https://en.wikipedia.org/wiki/ANSI_escape_code#Colors
 a = 1
-jsonFileLocation = "./config/positions.json"
-jsonFileLocationOptional = "./config/optional.json"
+jsonFileLocation = "./Text-Based-Game---Make-the-Perfect-Tea/config/positions.json"
+jsonFileLocationOptional = "./Text-Based-Game---Make-the-Perfect-Tea/config/optional.json"
 
 '''
 vase = "" | "held" | "correct" (made in china)
@@ -184,9 +184,9 @@ while True:
         break
     
     checkedPlayerInput = a.check_valid_move(room, playerInput)
-    if checkedPlayerInput == 0:
-        if playerData.check_valid_option(playerInput):
-            if room_values["data"]["item"] != "" and playerInput != "put down":
+    #if checkedPlayerInput == 0:
+    #    if playerData.check_valid_option(playerInput):
+    #        if room_values["data"]["item"] != "" and playerInput != "put down":
                 
                 
 
