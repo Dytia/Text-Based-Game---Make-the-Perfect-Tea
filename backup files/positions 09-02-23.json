@@ -1,0 +1,208 @@
+{
+    "PlayerData":{
+        "position":"startingRoom",
+        "":""
+    },
+    "Start":{
+        "startingRoom" : {
+            "north": "vase",
+            "south":"",
+            "west":"",
+            "east":"",
+            "properties":{},
+            "data":{
+                "kills":"no",
+                "passable":"1",
+                "secretItem":"",
+                "item":""
+            }
+        },
+        "vase" : {
+            "north": "splitPath1",
+            "south":"startingRoom",
+            "west":"",
+            "east":"secretRoom",
+            "properties":{},
+            "data":{
+                "kills":"no",
+                "passable":"1",
+                "secretItem":"",
+                "item":"vase"
+            }
+        },
+        "splitPath1" : {
+            "north": "",
+            "south":"vase",
+            "west":"splitPath2",
+            "east":"rickyBridge",
+            "properties":{},
+            "data":{
+                "kills":"no",
+                "passable":"1",
+                "secretItem":"",
+                "item":""
+            }            
+        },
+        "splitPath2":{
+            "north": "cornerToStairs",
+            "south":"vasePlace",
+            "west":"",
+            "east":"splitPath1",
+            "properties":{},
+            "data":{
+                "kills":"no",
+                "passable":"1",
+                "secretItem":"",
+                "item":""
+            }
+        },
+        "vasePlace":{
+            "north": "splitPath2",
+            "south":"cornerToDark",
+            "west":"",
+            "east":"",
+            "properties":{},
+            "data":{
+                "kills":"no",
+                "passable":"1",
+                "secretItem":"vase"
+            }
+        },
+        "cornerToDark":{
+            "north": "vasePlace",
+            "south":"",
+            "west":"darkCorridor",
+            "east":"",
+            "properties":{},
+            "data":{
+                "kills":"no",
+                "passable":"1",
+                "secretItem":"",
+                "item":""
+            }
+        },
+        "darkCorridor":{
+            "north": "",
+            "south":"",
+            "west":"saveRoom1",
+            "east":"cornerToDark",
+            "properties":{},
+            "data":{
+                "kills":"no",
+                "passable":"1",
+                "secretItem":"",
+                "item":""
+            }
+        },    
+        "saveRoom1":{
+            "north": "",
+            "south":"",
+            "west":"",
+            "east":"darkCorridor",
+            "properties":{},
+            "data":{
+                "kills":"no",
+                "passable":"1",
+                "secretItem":"",
+                "item":""
+            }
+        },
+        "secretRoom":{
+            "north": "",
+            "south":"Vase",
+            "west":"rickyBridge",
+            "east":"",
+            "properties":{},
+            "data":{
+                "kills":"no",
+                "passable":"1",
+                "secretItem":"",
+                "item":""
+            }
+        },
+        "rickyBridge":{
+            "north": "",
+            "south":"",
+            "west":"splitPath1",
+            "east":"",
+            "properties":{
+                "lock-msg":"locked"
+            },
+            "data":{
+                "kills":"no",
+                "passable":"0",
+                "secretItem":"",
+                "item":""
+            }
+        },
+        "cornerToStairs":{
+            "north": "",
+            "south":"splitPath2",
+            "west":"stairs",
+            "east":"",
+            "properties":{},
+            "data":{
+                "kills":"no",
+                "passable":"1",
+                "secretItem":"",
+                "item":""
+            }
+        },
+        "stairs":{
+            "north": "",
+            "south":"",
+            "west":"splitPathSecret",
+            "east":"cornerToStairs",
+            "properties":{},
+            "data":{
+                "kills":"no",
+                "passable":"1",
+                "secretItem":"",
+                "item":""
+            }
+        },
+        "splitPathSecret":{
+            "north": "stairs",
+            "south":"secretItem",
+            "west":"",
+            "east":"stairs2",
+            "properties":{},
+            "data":{
+                "kills":"no",
+                "passable":"1",
+                "secretItem":"",
+                "item":""
+            }
+        },
+        "stairs2":{
+            "north": "startingRoom",
+            "south":"splitPathSecret",
+            "west":"",
+            "east":"",
+            "properties":{},
+            "data":{
+                "kills":"no",
+                "passable":"1",
+                "secretItem":"",
+                "item":""
+            }
+        },
+        "secretItem":{
+            "north": "splitPathSecret",
+            "south":"",
+            "west":"",
+            "east":"",
+            "properties":{
+                "lock-msg":"locked"
+            },
+            "data":{
+                "kills":"no",
+                "passable":"0",
+                "secretItem":"Fancy China Teapot",
+                "item":""
+            }
+        }
+
+
+    }
+}

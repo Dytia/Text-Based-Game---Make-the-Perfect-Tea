@@ -4,8 +4,8 @@ import json
 
 #https://en.wikipedia.org/wiki/ANSI_escape_code#Colors
 a = 1
-jsonFileLocation = "./Text-Based-Game---Make-the-Perfect-Tea/config/positions.json"
-jsonFileLocationOptional = "./Text-Based-Game---Make-the-Perfect-Tea/config/optional.json"
+jsonFileLocation = "./config/positions.json"
+jsonFileLocationOptional = "./config/optional.json"
 
 '''
 vase = "" | "held" | "correct" (made in china)
