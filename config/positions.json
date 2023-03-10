@@ -11,8 +11,8 @@
             "east":"",
             "properties":{},
             "data":{
-                "kills":"no",
-                "passable":"1",
+                "kills":0,
+                "passable":1,
                 "secretItem":"",
                 "item":""
             }
@@ -24,8 +24,8 @@
             "east":"secretRoom",
             "properties":{},
             "data":{
-                "kills":"no",
-                "passable":"1",
+                "kills":0,
+                "passable":1,
                 "secretItem":"",
                 "item":"vase"
             }
@@ -37,8 +37,8 @@
             "east":"rickyBridge",
             "properties":{},
             "data":{
-                "kills":"no",
-                "passable":"1",
+                "kills":0,
+                "passable":1,
                 "secretItem":"",
                 "item":""
             }            
@@ -50,8 +50,8 @@
             "east":"splitPath1",
             "properties":{},
             "data":{
-                "kills":"no",
-                "passable":"1",
+                "kills":0,
+                "passable":1,
                 "secretItem":"",
                 "item":""
             }
@@ -63,8 +63,8 @@
             "east":"",
             "properties":{},
             "data":{
-                "kills":"no",
-                "passable":"1",
+                "kills":0,
+                "passable":1,
                 "secretItem":"vase"
             }
         },
@@ -75,8 +75,8 @@
             "east":"",
             "properties":{},
             "data":{
-                "kills":"no",
-                "passable":"1",
+                "kills":0,
+                "passable":1,
                 "secretItem":"",
                 "item":""
             }
@@ -88,8 +88,8 @@
             "east":"cornerToDark",
             "properties":{},
             "data":{
-                "kills":"no",
-                "passable":"1",
+                "kills":0,
+                "passable":1,
                 "secretItem":"",
                 "item":""
             }
@@ -101,8 +101,8 @@
             "east":"darkCorridor",
             "properties":{},
             "data":{
-                "kills":"no",
-                "passable":"1",
+                "kills":0,
+                "passable":1,
                 "secretItem":"",
                 "item":""
             }
@@ -114,8 +114,8 @@
             "east":"",
             "properties":{},
             "data":{
-                "kills":"no",
-                "passable":"1",
+                "kills":0,
+                "passable":1,
                 "secretItem":"",
                 "item":""
             }
@@ -129,8 +129,8 @@
                 "lock-msg":"locked"
             },
             "data":{
-                "kills":"no",
-                "passable":"0",
+                "kills":1,
+                "passable":0,
                 "secretItem":"",
                 "item":""
             }
@@ -142,8 +142,8 @@
             "east":"",
             "properties":{},
             "data":{
-                "kills":"no",
-                "passable":"1",
+                "kills":0,
+                "passable":1,
                 "secretItem":"",
                 "item":""
             }
@@ -155,8 +155,8 @@
             "east":"cornerToStairs",
             "properties":{},
             "data":{
-                "kills":"no",
-                "passable":"1",
+                "kills":0,
+                "passable":1,
                 "secretItem":"",
                 "item":""
             }
@@ -168,8 +168,8 @@
             "east":"stairs2",
             "properties":{},
             "data":{
-                "kills":"no",
-                "passable":"1",
+                "kills":0,
+                "passable":1,
                 "secretItem":"",
                 "item":""
             }
@@ -181,8 +181,8 @@
             "east":"",
             "properties":{},
             "data":{
-                "kills":"no",
-                "passable":"1",
+                "kills":0,
+                "passable":1,
                 "secretItem":"",
                 "item":""
             }
@@ -196,8 +196,8 @@
                 "lock-msg":"locked"
             },
             "data":{
-                "kills":"no",
-                "passable":"0",
+                "kills":0,
+                "passable":0,
                 "secretItem":"Fancy China Teapot",
                 "item":""
             }
