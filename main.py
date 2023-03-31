@@ -147,6 +147,13 @@ def user_input(situation):
     usrInp = input(str(situation) + "\n")
     return usrInp
 
+# temp func
+
+def room_show():
+    directions = ["north", "east", "south", "west"]
+    for i in directions:
+        print(i + ": " + f"{bcolors.YELLOW}" + room_values[i] + f"{bcolors.ENDC}")
+
 print("Hello, welcome to the game. Press Enter key to continue")
 input()
 a = Level(jsonFileLocation, "Start")
@@ -170,14 +177,21 @@ playerData = Player(jsonFileLocationOptional)
 while True:
     room_values = a.get_room_values(room)
 
-    item = room_values["data"]["item"]
-    if item != "":
-        print("item: " + item)
+    try: 
+        item = room_values["data"]["item"]
+        if item != "": print("item: " + item)
+    except:
+        print("",end="")
 
-    secretItem = room_values["data"]["secretItem"]
-    if secretItem != "": print(f"{bcolors.MAGENTA}" + secretItem +f"{bcolors.ENDC}")
-    print(room_values)
-    print(room)
+    try:
+        secretItem = room_values["data"]["secretItem"]
+        if secretItem != "": print(f"{bcolors.MAGENTA}" + secretItem +f"{bcolors.ENDC}")
+    except: 
+        print("",end="")
+
+    room_show()
+    #print(room_values)
+    print("current room: " + f"{bcolors.OKGREEN}"+room+f"{bcolors.ENDC}")
     playerInput = input("make move: ")
     print("")
     if playerInput == "exit":
@@ -192,11 +206,11 @@ while True:
 
     if checkedPlayerInput==1:
         room = room_values[playerInput]
-        print("you moved to: ", room)
+        print("you moved to: "+ f"{bcolors.OKGREEN}"+room+f"{bcolors.ENDC}")
 
     elif checkedPlayerInput == 2:
         room = room
-        print("wall")
+        print(f"{bcolors.BRIGHTRED}"+" you walk into wall" + f"{bcolors.ENDC}")
 
         
 

@@ -12,9 +12,7 @@
             "properties":{},
             "data":{
                 "kills":0,
-                "passable":1,
-                "secretItem":"",
-                "item":""
+                "passable":1
             }
         },
         "vase" : {
@@ -26,7 +24,6 @@
             "data":{
                 "kills":0,
                 "passable":1,
-                "secretItem":"",
                 "item":"vase"
             }
         },
@@ -38,9 +35,7 @@
             "properties":{},
             "data":{
                 "kills":0,
-                "passable":1,
-                "secretItem":"",
-                "item":""
+                "passable":1
             }            
         },
         "splitPath2":{
@@ -51,9 +46,7 @@
             "properties":{},
             "data":{
                 "kills":0,
-                "passable":1,
-                "secretItem":"",
-                "item":""
+                "passable":1
             }
         },
         "vasePlace":{
@@ -76,9 +69,7 @@
             "properties":{},
             "data":{
                 "kills":0,
-                "passable":1,
-                "secretItem":"",
-                "item":""
+                "passable":1
             }
         },
         "darkCorridor":{
@@ -89,9 +80,7 @@
             "properties":{},
             "data":{
                 "kills":0,
-                "passable":1,
-                "secretItem":"",
-                "item":""
+                "passable":1
             }
         },    
         "saveRoom1":{
@@ -102,9 +91,7 @@
             "properties":{},
             "data":{
                 "kills":0,
-                "passable":1,
-                "secretItem":"",
-                "item":""
+                "passable":1
             }
         },
         "secretRoom":{
@@ -115,9 +102,7 @@
             "properties":{},
             "data":{
                 "kills":0,
-                "passable":1,
-                "secretItem":"",
-                "item":""
+                "passable":1
             }
         },
         "rickyBridge":{
@@ -130,9 +115,7 @@
             },
             "data":{
                 "kills":1,
-                "passable":0,
-                "secretItem":"",
-                "item":""
+                "passable":0
             }
         },
         "cornerToStairs":{
@@ -143,9 +126,7 @@
             "properties":{},
             "data":{
                 "kills":0,
-                "passable":1,
-                "secretItem":"",
-                "item":""
+                "passable":1
             }
         },
         "stairs":{
@@ -156,9 +137,7 @@
             "properties":{},
             "data":{
                 "kills":0,
-                "passable":1,
-                "secretItem":"",
-                "item":""
+                "passable":1
             }
         },
         "splitPathSecret":{
@@ -169,9 +148,7 @@
             "properties":{},
             "data":{
                 "kills":0,
-                "passable":1,
-                "secretItem":"",
-                "item":""
+                "passable":1
             }
         },
         "stairs2":{
@@ -182,9 +159,7 @@
             "properties":{},
             "data":{
                 "kills":0,
-                "passable":1,
-                "secretItem":"",
-                "item":""
+                "passable":1
             }
         },
         "secretItem":{
@@ -198,8 +173,7 @@
             "data":{
                 "kills":0,
                 "passable":0,
-                "secretItem":"Fancy China Teapot",
-                "item":""
+                "secretItem":"Fancy China Teapot"
             }
         }
 
