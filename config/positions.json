@@ -96,7 +96,7 @@
         },
         "secretRoom":{
             "north": "",
-            "south":"Vase",
+            "south":"vase",
             "west":"rickyBridge",
             "east":"",
             "properties":{},
