@@ -121,7 +121,17 @@ class Level:
 
         self._commands = [
             "move",
-            "take"
+            "take",
+            "look",
+            "inventory",
+            "talk",
+            "examine",
+            "inspect",
+            "combine",
+            "read",
+            "use",
+            "wait",
+            "help"
         ]
 
         self._moves = [
@@ -202,7 +212,7 @@ class old_Level:
     "sample room":{
         "north": "room1",
         "west":"room2",
-        "description":"theres a door left",
+        "description":"you enter the dark room",
         "properties":"item",
         "data":"you see",
     }
@@ -213,10 +223,7 @@ class old_Level:
         "south":"",
         "west":"",
         "east":"",
-        "description":{
-            "1":"",
-            "2":""
-        },
+        "description":"",
         "properties":{},
         "data":{}
     },    

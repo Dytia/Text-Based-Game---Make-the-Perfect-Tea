@@ -1,10 +1,7 @@
 {
     "startingRoom" : {
         "north": "vase",
-        "description":{
-            "1":"",
-            "2":""
-        },
+        "description":"",
         "properties":{},
         "data":{
             "kills":0,
@@ -15,10 +12,7 @@
         "north": "splitPath1",
         "south":"startingRoom",
         "east":"secretRoom",
-        "description":{
-            "1":"",
-            "2":""
-        },
+        "description":"",
         "properties":{},
         "data":{
             "kills":0,
@@ -30,10 +24,7 @@
         "south":"vase",
         "west":"splitPath2",
         "east":"rickyBridge",
-        "description":{
-            "1":"",
-            "2":""
-        },
+        "description":"",
         "properties":{},
         "data":{
             "kills":0,
@@ -44,10 +35,7 @@
         "north": "cornerToStairs",
         "south":"vasePlace",
         "east":"splitPath1",
-        "description":{
-            "1":"",
-            "2":""
-        },
+        "description":"",
         "properties":{},
         "data":{
             "kills":0,
@@ -57,10 +45,7 @@
     "vasePlace":{
         "north": "splitPath2",
         "south":"cornerToDark",
-        "description":{
-            "1":"",
-            "2":""
-        },
+        "description":"",
         "properties":{},
         "data":{
             "kills":0,
@@ -71,10 +56,7 @@
     "cornerToDark":{
         "north": "vasePlace",
         "west":"darkCorridor",
-        "description":{
-            "1":"",
-            "2":""
-        },
+        "description":"",
         "properties":{},
         "data":{
             "kills":0,
@@ -84,10 +66,7 @@
     "darkCorridor":{
         "west":"saveRoom1",
         "east":"cornerToDark",
-        "description":{
-            "1":"",
-            "2":""
-        },
+        "description":"",
         "properties":{},
         "data":{
             "kills":0,
@@ -96,10 +75,7 @@
     },    
     "saveRoom1":{
         "east":"darkCorridor",
-        "description":{
-            "1":"",
-            "2":""
-        },
+        "description":"",
         "properties":{},
         "data":{
             "kills":0,
@@ -109,10 +85,7 @@
     "secretRoom":{
         "south":"vase",
         "west":"rickyBridge",
-        "description":{
-            "1":"",
-            "2":""
-        },
+        "description":"",
         "properties":{},
         "data":{
             "kills":0,
@@ -121,10 +94,7 @@
     },
     "rickyBridge":{
         "west":"splitPath1",
-        "description":{
-            "1":"",
-            "2":""
-        },
+        "description":"",
         "properties":{
             "lock-msg":"locked"
         },
@@ -136,10 +106,7 @@
     "cornerToStairs":{
         "south":"splitPath2",
         "west":"stairs",
-        "description":{
-            "1":"",
-            "2":""
-        },
+        "description":"",
         "properties":{},
         "data":{
             "kills":0,
@@ -149,10 +116,7 @@
     "stairs":{
         "west":"splitPathSecret",
         "east":"cornerToStairs",
-        "description":{
-            "1":"",
-            "2":""
-        },
+        "description":"",
         "properties":{},
         "data":{
             "kills":0,
@@ -163,10 +127,7 @@
         "north": "stairs",
         "south":"secretItem",
         "east":"stairs2",
-        "description":{
-            "1":"",
-            "2":""
-        },
+        "description":"",
         "properties":{},
         "data":{
             "kills":0,
@@ -176,10 +137,7 @@
     "stairs2":{
         "north": "startingRoom",
         "south":"splitPathSecret",
-        "description":{
-            "1":"",
-            "2":""
-        },
+        "description":"",
         "properties":{},
         "data":{
             "kills":0,
@@ -188,10 +146,7 @@
     },
     "secretItem":{
         "north": "splitPathSecret",
-        "description":{
-            "1":"",
-            "2":""
-        },
+        "description":"",
         "properties":{
             "lock-msg":"locked"
         },
@@ -201,6 +156,5 @@
             "secretItem":"Fancy China Teapot"
         }
     }
-
 
 }
