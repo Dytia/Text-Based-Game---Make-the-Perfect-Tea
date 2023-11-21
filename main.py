@@ -115,9 +115,14 @@ class Level:
     def __init__(self, map) -> None:
         '''
         1: location of map file
-        starting room will always be the first room
+        startingRoom will always be the first room
         '''
         self._map = map
+
+        self._commands = [
+            "move",
+            "take"
+        ]
 
         self._moves = [
             "n", "s", "w", "e", "north", "south", "west", "east"
