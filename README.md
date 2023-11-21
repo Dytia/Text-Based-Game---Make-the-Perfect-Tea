@@ -1,2 +1,4 @@
 # Text Based Game - Make the Perfect Tea
- game
+ 
+A text based RPG with movement and puzzles (maybe combat if i get to it)
+game
