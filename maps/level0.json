@@ -4,8 +4,7 @@
         "description":"",
         "properties":{},
         "data":{
-            "kills":0,
-            "passable":1
+            "look":""
         }
     },
     "vase" : {
@@ -15,8 +14,7 @@
         "description":"",
         "properties":{},
         "data":{
-            "kills":0,
-            "passable":1,
+            "look":"",
             "item":"vase"
         }
     },
@@ -27,8 +25,7 @@
         "description":"",
         "properties":{},
         "data":{
-            "kills":0,
-            "passable":1
+            "look":""
         }            
     },
     "splitPath2":{
@@ -38,8 +35,7 @@
         "description":"",
         "properties":{},
         "data":{
-            "kills":0,
-            "passable":1
+            "look":""
         }
     },
     "vasePlace":{
@@ -48,8 +44,7 @@
         "description":"",
         "properties":{},
         "data":{
-            "kills":0,
-            "passable":1,
+            "look":"",
             "secretItem":"vase"
         }
     },
@@ -59,8 +54,7 @@
         "description":"",
         "properties":{},
         "data":{
-            "kills":0,
-            "passable":1
+            "look":""
         }
     },
     "darkCorridor":{
@@ -69,8 +63,7 @@
         "description":"",
         "properties":{},
         "data":{
-            "kills":0,
-            "passable":1
+            "look":""
         }
     },    
     "saveRoom1":{
@@ -78,8 +71,7 @@
         "description":"",
         "properties":{},
         "data":{
-            "kills":0,
-            "passable":1
+            "look":""
         }
     },
     "secretRoom":{
@@ -88,8 +80,7 @@
         "description":"",
         "properties":{},
         "data":{
-            "kills":0,
-            "passable":1
+            "look":""
         }
     },
     "rickyBridge":{
@@ -99,8 +90,7 @@
             "lock-msg":"locked"
         },
         "data":{
-            "kills":1,
-            "passable":0
+            "look":""
         }
     },
     "cornerToStairs":{
@@ -109,8 +99,7 @@
         "description":"",
         "properties":{},
         "data":{
-            "kills":0,
-            "passable":1
+            "look":""
         }
     },
     "stairs":{
@@ -119,8 +108,7 @@
         "description":"",
         "properties":{},
         "data":{
-            "kills":0,
-            "passable":1
+            "look":""
         }
     },
     "splitPathSecret":{
@@ -130,8 +118,7 @@
         "description":"",
         "properties":{},
         "data":{
-            "kills":0,
-            "passable":1
+            "look":""
         }
     },
     "stairs2":{
@@ -140,8 +127,7 @@
         "description":"",
         "properties":{},
         "data":{
-            "kills":0,
-            "passable":1
+            "look":""
         }
     },
     "secretItem":{
@@ -151,8 +137,7 @@
             "lock-msg":"locked"
         },
         "data":{
-            "kills":0,
-            "passable":0,
+            "look":"",
             "secretItem":"Fancy China Teapot"
         }
     }

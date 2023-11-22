@@ -56,19 +56,25 @@ class Responses:
 
 
 class Player:
-    def __init__(self, jsonFileLocationOptional):
-        self._baseHealth = 100
-        self._jsonLocation = jsonFileLocationOptional
-        self._options = [
-            "inspect",
-            "pick up",
-            "put down"
+    def __init__(self) -> None:
+        self._commands = [
+            "move",     # move north, south, east or west
+            "take",     # take an item or thing
+            "look",     # look around an area
+            "inventory",# show items & skills
+            "talk",     # talk to an npc 
+            "examine",  # examine an object in the world
+            "inspect",  # inspect an item in inventory
+            "combine",  # combine items in inventory
+            "read",     # read a sign or book or whatever
+            "use",      # use an item or skill
+            "wait",     # wait x amount of time
+            "help",     # display commands
+            "drink"     # drink tea, or if coffee specified, quit without saving
         ]
     
-    def check_valid_option(self, user_option):
-        for i in self._options:
-            if i == user_option:
-                return True
+    def load_player(self) -> None:
+        pass
 
 
 class bcolors:
@@ -118,21 +124,6 @@ class Level:
         startingRoom will always be the first room
         '''
         self._map = map
-
-        self._commands = [
-            "move",
-            "take",
-            "look",
-            "inventory",
-            "talk",
-            "examine",
-            "inspect",
-            "combine",
-            "read",
-            "use",
-            "wait",
-            "help"
-        ]
 
         self._moves = [
             "n", "s", "w", "e", "north", "south", "west", "east"
@@ -225,7 +216,9 @@ class old_Level:
         "east":"",
         "description":"",
         "properties":{},
-        "data":{}
+        "data":{
+            "look":""
+        }
     },    
     '''
     def __init__(self, map):
