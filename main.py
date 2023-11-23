@@ -11,6 +11,8 @@ jsonFileLocationOptional = "./config/optional.json"
 level_num = 0
 level_base = f"./maps/level{level_num}.json"
 
+save_dir = "./saves"
+
 '''
 vase = "" | "held" | "correct" (made in china)
 '''
