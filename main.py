@@ -59,22 +59,15 @@ class Responses:
 
 class Player:
     def __init__(self) -> None:
-        self._commands = [
-            "move",     # move north, south, east or west
-            "take",     # take an item or thing
-            "look",     # look around an area
-            "inventory",# show items & skills
-            "talk",     # talk to an npc 
-            "examine",  # examine an object in the world
-            "inspect",  # inspect an item in inventory
-            "combine",  # combine items in inventory
-            "read",     # read a sign or book or whatever
-            "use",      # use an item or skill
-            "wait",     # wait x amount of time
-            "help",     # display commands
-            "drink"     # drink tea, or if coffee specified, quit without saving
+        self.inventory = [
+            [ # items
+
+            ],
+            [ # skills
+
+            ]
         ]
-    
+
     def load_player(self) -> None:
         pass
 
@@ -111,6 +104,7 @@ class Room:
         """
         self.connections = []
         self.name = name
+        self.description = data["description"]
         for i in range(0,4):
             try:
                 self.connections.append(data[self._values[i]])
@@ -152,7 +146,6 @@ class Level:
         self._create_rooms()
         self.current_room:Room = self._rooms[0]
         self.responses = Responses()
-
 
     def _create_rooms(self) -> None:
         '''
@@ -198,151 +191,66 @@ class Level:
 
 
 
-
-class old_Level:
-    # impassable = no value
-    '''
-    "sample room":{
-        "north": "room1",
-        "west":"room2",
-        "description":"you enter the dark room",
-        "properties":"item",
-        "data":"you see",
-    }
-
-    blank template:
-    "":{
-        "north":"",
-        "south":"",
-        "west":"",
-        "east":"",
-        "description":"",
-        "properties":{},
-        "data":{
-            "look":""
-        }
-    },    
-    '''
-    def __init__(self, map):
-        '''
-        1: location of config file
-        2: what level this object is focused on
-        '''
-        self._map = map
-        self._values = [
-            "north",
-            "south",
-            "west",
-            "east",
-            "properties",
-            "data"
-            ]
-
-
-    def read_json(self):
-        '''
-        Reads the config file and returns all the data in it
-        '''
-        with open(self._map, "r") as f:
-            data = json.load(f)
-            #print(data["Start"])
-            #data["Start"] for starting area
-        return data
-
-    def write_json(self, data):
-        '''
-        using the data got from the read_json() function,
-        it will save any data changed
-
-        Do NOT change:
-        "north"
-        "south"
-        "west"
-        "east"
-        "properties"
-        '''
-        with open(self._jsonLocation, "w") as f:
-            json.dump(data, f, indent=2)
-        return 1
-
-    def get_room_values(self, room):
-        '''
-        Gets the values of the selected room
-        e.g. north, south, west, etc
-        '''
-        data = self.read_json()
-        data_value = data[self._levelChoice][room]
-        return data_value
-
-    def check_valid_move(self, room, choice):
-        '''
-        using the room name and the move, 
-        this validates if the move command is valid, if it isnt it
-        returns 0
-
-        room = "startingRoom"
-        choice = "north"
-        if it is a valid choice and valid move it returns 1
-        if there is a wall, it returns 2
-        '''
-        for i in self._values:
-            if choice == str(i):
-                success = True
+def to_display(val):
+    """
+    parse and send so newlines occur in a space rather than mid word
+    """
+    size = os.get_terminal_size().columns
+    last_space = 0
+    if len(val) > size:
+        while True:
+            p = True
+            for i in range(0,len(val)):
+                if i > size:
+                    print(val[:last_space])
+                    p = False
+                    break
+                if val[i] == " ":
+                    last_space = i
+            if p:
+                print(val)
                 break
-            else: success = False
-
-        if success:
-            data = self.get_room_values(room)
-            if data[choice] == "": return 2 # 2 means wall
-            else: return 1                  # 1 means valid
-        else:     return 0                  # 0 means not even a move
-            
-
-
-def user_input(situation):
-    '''
-    A module to print the current situation,
-    and then to return the user input
-
-    Automatically adds a newline and converts it to string
-    '''
-    usrInp = input(str(situation) + "\n")
-    return usrInp
-
-
-# temp func
-
-def room_show():
-    directions = ["north", "east", "south", "west"]
-    for i in directions:
-        print(i + ": " + f"{bcolors.YELLOW}" + room_values[i] + f"{bcolors.ENDC}")
+            val = val[last_space+1:]
+    else:
+        print(val)
 
 
 
+commands = [    #item/skill = i/s
+    "move",     # move <direction>      | move north, south, east or west
+    "take",     # take <item>           | take an item or thing
+    "look",     # look                  | look around an area
+    "inventory",# inventory [type]      | show items & skills (inventory items would only show items)
+    "talk",     # talk <name>           | talk to an npc 
+    "examine",  # examine <name>        | examine an object in the world
+    "inspect",  # inspect <i/s>         | inspect an item in inventory
+    "combine",  # combine <i/s> <i/s>   | combine items in inventory
+    "read",     # read <object>         | read a sign or book or whatever
+    "use",      # use <i/s>             | use an item or skill
+    "wait",     # wait <h> <m>          | wait x amount of time
+    "help",     # help                  | display commands
+    "drink"     # drink <tea>           | drink tea, or if coffee specified, quit without saving
+]
+help_data = """
+Help menu
+i/s means item/skill
 
-room = Room()
+move <direction>    move north, south, east or west
+take <item>         take an item from the world
+look                look around
+inventory [type]    view inventory, and optionally specify type (ie skills or items)
+talk <name>         talk with an npc of that name
+examine <name>      better look at an object of that name
+inspect <i/s>       take a closer look at an item or skill
+combine <i/s>       merge two items together
+read <object>       read the text on a sign or poster
+use <i/s>           use an item/skill
+wait <h> [m]        pass the time
+help                display this list
+"""
+response_gen = Responses()
 
-with open("./maps/level0.json", "r") as f:
-    b = json.loads(f.read())
-    for i in b:
-        #print(i,end=" ")
-        #print(b[i])
-        room.set_room_data(i, b[i])
 
-a = Level("./maps/level0.json")
-
-z = "{'aaa'}"
-print(f"{z}")
-
-#while True:
-print(a.current_room.name)
-b = input()
-c = a.move_room(b)
-if c == True:
-    print(a.current_room.name)
-else:
-    print(c)
-print("\n")
 
 try:
     print(level_base.encode())
@@ -351,75 +259,47 @@ try:
         """
         main loop
         """
+        to_display(level.current_room.description)
+        u_input = input().split(" ")
+        content = u_input[1].lower()
+        match u_input[0]:
+            case "move":
+                pass
+            case "take":
+                pass
+            case "look":
+                pass
+            case "inventory":
+                pass
+            case "talk":
+                pass
+            case "examine":
+                pass
+            case "inspect":
+                pass
+            case "combine":
+                pass
+            case "read":
+                pass
+            case "use":
+                pass
+            case "wait":
+                pass
+            case "help":
+                dt = help_data.split("\n")
+                for i in dt:
+                    to_display(i)
+            case "drink":
+                if content == "tea":
+                    to_display() # tea response
+                elif content == "coffee":
+                    os._exit(1)
+            case _:
+                to_display(response_gen.invalid_move())
+
+
 
 except KeyboardInterrupt:
     pass
 finally:
     print("bye")
-
-try:
-    print("Hello, welcome to the game. Press Enter key to continue")
-    input()
-    a = old_Level(jsonFileLocation, "Start")
-    data = a.read_json()
-    d = a.get_room_values("startingRoom")
-    print(d)
-    b = input()
-    c = a.check_valid_move("startingRoom",b)
-    if c == 1: print("moved to: ", d[b] )
-    if c == 2: print("you walk into a wall, it hurts a little")
-    #if b == "di":
-    tmp = data["Start"]["vase"]
-    print(tmp["north"], tmp["south"])
-    #print(data["Start"]["startingRoom"])
-    #os.system("CLS")
-    print("a")
-    room = "startingRoom"
-
-    playerData = Player(jsonFileLocationOptional)
-
-
-    while True:
-        room_values = a.get_room_values(room)
-
-        try: 
-            item = room_values["data"]["item"]
-            if item != "": print("item: " + item)
-        except:
-            print("",end="")
-
-        try:
-            secretItem = room_values["data"]["secretItem"]
-            if secretItem != "": print(f"{bcolors.MAGENTA}" + secretItem +f"{bcolors.ENDC}")
-        except: 
-            print("",end="")
-
-        room_show()
-        #print(room_values)
-        print("current room: " + f"{bcolors.OKGREEN}"+room+f"{bcolors.ENDC}")
-        playerInput = input("make move: ")
-        print("")
-        if playerInput == "exit":
-            break
-        
-        checkedPlayerInput = a.check_valid_move(room, playerInput)
-        #if checkedPlayerInput == 0:
-        #    if playerData.check_valid_option(playerInput):
-        #        if room_values["data"]["item"] != "" and playerInput != "put down":
-                    
-                    
-
-        if checkedPlayerInput==1:
-            room = room_values[playerInput]
-            print("you moved to: "+ f"{bcolors.OKGREEN}"+room+f"{bcolors.ENDC}")
-
-        elif checkedPlayerInput == 2:
-            room = room
-            print(f"{bcolors.BRIGHTRED}"+" you walk into wall" + f"{bcolors.ENDC}")
-
-except KeyboardInterrupt:
-    pass
-finally:
-    print("bye") 
-
-#input()

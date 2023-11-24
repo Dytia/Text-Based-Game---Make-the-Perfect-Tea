@@ -1,7 +1,7 @@
 {
     "startingRoom" : {
         "north": "vase",
-        "description":"",
+        "description":"You find yourself in a well lit room, the soft glow from the light coming through the window falls upon a wooden desk",
         "properties":{},
         "data":{
             "look":""
