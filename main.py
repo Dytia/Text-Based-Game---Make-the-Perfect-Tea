@@ -13,6 +13,14 @@ level_base = f"./maps/level{level_num}.json"
 
 save_dir = "./saves"
 
+old_room = ""
+
+if os.path.isfile("./saves/save.json"):
+    first_run = False #save to variable for later use
+else: 
+    first_run = True
+
+
 '''
 vase = "" | "held" | "correct" (made in china)
 '''
@@ -56,9 +64,25 @@ class Responses:
         ]
         return f"{self.randomise(options)}\n{bcolors.BRIGHTRED}Not a valid move{bcolors.ENDC}"
 
+    def examine(self) -> str:
+        """
+        list of examine fails
+        """
+        options = [
+            "Upon closer inspection, the object appears to be rather mundane. It doesn't reveal any hidden details or surprises.",
+            "You give the object a thorough look, but it seems to be exactly what it appears to be, no secrets or surprises.",
+            "Your attempt to examine the object results in a straightforward observation. It is exactly as it seems, with no hidden complexities.",
+            "No surprises here; the object is precisely what you thought it would be. A simple, unremarkable item.",
+            "A closer look at the object reveals its simplicity. There's nothing remarkable or unusual about it."
+        ]
+        return f"{self.randomise(options)}\n or you made a typo"
+
 
 class Player:
     def __init__(self) -> None:
+        self.name = ""
+        self.age = 0
+        self.gender = ""
         self.inventory = [
             [ # items
 
@@ -67,6 +91,9 @@ class Player:
 
             ]
         ]
+
+    def save(self) -> None:
+        pass
 
     def load_player(self) -> None:
         pass
@@ -105,6 +132,7 @@ class Room:
         self.connections = []
         self.name = name
         self.description = data["description"]
+        self.properties = data["properties"]
         for i in range(0,4):
             try:
                 self.connections.append(data[self._values[i]])
@@ -134,14 +162,6 @@ class Level:
             "west"  :2,
             "east"  :3
         }
-        self._values = [
-            "north",
-            "south",
-            "west",
-            "east",
-            "properties",
-            "data"
-            ]
         
         self._create_rooms()
         self.current_room:Room = self._rooms[0]
@@ -159,7 +179,7 @@ class Level:
             self._rooms.append(temp)
         
 
-    def read_json(self):
+    def read_json(self) -> dict:
         '''
         Reads the config file and returns all the data in it
         '''
@@ -168,7 +188,7 @@ class Level:
         return data
     
 
-    def move_room(self, move) -> bool:
+    def move_room(self, move) -> (bool | str):
         """
         checks if its a valid room and moves to that room
 
@@ -189,32 +209,62 @@ class Level:
         else:
             return self.responses.invalid_move()
 
+    def examine(self, obj) -> (bool | str):
+        """
+        runs the examine thing and checks if its even an object in the room
+        """
+        examine = self.current_room.properties["examine"]
+        if obj in examine:
+            return examine[obj]
+        else: 
+            return response_gen.examine()
 
 
-def to_display(val):
+
+def to_display(val) -> None:
     """
     parse and send so newlines occur in a space rather than mid word
     """
     size = os.get_terminal_size().columns
     last_space = 0
+    vals = val.split("\n")
     if len(val) > size:
-        while True:
-            p = True
-            for i in range(0,len(val)):
-                if i > size:
-                    print(val[:last_space])
-                    p = False
+        for val in vals:
+            while True:
+                p = True
+                for i in range(0,len(val)):
+                    if i > size:
+                        print(val[:last_space])
+                        p = False
+                        break
+                    if val[i] == " ":
+                        last_space = i
+                if p:
+                    print(val)
                     break
-                if val[i] == " ":
-                    last_space = i
-            if p:
-                print(val)
-                break
-            val = val[last_space+1:]
+                val = val[last_space+1:]
     else:
         print(val)
 
-
+"""
+blank room object
+    "name":{
+        "north": "",
+        "south":"",
+        "east":"",
+        "west":""
+        "description":"",
+        "properties":{
+            "examine":{
+                "":"",
+                "":""
+            }
+        },
+        "data":{
+            "look":""
+        }
+    },
+"""
 
 commands = [    #item/skill = i/s
     "move",     # move <direction>      | move north, south, east or west
@@ -227,10 +277,10 @@ commands = [    #item/skill = i/s
     "combine",  # combine <i/s> <i/s>   | combine items in inventory
     "read",     # read <object>         | read a sign or book or whatever
     "use",      # use <i/s>             | use an item or skill
-    "wait",     # wait <h> <m>          | wait x amount of time
     "help",     # help                  | display commands
     "drink"     # drink <tea>           | drink tea, or if coffee specified, quit without saving
 ]
+
 help_data = """
 Help menu
 i/s means item/skill
@@ -245,10 +295,51 @@ inspect <i/s>       take a closer look at an item or skill
 combine <i/s>       merge two items together
 read <object>       read the text on a sign or poster
 use <i/s>           use an item/skill
-wait <h> [m]        pass the time
 help                display this list
+exit                save & close
 """
 response_gen = Responses()
+
+
+if first_run:
+    """
+    code that runs once on first run only
+    """
+    content = """Welcome to the game! 
+if you cant figure out anything try typing help
+keep your eye out for interesting things, and good luck
+if you want to restart just change the name of saves.json to something else
+"""
+    to_display(content)
+    user = Player()
+    fail = True
+    print("Character creation")
+    # get character name
+    while fail:
+        name = input(f"{bcolors.OKGREEN}name{bcolors.ENDC}? ")
+        for i in name:
+            if ord(i) in range(65, 123) and not ord(i) in range(91,97):
+                fail = False
+            else:
+                fail = True
+        if fail: print("please only use letters")
+    user.name = name
+    
+    # get character age
+    fail = True
+    while fail:
+        try:
+            age = int(input(f"{bcolors.OKGREEN}age{bcolors.ENDC}? "))
+            if age < 16 or age > 100:
+                os._exit(1)
+        except ValueError:
+            print("please use a number")
+    user.age = age
+
+    # get character gender (uses three options for overall vs precise)
+    gender = input(f"{bcolors.OKGREEN}gender{bcolors.ENDC}? (for best experience use female, male or non-binary)")
+    user.gender = gender
+
 
 
 
@@ -259,22 +350,31 @@ try:
         """
         main loop
         """
-        to_display(level.current_room.description)
-        u_input = input().split(" ")
-        content = u_input[1].lower()
+        current_room = level.current_room.name
+        if current_room != old_room:
+            to_display(level.current_room.description)
+            old_room = current_room
+        u_input = input(f"{bcolors.OKCYAN}> {bcolors.ENDC}").split(" ")
+        try:
+            content = u_input[1].lower()
+        except IndexError:
+            content = ""
         match u_input[0]:
             case "move":
-                pass
+                val = level.move_room(content)
+                if val != True:
+                    to_display(val)
             case "take":
                 pass
             case "look":
-                pass
+                to_display(level.current_room.description)
             case "inventory":
                 pass
             case "talk":
                 pass
             case "examine":
-                pass
+                val = level.examine(content)
+                to_display(val)
             case "inspect":
                 pass
             case "combine":
@@ -282,8 +382,6 @@ try:
             case "read":
                 pass
             case "use":
-                pass
-            case "wait":
                 pass
             case "help":
                 dt = help_data.split("\n")
@@ -293,13 +391,18 @@ try:
                 if content == "tea":
                     to_display() # tea response
                 elif content == "coffee":
-                    os._exit(1)
+                    try: os.remove("./saves/save.json")
+                    except: pass
+                    finally: os._exit(1)
+            case "exit":
+                raise KeyboardInterrupt
             case _:
                 to_display(response_gen.invalid_move())
 
 
 
 except KeyboardInterrupt:
+    # save function go here
     pass
 finally:
     print("bye")

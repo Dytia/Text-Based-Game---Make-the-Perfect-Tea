@@ -1,10 +1,15 @@
 {
     "startingRoom" : {
         "north": "vase",
-        "description":"You find yourself in a well lit room, the soft glow from the light coming through the window falls upon a wooden desk",
-        "properties":{},
+        "description":"You find yourself in a small room, theres a coed with a lamp next to it, and on the opposite side of the room a window with a desk underneath, to the northern face of the room theres a door",
+        "properties":{
+            "examine":{
+                "bed":"",
+                "desk":"You see a small notebook, a picture of a cup of tea with biscuits, and a few pencils scattered about"
+            }
+        },
         "data":{
-            "look":""
+        
         }
     },
     "vase" : {
@@ -12,9 +17,12 @@
         "south":"startingRoom",
         "east":"secretRoom",
         "description":"",
-        "properties":{},
+        "properties":{
+            "examine":{
+
+            }
+        },
         "data":{
-            "look":"",
             "item":"vase"
         }
     },
@@ -23,9 +31,13 @@
         "west":"splitPath2",
         "east":"rickyBridge",
         "description":"",
-        "properties":{},
+        "properties":{
+            "examine":{
+
+            }
+        },
         "data":{
-            "look":""
+
         }            
     },
     "splitPath2":{
@@ -33,18 +45,25 @@
         "south":"vasePlace",
         "east":"splitPath1",
         "description":"",
-        "properties":{},
+        "properties":{
+            "examine":{
+
+            }
+        },
         "data":{
-            "look":""
+
         }
     },
     "vasePlace":{
         "north": "splitPath2",
         "south":"cornerToDark",
         "description":"",
-        "properties":{},
+        "properties":{
+            "examine":{
+
+            }
+        },
         "data":{
-            "look":"",
             "secretItem":"vase"
         }
     },
@@ -52,63 +71,89 @@
         "north": "vasePlace",
         "west":"darkCorridor",
         "description":"",
-        "properties":{},
+        "properties":{
+            "examine":{
+
+            }
+        },
         "data":{
-            "look":""
+
         }
     },
     "darkCorridor":{
         "west":"saveRoom1",
         "east":"cornerToDark",
         "description":"",
-        "properties":{},
+        "properties":{
+            "examine":{
+
+            }
+        },
         "data":{
-            "look":""
+
         }
     },    
     "saveRoom1":{
         "east":"darkCorridor",
         "description":"",
-        "properties":{},
+        "properties":{
+            "examine":{
+
+            }
+        },
         "data":{
-            "look":""
+
         }
     },
     "secretRoom":{
         "south":"vase",
         "west":"rickyBridge",
         "description":"",
-        "properties":{},
+        "properties":{
+            "examine":{
+
+            }
+        },
         "data":{
-            "look":""
+
         }
     },
     "rickyBridge":{
         "west":"splitPath1",
         "description":"",
         "properties":{
-            "lock-msg":"locked"
+            "examine":{
+
+            }
         },
         "data":{
-            "look":""
+
         }
     },
     "cornerToStairs":{
         "south":"splitPath2",
         "west":"stairs",
         "description":"",
-        "properties":{},
+        "properties":{
+            "examine":{
+
+            }
+        },
         "data":{
-            "look":""
+
         }
     },
     "stairs":{
         "west":"splitPathSecret",
         "east":"cornerToStairs",
         "description":"",
-        "properties":{},
+        "properties":{
+            "examine":{
+
+            }
+        },
         "data":{
-            "look":""
+
         }
     },
     "splitPathSecret":{
@@ -116,28 +161,37 @@
         "south":"secretItem",
         "east":"stairs2",
         "description":"",
-        "properties":{},
+        "properties":{
+            "examine":{
+
+            }
+        },
         "data":{
-            "look":""
+
         }
     },
     "stairs2":{
         "north": "startingRoom",
         "south":"splitPathSecret",
         "description":"",
-        "properties":{},
+        "properties":{
+            "examine":{
+
+            }
+        },
         "data":{
-            "look":""
+
         }
     },
     "secretItem":{
         "north": "splitPathSecret",
         "description":"",
         "properties":{
-            "lock-msg":"locked"
+            "examine":{
+
+            }
         },
         "data":{
-            "look":"",
             "secretItem":"Fancy China Teapot"
         }
     }
