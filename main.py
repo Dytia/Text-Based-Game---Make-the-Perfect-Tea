@@ -278,7 +278,8 @@ commands = [    #item/skill = i/s
     "read",     # read <object>         | read a sign or book or whatever
     "use",      # use <i/s>             | use an item or skill
     "help",     # help                  | display commands
-    "drink"     # drink <tea>           | drink tea, or if coffee specified, quit without saving
+    "drink",    # drink <tea>           | drink tea, or if coffee specified, quit without saving
+    "exit"      # exit                  | saves & quits the game
 ]
 
 help_data = """
@@ -330,6 +331,7 @@ if you want to restart just change the name of saves.json to something else
     while fail:
         try:
             age = int(input(f"{bcolors.OKGREEN}age{bcolors.ENDC}? "))
+            fail = False
             if age < 16 or age > 100:
                 os._exit(1)
         except ValueError:
