@@ -84,7 +84,7 @@ class Player:
         self.age = 0
         self.gender = ""
         self.inventory = [
-            [ # items
+            [ # items (list of objects)
 
             ],
             [ # skills
