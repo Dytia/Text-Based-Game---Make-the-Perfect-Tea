@@ -15,7 +15,7 @@ save_dir = "./saves"
 
 old_room = ""
 
-if os.path.isfile("./saves/save.json"):
+if os.path.isfile("./saves/save.csv"):
     first_run = False #save to variable for later use
 else: 
     first_run = True
@@ -85,18 +85,44 @@ class Player:
         self.gender = ""
         self.inventory = [
             [ # items
-
+                "1", "2", "3"
             ],
             [ # skills
-
+                "fafsfd", "adasf", "sfdf"
             ]
         ]
 
     def save(self) -> None:
-        pass
+        """
+        saves the user data to a csv
+        """
+        row_one = self.name + "," + str(self.age) + "," + self.gender +"\n"
+        items = ",".join(self.inventory[0]) + "\n"
+        skills = ",".join(self.inventory[1])
+        
+        content = row_one + items + skills
 
-    def load_player(self) -> None:
-        pass
+        with open("./saves/save.csv", "w") as f:
+            f.write(content)
+
+    def load_save(self) -> None:
+        """
+        reads the user data from a csv
+        """
+        stuff = []
+        with open("./saves/save.csv", "r") as f:
+            data = f.read()
+            split_data = data.split("\n")
+
+            for i in split_data:
+                stuff.append(i.split(","))
+            
+            self.name = stuff[0][0]
+            self.age = stuff[0][1]
+            self.gender = stuff[0][2]
+
+            self.inventory[0] = stuff[1]
+            self.inventory[1] = stuff[2]
 
 
 class bcolors:
@@ -228,23 +254,21 @@ def to_display(val) -> None:
     size = os.get_terminal_size().columns
     last_space = 0
     vals = val.split("\n")
-    if len(val) > size:
-        for val in vals:
-            while True:
-                p = True
-                for i in range(0,len(val)):
-                    if i > size:
-                        print(val[:last_space])
-                        p = False
-                        break
-                    if val[i] == " ":
-                        last_space = i
-                if p:
-                    print(val)
+    for val in vals:
+        while True:
+            p = True
+            for i in range(0,len(val)):
+                if i > size:
+                    print(val[:last_space])
+                    p = False
                     break
-                val = val[last_space+1:]
-    else:
-        print(val)
+                if val[i] == " ":
+                    last_space = i
+            if p:
+                print(val)
+                break
+            val = val[last_space+1:]
+
 
 """
 blank room object
@@ -301,6 +325,7 @@ exit                save & close
 """
 response_gen = Responses()
 
+user = Player()
 
 if first_run:
     """
@@ -312,7 +337,6 @@ keep your eye out for interesting things, and good luck
 if you want to restart just change the name of saves.json to something else
 """
     to_display(content)
-    user = Player()
     fail = True
     print("Character creation")
     # get character name
@@ -339,10 +363,13 @@ if you want to restart just change the name of saves.json to something else
     user.age = age
 
     # get character gender (uses three options for overall vs precise)
-    gender = input(f"{bcolors.OKGREEN}gender{bcolors.ENDC}? (for best experience use female, male or non-binary)")
+    gender = input(f"(for best experience use female, male or non-binary)\n{bcolors.OKGREEN}gender{bcolors.ENDC}? ")
     user.gender = gender
 
+    user.save()
 
+else:
+    user.load_save()
 
 
 try:
