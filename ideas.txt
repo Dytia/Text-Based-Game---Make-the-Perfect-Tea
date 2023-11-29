@@ -6,3 +6,6 @@ KEEP IT SIMPLE STUPID
 save has:
 inventory
 loaded maps (and their edits)
+
+
+inventory bs
