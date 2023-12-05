@@ -84,7 +84,7 @@ class Player:
         self.age = 0
         self.gender = ""
         self.inventory = [
-            [ # items (list of objects)
+            [ # items (list of names)
                 "1", "2", "3"
             ],
             [ # skills
@@ -159,6 +159,7 @@ class Room:
         self.name = name
         self.description = data["description"]
         self.properties = data["properties"]
+        self.item_names = data["data"]["item_names"]
         for i in range(0,4):
             try:
                 self.connections.append(data[self._values[i]])
@@ -284,6 +285,9 @@ blank room object
                 "":""
             }
         },
+        "item_names" :[
+        
+        ],
         "data":{
             "look":""
         }
