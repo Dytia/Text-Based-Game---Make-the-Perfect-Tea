@@ -125,6 +125,27 @@ class Player:
             self.inventory[1] = stuff[2]
 
 
+    def sort_inventory(self) -> None:
+        """
+        sorts the players inventory alphabetically
+        bubble sort
+        """
+        for inv in self.inventory:
+            n = len(inv) +1
+            swapped = True
+            while swapped and n>=0:
+                swapped = False
+                for i in range(0,n-2):
+                    if inv[i].lower() > inv[i+1].lower():
+                        tmp = inv[i]
+                        inv[i] = inv[i+1]
+                        inv[i+1] = tmp
+                        swapped = True
+
+                n -= 1
+
+
+
 class bcolors:
     MAGENTA = '\033[95m'
     OKBLUE = '\033[94m'
