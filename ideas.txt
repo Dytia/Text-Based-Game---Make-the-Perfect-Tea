@@ -1,5 +1,5 @@
 website & sdd
-use insertion sort for inventory
+use bubble sort for inventory
 SIMPLE WEBSITE 
 KEEP IT SIMPLE STUPID
 

@@ -5,8 +5,6 @@ import random
 
 #https://en.wikipedia.org/wiki/ANSI_escape_code#Colors
 a = 1
-jsonFileLocation = "./config/positions.json"
-jsonFileLocationOptional = "./config/optional.json"
 
 level_num = 0
 level_base = f"./maps/level{level_num}.json"
@@ -26,6 +24,10 @@ vase = "" | "held" | "correct" (made in china)
 '''
 
 class Responses:
+    """
+    Due to lacking imagination, i used ai to help create more, good, responses to a situation
+    This class, the strings are the only thing made with help of AI
+    """
     def __init__(self) -> None:
         pass
 
@@ -87,7 +89,7 @@ class Player:
             [ # items (list of names)
                 "1", "2", "3"
             ],
-            [ # skills
+            [ # skills (list of names)
                 "fafsfd", "adasf", "sfdf"
             ]
         ]
@@ -144,6 +146,8 @@ class Player:
 
                 n -= 1
 
+    def use_thing(self) -> None:
+        pass
 
 
 class bcolors:

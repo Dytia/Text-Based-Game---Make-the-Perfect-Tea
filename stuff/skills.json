@@ -1,5 +1,11 @@
 {
     "fireball":{
         "damage":"2"
+    },
+    "makeTea":{
+        "heal":"1"
+    },
+    "pickLock":{
+        
     }
 }
