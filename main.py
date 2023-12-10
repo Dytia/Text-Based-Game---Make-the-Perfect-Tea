@@ -19,10 +19,6 @@ else:
     first_run = True
 
 
-'''
-vase = "" | "held" | "correct" (made in china)
-'''
-
 class Responses:
     """
     Due to lacking imagination, i used ai to help create more, good, responses to a situation

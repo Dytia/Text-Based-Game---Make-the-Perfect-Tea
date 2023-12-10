@@ -1,9 +1,11 @@
 {
     "fireball":{
-        "damage":"2"
+        "damage":"2",
+        "inspect":"just fireball"
     },
     "makeTea":{
-        "heal":"1"
+        "damage":"-1",
+        "inspect":"makes a cup of tea"
     },
     "pickLock":{
         
