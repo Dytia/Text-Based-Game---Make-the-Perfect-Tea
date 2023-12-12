@@ -19,7 +19,7 @@
         "north": "splitPath1",
         "south":"startingRoom",
         "east":"secretRoom",
-        "description":"",
+        "description":"vase",
         "properties":{
             "examine":{
 
@@ -136,7 +136,8 @@
         "properties":{
             "examine":{
 
-            }
+            },
+            "save":1
         },
         "item_names":[
             

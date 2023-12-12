@@ -7,7 +7,8 @@ import random
 a = 1
 
 level_num = 0
-level_base = f"./maps/level{level_num}.json"
+room_name = ""
+#level_base = f"./maps/level{level_num}.json"
 
 save_dir = "./saves"
 
@@ -90,22 +91,29 @@ class Player:
             ]
         ]
 
-    def save(self) -> None:
+    def save(self, level:int, room_name:str) -> None:
         """
         saves the user data to a csv
+        
+        name,age,gender
+        items
+        skills
+        level,room
         """
         row_one = self.name + "," + str(self.age) + "," + self.gender +"\n"
         items = ",".join(self.inventory[0]) + "\n"
-        skills = ",".join(self.inventory[1])
-        
-        content = row_one + items + skills
+        skills = ",".join(self.inventory[1]) +"\n"
+        map_dat = str(level)+ ","+room_name
+
+        content = row_one + items + skills + map_dat
 
         with open("./saves/save.csv", "w") as f:
             f.write(content)
 
     def load_save(self) -> None:
         """
-        reads the user data from a csv
+        reads the user data from a csv,
+    
         """
         stuff = []
         with open("./saves/save.csv", "r") as f:
@@ -121,6 +129,8 @@ class Player:
 
             self.inventory[0] = stuff[1]
             self.inventory[1] = stuff[2]
+
+            return stuff[3]
 
 
     def sort_inventory(self) -> None:
@@ -180,17 +190,20 @@ class Room:
         self.name = name
         self.description = data["description"]
         self.properties = data["properties"]
-        self.item_names = data["data"]["item_names"]
+        self.item_names = data["item_names"]
         for i in range(0,4):
             try:
                 self.connections.append(data[self._values[i]])
             except:
                 self.connections.append("")
-        
+        try:
+            self.save = data["properties"]["save"]
+        except:
+            self.save = 0
 
 
 class Level:
-    def __init__(self, map) -> None:
+    def __init__(self, map, room_name:str="") -> None:
         '''
         1: location of map file
         startingRoom will always be the first room
@@ -212,8 +225,14 @@ class Level:
         }
         
         self._create_rooms()
-        self.current_room:Room = self._rooms[0]
+        if room_name == "":
+            self.current_room:Room = self._rooms[0]
+        else:
+            for i in range(0, len(self._rooms)):
+                if self._rooms[i].name == room_name:
+                    self.current_room:Room = self._rooms[i]
         self.responses = Responses()
+
 
     def _create_rooms(self) -> None:
         '''
@@ -391,15 +410,15 @@ if you want to restart just change the name of saves.json to something else
     gender = input(f"(for best experience use female, male or non-binary)\n{bcolors.OKGREEN}gender{bcolors.ENDC}? ")
     user.gender = gender
 
-    user.save()
+    user.save(level_num, "startingRoom")
 
 else:
-    user.load_save()
+    level_num, room_name =  user.load_save()
 
 
 try:
-    print(level_base.encode())
-    level = Level(level_base)
+    print(f"./maps/level{level_num}.json".encode())
+    level = Level(f"./maps/level{level_num}.json", room_name)
     while True:
         """
         main loop
@@ -413,6 +432,10 @@ try:
             content = u_input[1].lower()
         except IndexError:
             content = ""
+
+        if level.current_room.save == 1:
+            user.save(level_num, current_room)
+        
         match u_input[0]:
             case "move":
                 val = level.move_room(content)
@@ -445,7 +468,7 @@ try:
                 if content == "tea":
                     to_display() # tea response
                 elif content == "coffee":
-                    try: os.remove("./saves/save.json")
+                    try: os.remove("./saves/save.csv")
                     except: pass
                     finally: os._exit(1)
             case "exit":
@@ -456,7 +479,7 @@ try:
 
 
 except KeyboardInterrupt:
-    # save function go here
+    user.save(level_num, current_room)
     pass
 finally:
     print("bye")
