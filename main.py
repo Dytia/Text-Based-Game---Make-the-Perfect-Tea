@@ -110,10 +110,9 @@ class Player:
         with open("./saves/save.csv", "w") as f:
             f.write(content)
 
-    def load_save(self) -> None:
+    def load_save(self) -> list:
         """
         reads the user data from a csv,
-    
         """
         stuff = []
         with open("./saves/save.csv", "r") as f:
