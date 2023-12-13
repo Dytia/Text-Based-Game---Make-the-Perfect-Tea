@@ -82,6 +82,7 @@ class Player:
         self.name = ""
         self.age = 0
         self.gender = ""
+        self.health = 10
         self.inventory = [
             [ # items (list of names)
                 "1", "2", "3"
@@ -91,24 +92,28 @@ class Player:
             ]
         ]
 
+
     def save(self, level:int, room_name:str) -> None:
         """
         saves the user data to a csv
         
         name,age,gender
+        health
         items
         skills
         level,room
         """
         row_one = self.name + "," + str(self.age) + "," + self.gender +"\n"
+        health = str(self.health) +"\n"
         items = ",".join(self.inventory[0]) + "\n"
         skills = ",".join(self.inventory[1]) +"\n"
         map_dat = str(level)+ ","+room_name
 
-        content = row_one + items + skills + map_dat
+        content = row_one + health +items + skills + map_dat
 
         with open("./saves/save.csv", "w") as f:
             f.write(content)
+
 
     def load_save(self) -> list:
         """
@@ -119,17 +124,19 @@ class Player:
             data = f.read()
             split_data = data.split("\n")
 
-            for i in split_data:
-                stuff.append(i.split(","))
-            
-            self.name = stuff[0][0]
-            self.age = stuff[0][1]
-            self.gender = stuff[0][2]
+        for i in split_data:
+            stuff.append(i.split(","))
+        
+        self.name = stuff[0][0]
+        self.age = stuff[0][1]
+        self.gender = stuff[0][2]
 
-            self.inventory[0] = stuff[1]
-            self.inventory[1] = stuff[2]
+        self.health = stuff[1]
 
-            return stuff[3]
+        self.inventory[0] = stuff[2]
+        self.inventory[1] = stuff[3]
+
+        return stuff[4]
 
 
     def sort_inventory(self) -> None:
@@ -181,7 +188,7 @@ class Room:
             "east"
         ]
 
-    def set_room_data(self, name, data) -> bool:
+    def set_room_data(self, name, data, objects) -> bool:
         """
         connections = north, south, west, east
         """
@@ -199,6 +206,12 @@ class Room:
             self.save = data["properties"]["save"]
         except:
             self.save = 0
+        
+        self.objects = {}
+        for i in self.properties["examine"]:
+            self.objects[i] = objects[i]
+        
+        
 
 
 class Level:
@@ -239,9 +252,10 @@ class Level:
         '''
         self._rooms = []
         self.data = self.read_json()
+        self.objects = self.read_object_json()
         for i in self.data:
             temp = Room()
-            temp.set_room_data(i, self.data[i])
+            temp.set_room_data(i, self.data[i], self.objects)
             self._rooms.append(temp)
         
 
@@ -253,6 +267,13 @@ class Level:
             data = json.load(f)
         return data
     
+    def read_object_json(self) -> dict:
+        '''
+        Reads the config file and returns all the data in it
+        '''
+        with open("./stuff/objects.json", "r") as f:
+            data = json.load(f)
+        return data
 
     def move_room(self, move) -> (bool | str):
         """
@@ -279,10 +300,10 @@ class Level:
         """
         runs the examine thing and checks if its even an object in the room
         """
-        examine = self.current_room.properties["examine"]
-        if obj in examine:
-            return examine[obj]
-        else: 
+        try:
+            examine = self.current_room.objects[obj]
+            return examine["examine"]
+        except:
             return response_gen.examine()
 
 
@@ -319,10 +340,10 @@ blank room object
         "west":""
         "description":"",
         "properties":{
-            "examine":{
-                "":"",
-                "":""
-            }
+            "examine":[
+                "",
+                ""
+            ]
         },
         "item_names" :[
         
@@ -433,6 +454,7 @@ try:
             content = ""
 
         if level.current_room.save == 1:
+            # if room is a save room
             user.save(level_num, current_room)
         
         match u_input[0]:
@@ -449,6 +471,7 @@ try:
             case "talk":
                 pass
             case "examine":
+                #print(level.current_room.objects)
                 val = level.examine(content)
                 to_display(val)
             case "inspect":
@@ -472,8 +495,11 @@ try:
                     finally: os._exit(1)
             case "exit":
                 raise KeyboardInterrupt
+            case "":
+                continue
             case _:
                 to_display(response_gen.invalid_move())
+            
 
 
 

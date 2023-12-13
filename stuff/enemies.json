@@ -1,0 +1,9 @@
+{
+    "slime":{
+        "damage":"1",
+        "description":"",
+        "loot":[
+            "slime"
+        ]
+    }
+}

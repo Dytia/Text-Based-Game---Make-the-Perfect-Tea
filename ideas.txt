@@ -1,6 +1,9 @@
 website & sdd
 use bubble sort for inventory
 SIMPLE WEBSITE 
+
+website = dict of mobs?
+
 KEEP IT SIMPLE STUPID
 
 save has:
@@ -9,3 +12,5 @@ loaded maps (and their edits)
 
 
 inventory bs
+
+90% chance enemy slime, 10% friendly

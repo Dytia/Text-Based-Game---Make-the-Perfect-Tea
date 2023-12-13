@@ -1,0 +1,11 @@
+{
+    "bed":{
+        "examine":"Against one wall, you spot a well-made bed with neatly arranged sheets and plump pillows. The bedframe is sturdy, and a cozy-looking quilt is neatly folded at the foot of the mattress. It seems like a comfortable place for rest and respite."
+    },
+    "vase":{
+        "examine":"A regal vase, its porcelain surface painted with scenes of nature"
+    },
+    "desk":{
+        "examine":"You see a small notebook, a picture of a cup of tea with biscuits, and a few pencils scattered about"
+    }
+}

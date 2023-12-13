@@ -3,10 +3,10 @@
         "north": "vase",
         "description":"You find yourself in a small room, theres a coed with a lamp next to it, and on the opposite side of the room a window with a desk underneath, to the northern face of the room theres a door",
         "properties":{
-            "examine":{
-                "bed":"",
-                "desk":"You see a small notebook, a picture of a cup of tea with biscuits, and a few pencils scattered about"
-            }
+            "examine":[
+                "bed",
+                "desk"
+            ]
         },
         "item_names":[
             "notebook"
@@ -19,11 +19,11 @@
         "north": "splitPath1",
         "south":"startingRoom",
         "east":"secretRoom",
-        "description":"vase",
+        "description":"You're in a narrow corridor adorned with faded tapestries. Dim torchlight flickers, revealing an alcove halfway down. Within, a regal vase stands. Soft light filters in, creating a captivating interplay with the dust in the air. The vase adds a touch of elegance to the weathered surroundings. The corridor continues.",
         "properties":{
-            "examine":{
-
-            }
+            "examine":[
+                "vase"
+            ]
         },
         "item_names":[
             
@@ -38,9 +38,9 @@
         "east":"rickyBridge",
         "description":"",
         "properties":{
-            "examine":{
+            "examine":[
 
-            }
+            ]
         },
         "item_names":[
             
@@ -55,9 +55,9 @@
         "east":"splitPath1",
         "description":"",
         "properties":{
-            "examine":{
+            "examine":[
 
-            }
+            ]
         },
         "item_names":[
             
@@ -71,9 +71,9 @@
         "south":"cornerToDark",
         "description":"",
         "properties":{
-            "examine":{
+            "examine":[
 
-            }
+            ]
         },
         "item_names":[
             
@@ -87,9 +87,9 @@
         "west":"darkCorridor",
         "description":"",
         "properties":{
-            "examine":{
+            "examine":[
 
-            }
+            ]
         },
         "item_names":[
             
@@ -103,9 +103,9 @@
         "east":"cornerToDark",
         "description":"",
         "properties":{
-            "examine":{
+            "examine":[
 
-            }
+            ]
         },
         "item_names":[
             
@@ -118,9 +118,9 @@
         "east":"darkCorridor",
         "description":"",
         "properties":{
-            "examine":{
+            "examine":[
 
-            }
+            ]
         },
         "item_names":[
             
@@ -134,9 +134,9 @@
         "west":"rickyBridge",
         "description":"",
         "properties":{
-            "examine":{
+            "examine":[
 
-            },
+            ],
             "save":1
         },
         "item_names":[
@@ -150,9 +150,9 @@
         "west":"splitPath1",
         "description":"",
         "properties":{
-            "examine":{
+            "examine":[
 
-            }
+            ]
         },
         "item_names":[
             
@@ -166,9 +166,9 @@
         "west":"stairs",
         "description":"",
         "properties":{
-            "examine":{
+            "examine":[
 
-            }
+            ]
         },
         "item_names":[
             
@@ -182,9 +182,9 @@
         "east":"cornerToStairs",
         "description":"",
         "properties":{
-            "examine":{
+            "examine":[
 
-            }
+            ]
         },
         "item_names":[
             
@@ -199,9 +199,9 @@
         "east":"stairs2",
         "description":"",
         "properties":{
-            "examine":{
+            "examine":[
 
-            }
+            ]
         },
         "item_names":[
             
@@ -215,9 +215,9 @@
         "south":"splitPathSecret",
         "description":"",
         "properties":{
-            "examine":{
+            "examine":[
 
-            }
+            ]
         },
         "item_names":[
             
@@ -230,9 +230,9 @@
         "north": "splitPathSecret",
         "description":"",
         "properties":{
-            "examine":{
+            "examine":[
 
-            }
+            ]
         },
         "item_names":[
             
