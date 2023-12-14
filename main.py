@@ -131,7 +131,7 @@ class Player:
         self.age = stuff[0][1]
         self.gender = stuff[0][2]
 
-        self.health = stuff[1]
+        self.health = stuff[1][0]
 
         self.inventory[0] = stuff[2]
         self.inventory[1] = stuff[3]
