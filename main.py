@@ -196,7 +196,7 @@ class Room:
         self.name = name
         self.description = data["description"]
         self.properties = data["properties"]
-        self.item_names = data["item_names"]
+        self.item_names = self.properties["items"]
         for i in range(0,4):
             try:
                 self.connections.append(data[self._values[i]])
@@ -343,13 +343,15 @@ blank room object
             "examine":[
                 "",
                 ""
-            ]
+            ],
+            "items" :[
+                "",
+                ""
+            ],
         },
-        "item_names" :[
-        
-        ],
+
         "data":{
-            "look":""
+
         }
     },
 """
@@ -467,7 +469,10 @@ try:
             case "look":
                 to_display(level.current_room.description)
             case "inventory":
-                pass
+                if content == "item":
+                    to_display("Your inventory contains:\n"+"\n".join(user.inventory[0]))
+                elif content == "skills":
+                    to_display("The skills you have are:\n"+ "\n".join(user.inventory[1]))
             case "talk":
                 pass
             case "examine":
