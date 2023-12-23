@@ -19,6 +19,17 @@ if os.path.isfile("./saves/save.csv"):
 else: 
     first_run = True
 
+class bcolors:
+    MAGENTA = '\033[95m'
+    OKBLUE = '\033[94m'
+    OKCYAN = '\033[96m'
+    OKGREEN = '\033[92m'
+    YELLOW = '\033[93m'
+    BRIGHTRED = '\033[91m'
+    ENDC = '\033[0m'
+    BOLD = '\033[1m'
+    UNDERLINE = '\033[4m'
+
 
 class Responses:
     """
@@ -74,7 +85,72 @@ class Responses:
             "No surprises here; the object is precisely what you thought it would be. A simple, unremarkable item.",
             "A closer look at the object reveals its simplicity. There's nothing remarkable or unusual about it."
         ]
-        return f"{self.randomise(options)}\n or you made a typo"
+        return f"{self.randomise(options)}\nor you made a typo"
+    
+    def too_heavy(self, thing) -> str:
+        """
+        if the thing is tooo heavy to move (aka no moving it.)
+        """
+        options = [
+            f"The {thing} is too heavy to budge.",
+            f"Attempting to move the {thing} proves futile; it's too massive."
+            f"You strain against the {thing}, but it remains immovable"
+            f"No matter the effort, the {thing} stands resolutely in place."
+            f"As you attempt to shift the {thing}, its sheer weight proves insurmountable. The solid bulk resists your efforts, reminding you that some things in this world are meant to stay put. Perhaps there's another way to navigate around or interact with it.",
+            f"Undeterred by the challenge, you exert considerable force in an attempt to move the {thing}. However, the immensity of the {thing} becomes apparent as it refuses to yield to your efforts. It stands stoically, a testament to the limitations of your physical strength.",
+            f"Efforts to shift the {thing} are met with resistance as its formidable size and weight prove beyond your current capabilities. The {thing} seems almost rooted to the ground, offering a silent challenge to find another approach or seek assistance to overcome this obstacle."
+        ]
+        return f"{self.randomise(options)}\nIt wont move"
+    
+
+
+class Item:
+    """
+    an object for an item, and how it performs actions
+    """
+    def __init__(self, name, itm_obj) -> None:
+        self.name = name
+        self.type = itm_obj["type"]
+        try: self.damage = itm_obj["damage"] # if < 0 it heals, because thats how stuff works
+        except: self.damage = 0
+        self.description = itm_obj["description"]
+    
+    def inspect(self) -> str:
+        return self.description
+
+
+
+class List_of_items:
+    """
+    contains a list of all items and skills in the game
+    """
+    def __init__(self) -> None:
+        location = "./stuff/items.json"
+        self.dict_of_items:Item = {}
+        try:
+            with open(location, "r") as f:
+                item_data = json.load(f)
+                for i in item_data:
+                    print(item_data[i])
+                    self.dict_of_items[i] = Item(i, item_data[i])
+        except KeyError as e:
+            abort(e, "./stuff/items.json")
+    
+    def inspect(self, name) -> (str):
+        """
+        inspecting the item gives its description
+        """
+        if (name in user.inventory[0] 
+            or name in user.inventory[1]
+            or name in level.current_room.item_names
+            ):
+            try:
+                val = self.dict_of_items[name].description
+            except KeyError:
+                return "The rules of the world have no such item on record"
+            return val
+        else:
+            return response_gen.examine()
 
 
 class Player:
@@ -85,10 +161,10 @@ class Player:
         self.health = 10
         self.inventory = [
             [ # items (list of names)
-                "1", "2", "3"
+                
             ],
             [ # skills (list of names)
-                "fafsfd", "adasf", "sfdf"
+                
             ]
         ]
 
@@ -131,7 +207,7 @@ class Player:
         self.age = stuff[0][1]
         self.gender = stuff[0][2]
 
-        self.health = stuff[1][0]
+        self.health = int(stuff[1][0])
 
         self.inventory[0] = stuff[2]
         self.inventory[1] = stuff[3]
@@ -161,19 +237,16 @@ class Player:
     def use_thing(self) -> None:
         pass
 
+    def take(self, obj) -> None:
+        """
+        stores in inventory
+        """
+        if game_items.dict_of_items[obj].type == "item":
+            self.inventory[0].append(obj)
+        else:
+            self.inventory[1].append(obj)
 
-class bcolors:
-    MAGENTA = '\033[95m'
-    OKBLUE = '\033[94m'
-    OKCYAN = '\033[96m'
-    OKGREEN = '\033[92m'
-    YELLOW = '\033[93m'
-    BRIGHTRED = '\033[91m'
-    ENDC = '\033[0m'
-    BOLD = '\033[1m'
-    UNDERLINE = '\033[4m'
-
-
+        self.sort_inventory()
 
 class Room:
     """
@@ -238,11 +311,9 @@ class Level:
         
         self._create_rooms()
         if room_name == "":
-            self.current_room:Room = self._rooms[0]
+            self.current_room:Room = self._rooms["startingRoom"]
         else:
-            for i in range(0, len(self._rooms)):
-                if self._rooms[i].name == room_name:
-                    self.current_room:Room = self._rooms[i]
+            self.current_room:Room = self._rooms[room_name]
         self.responses = Responses()
 
 
@@ -250,13 +321,13 @@ class Level:
         '''
         creates a list of rooms stored to _rooms
         '''
-        self._rooms = []
+        self._rooms = {}
         self.data = self.read_json()
         self.objects = self.read_object_json()
         for i in self.data:
             temp = Room()
             temp.set_room_data(i, self.data[i], self.objects)
-            self._rooms.append(temp)
+            self._rooms[i] = temp
         
 
     def read_json(self) -> dict:
@@ -284,11 +355,11 @@ class Level:
         if move in self._moves:
             move_in = self._moves_dict[move]
             room_to_go = self.current_room.connections[move_in]
-            for i in self._rooms:
-                
-                if i.name == room_to_go:
-                    self.current_room = i
-                    success = True
+            try:
+                self.current_room = self._rooms[room_to_go]
+                success = True
+            except KeyError:
+                success = False
             if success:
                 return True
             else:
@@ -302,9 +373,14 @@ class Level:
         """
         try:
             examine = self.current_room.objects[obj]
-            return examine["examine"]
+            return examine["description"]
         except:
             return response_gen.examine()
+    
+    def take(self, obj) -> str:
+        """
+        take an object from the world, store in the player
+        """
 
 
 
@@ -330,6 +406,12 @@ def to_display(val) -> None:
                 break
             val = val[last_space+1:]
 
+def abort(e, location) -> None:
+    """
+    aborts the program
+    """
+    print(f"{bcolors.BRIGHTRED}Error: {bcolors.ENDC}{e}\nProgram aborting due to error in {bcolors.YELLOW}{location}{bcolors.ENDC} upon loading")
+    os._exit(1)
 
 """
 blank room object
@@ -389,9 +471,11 @@ use <i/s>           use an item/skill
 help                display this list
 exit                save & close
 """
-response_gen = Responses()
+response_gen:Responses = Responses()
 
-user = Player()
+user:Player = Player()
+
+game_items:List_of_items = List_of_items()
 
 if first_run:
     """
@@ -435,7 +519,10 @@ if you want to restart just change the name of saves.json to something else
     user.save(level_num, "startingRoom")
 
 else:
-    level_num, room_name =  user.load_save()
+    try:
+        level_num, room_name = user.load_save()
+    except Exception as e:
+        abort(e, "./saves/save.csv")
 
 
 try:
@@ -465,6 +552,8 @@ try:
                 if val != True:
                     to_display(val)
             case "take":
+                # if object moveable = 0, use the too_heavy(<objname>) function
+                
                 pass
             case "look":
                 to_display(level.current_room.description)
@@ -480,7 +569,8 @@ try:
                 val = level.examine(content)
                 to_display(val)
             case "inspect":
-                pass
+                val = game_items.inspect(content)
+                to_display(val)
             case "combine":
                 pass
             case "read":
@@ -502,6 +592,19 @@ try:
                 raise KeyboardInterrupt
             case "":
                 continue
+            case "Game_Reset_sf9RIWzCEoSxepo6":
+                to_display("Are you sure? this process is not reversible [y/N]\n")
+                val = input()
+                if val == "y":
+                    #try:
+                        print("removing save", end=" ")
+                        os.remove("./saves/save.csv")
+                        print("done")
+                        print("Deleting level files", end=" ")
+                        os.removedirs("./maps")
+                        print("done")
+                    #except:
+
             case _:
                 to_display(response_gen.invalid_move())
             

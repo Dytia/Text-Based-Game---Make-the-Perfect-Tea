@@ -1,13 +1,34 @@
 {
     "noteBook":{
-        
+        "type":"item",
         "pages":{
             "1":"",
             "2":""
-        }
+        },
+        "description":"book of notes"
     },
     "stick":{
+        "type":"item",
         "damage":"1",
-        "":""
+        "description":"stick to bonk"
+    },
+    "fireball":{
+        "type":"skill",
+        "damage":"2",
+        "description":"just fireball"
+    },
+    "makeTea":{
+        "type":"skill",
+        "damage":"-1",
+        "description":"makes a cup of tea"
+    },
+    "bread":{
+        "type":"item",
+        "damage":"-2",
+        "description":"a load of bread"
+    },
+    "vase":{
+        "type":"item",
+        "description":"A regal vase, its porcelain surface painted with scenes of nature"
     }
 }
