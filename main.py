@@ -31,7 +31,6 @@ class bcolors:
     BOLD = '\033[1m'
     UNDERLINE = '\033[4m'
 
-
 class Responses:
     """
     Due to lacking imagination, i used ai to help create more, good, responses to a situation
@@ -133,7 +132,6 @@ class Responses:
         ]
         return f"{self.randomise(options)}\nor a simple typo happened"
 
-
 class Item:
     """
     an object for an item, and how it performs actions
@@ -147,8 +145,6 @@ class Item:
     
     def inspect(self) -> str:
         return self.description
-
-
 
 class List_of_items:
     """
@@ -181,7 +177,6 @@ class List_of_items:
             return val
         else:
             return response_gen.examine()
-
 
 class Player:
     def __init__(self) -> None:
@@ -314,9 +309,6 @@ class Room:
         for i in self.properties["examine"]:
             self.objects[i] = objects[i]
         
-        
-
-
 class Level:
     def __init__(self, map, room_name:str="") -> None:
         '''
@@ -461,10 +453,8 @@ class Level:
         with open(self._map, "w") as f:
             json.dump(self.data, f, indent=4)
         return "you successfully place down " +obj
-        
 
-
-
+       
 def to_display(val) -> None:
     """
     parse and send so newlines occur in a space rather than mid word
