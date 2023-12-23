@@ -23,7 +23,6 @@
         "description":"You're in a narrow corridor adorned with faded tapestries. Dim torchlight flickers, revealing an alcove halfway down. Within, a regal vase stands. Soft light filters in, creating a captivating interplay with the dust in the air. The vase adds a touch of elegance to the weathered surroundings. The corridor continues further north.",
         "properties":{
             "examine":[
-                "vase"
             ],
             "items":[
                 "vase"

@@ -10,5 +10,11 @@
     "desk":{
         "movable":0,
         "description":"You see a small notebook, a picture of a cup of tea with biscuits, and a few pencils scattered about"
+    },
+    "alcove":{
+        "movable":0,
+        "description":"Within, a regal vase stands. Soft light filters in, creating a captivating interplay with the dust in the air. The vase adds a touch of elegance to the weathered surroundings.",
+        "needs":"vase",
+        "alt_desc":"A soft outline of dust, where an ornament once stood. Soft light filters in, creating a captivating interplay with the dust in the air."
     }
 }

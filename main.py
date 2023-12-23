@@ -2,6 +2,7 @@ import time
 import os
 import json
 import random
+import shutil
 
 #https://en.wikipedia.org/wiki/ANSI_escape_code#Colors
 a = 1
@@ -102,6 +103,35 @@ class Responses:
         ]
         return f"{self.randomise(options)}\nIt wont move"
     
+    def cant_find_item(self) -> str:
+        options = [
+            "Your search yields nothing; the item seems elusive.",
+            "Despite your efforts, the item remains elusive.",
+            "No luck - the item is nowhere to be found.",
+            "Your thorough search turns up empty-handed.",
+            "The item you seek eludes your searching gaze.",
+            "Unfortunately, the item is not in this vicinity.",
+            "You scour the area but find no trace of the item.",
+            "The item seems to be playing a game of hide and seek.",
+            "Despite your best efforts, the item stays hidden.",
+            "Your search proves fruitless; the item is not present.",
+        ]
+        return f"{self.randomise(options)}\nOr, a typo"
+
+    def itemnt(self) -> str:
+        options = [
+            "Your search for the item yields no results; it appears not to exist in this realm.",
+            "After a thorough investigation, it becomes clear that the item simply doesn't exist here.",
+            "Despite your efforts, it seems the item you're looking for is a figment of imagination in this world.",
+            "You conclude that the item is nowhere to be found - it might not even exist in this reality.",
+            "It dawns on you that the item you seek may be a product of rumor or misconception; it's not present.",
+            "The more you search, the more apparent it becomes that the item is not part of this game's universe.",
+            "There's a growing realization that the item might be a mythical concept - it's absent in your current surroundings.",
+            "Your quest for the item proves futile; it appears it was never part of this game's design.",
+            "The absence of any clues or traces strongly suggests that the item is not programmed into this game.",
+            "It seems the item you were hoping to find is beyond the boundaries of this virtual world; it simply doesn't exist here."
+        ]
+        return f"{self.randomise(options)}\nor a simple typo happened"
 
 
 class Item:
@@ -147,7 +177,7 @@ class List_of_items:
             try:
                 val = self.dict_of_items[name].description
             except KeyError:
-                return "The rules of the world have no such item on record"
+                return response_gen.itemnt()
             return val
         else:
             return response_gen.examine()
@@ -269,7 +299,7 @@ class Room:
         self.name = name
         self.description = data["description"]
         self.properties = data["properties"]
-        self.item_names = self.properties["items"]
+        self.item_names:list = self.properties["items"]
         for i in range(0,4):
             try:
                 self.connections.append(data[self._values[i]])
@@ -370,17 +400,68 @@ class Level:
     def examine(self, obj) -> (bool | str):
         """
         runs the examine thing and checks if its even an object in the room
+        or if it is an item in the room
         """
         try:
-            examine = self.current_room.objects[obj]
-            return examine["description"]
+            try:
+                # fails if not there
+                examine = self.current_room.objects[obj]
+            except:
+                # is it an item?
+                if obj in self.current_room.item_names:
+                    return game_items.dict_of_items[obj].description
+                else: raise Exception
+            try: #ah so it is an object, check if it requires something
+                if examine["needs"] in self.current_room.item_names:
+                    return examine["description"]
+                else: # it does? here take the alt desc because the thing aint there
+                    return examine["alt_desc"]
+            except:pass 
+            return examine["description"] # ah just a plain old object, doesnt need anything
         except:
-            return response_gen.examine()
+            return response_gen.examine() # you poop
     
-    def take(self, obj) -> str:
+    def take(self, obj, user:Player) -> str:
         """
-        take an object from the world, store in the player
+        take an object from the world, store in the player, and change the map file
         """
+        try:
+            game_items.dict_of_items[obj]
+        except KeyError:
+            return response_gen.itemnt()
+        if obj in self.current_room.item_names:
+            self.current_room.item_names.remove(obj)
+
+            self.data[self.current_room.name]["properties"]["items"] = self.current_room.item_names
+            with open(self._map, "w") as f:
+                json.dump(self.data, f, indent=4)
+            
+            user.take(obj)
+            return "you successfully take the " + obj
+        else:
+            # it doesnt exist in this room
+            return "scouring the room up and down, looking everywhere, you cant "
+
+
+
+    def place(self, obj, user:Player) -> str:
+        """
+        place an object from inventory into the world
+        """
+        try:
+            game_items.dict_of_items[obj]
+        except KeyError:
+            return response_gen.itemnt()
+        
+        if game_items.dict_of_items[obj].type == "skill":
+            return "you cant place a skill down"
+        self.current_room.item_names.append(obj)
+        self.data[self.current_room.name]["properties"]["items"] = self.current_room.item_names
+        user.inventory[0].remove(obj)
+        with open(self._map, "w") as f:
+            json.dump(self.data, f, indent=4)
+        return "you successfully place down " +obj
+        
 
 
 
@@ -413,6 +494,27 @@ def abort(e, location) -> None:
     print(f"{bcolors.BRIGHTRED}Error: {bcolors.ENDC}{e}\nProgram aborting due to error in {bcolors.YELLOW}{location}{bcolors.ENDC} upon loading")
     os._exit(1)
 
+def reset() -> None:
+    to_display("Are you sure? this process is not reversible [y/N]")
+    val = input().lower()
+    if val == "y":
+        val = input("Are you sure you're sure? [y/N]\n").lower()
+        if val == "y":
+            try:
+                print("removing save", end=" ")
+                try:os.remove("./saves/save.csv")
+                except:pass
+                print("done\nDeleting level files", end=" ")
+                shutil.rmtree("./maps/")
+                print("done\nCopying files", end= " ")
+                shutil.copytree("./maps_spare/", "./maps/")
+                print("done\nCleaning up", end=" ")
+                os.remove("./maps/readme.md")
+                print("done\nexiting game")
+                os._exit(1)
+            except:
+                print("An error occured, exiting game probably best to redownload")
+                os._exit(1)
 """
 blank room object
     "name":{
@@ -441,10 +543,11 @@ blank room object
 commands = [    #item/skill = i/s
     "move",     # move <direction>      | move north, south, east or west
     "take",     # take <item>           | take an item or thing
+    "place",    # place <item>          | place an item or thing
     "look",     # look                  | look around an area
     "inventory",# inventory [type]      | show items & skills (inventory items would only show items)
     "talk",     # talk <name>           | talk to an npc 
-    "examine",  # examine <name>        | examine an object in the world
+    "examine",  # examine <name>        | examine an object in the world #object in world can be item in room
     "inspect",  # inspect <i/s>         | inspect an item in inventory
     "combine",  # combine <i/s> <i/s>   | combine items in inventory
     "read",     # read <object>         | read a sign or book or whatever
@@ -460,6 +563,7 @@ i/s means item/skill
 
 move <direction>    move north, south, east or west
 take <item>         take an item from the world
+place <item>        place an item to the world
 look                look around
 inventory [type]    view inventory, and optionally specify type (ie skills or items)
 talk <name>         talk with an npc of that name
@@ -476,6 +580,11 @@ response_gen:Responses = Responses()
 user:Player = Player()
 
 game_items:List_of_items = List_of_items()
+
+try:
+    os.system("cls")
+except:
+    os.system("clear")
 
 if first_run:
     """
@@ -553,15 +662,20 @@ try:
                     to_display(val)
             case "take":
                 # if object moveable = 0, use the too_heavy(<objname>) function
-                
-                pass
+                val = level.take(content, user)
+                to_display(val)
+            case "place":
+                val = level.place(content, user)
+                to_display(val)
             case "look":
                 to_display(level.current_room.description)
             case "inventory":
-                if content == "item":
+                if content == "items":
                     to_display("Your inventory contains:\n"+"\n".join(user.inventory[0]))
                 elif content == "skills":
                     to_display("The skills you have are:\n"+ "\n".join(user.inventory[1]))
+                else:
+                    to_display("Did you mean items or skills?")
             case "talk":
                 pass
             case "examine":
@@ -593,18 +707,7 @@ try:
             case "":
                 continue
             case "Game_Reset_sf9RIWzCEoSxepo6":
-                to_display("Are you sure? this process is not reversible [y/N]\n")
-                val = input()
-                if val == "y":
-                    #try:
-                        print("removing save", end=" ")
-                        os.remove("./saves/save.csv")
-                        print("done")
-                        print("Deleting level files", end=" ")
-                        os.removedirs("./maps")
-                        print("done")
-                    #except:
-
+                reset()
             case _:
                 to_display(response_gen.invalid_move())
             
