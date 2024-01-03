@@ -1,8 +1,9 @@
-import time
-import os
 import json
+import os
 import random
 import shutil
+import sys
+import time
 
 #https://en.wikipedia.org/wiki/ANSI_escape_code#Colors
 a = 1
@@ -19,6 +20,7 @@ if os.path.isfile("./saves/save.csv"):
     first_run = False #save to variable for later use
 else: 
     first_run = True
+
 
 class bcolors:
     MAGENTA = '\033[95m'
@@ -292,9 +294,12 @@ class Room:
         """
         self.connections = []
         self.name = name
+        print(f"    Loading Room: {self.name}\n    Loading  Data",end=" ")
         self.description = data["description"]
         self.properties = data["properties"]
+        print(f"{bcolors.OKGREEN}done{bcolors.ENDC}\n    Loading  Items",end=" ")
         self.item_names:list = self.properties["items"]
+        print(f"{bcolors.OKGREEN}done{bcolors.ENDC}\n    Creating connections",end=" ")
         for i in range(0,4):
             try:
                 self.connections.append(data[self._values[i]])
@@ -306,8 +311,13 @@ class Room:
             self.save = 0
         
         self.objects = {}
+        print(f"{bcolors.OKGREEN}done{bcolors.ENDC}\n    Loading  Objects", end=" ")
         for i in self.properties["examine"]:
-            self.objects[i] = objects[i]
+            try:
+                self.objects[i] = objects[i]
+            except:
+                print(f"\nObject does not exist: {bcolors.BRIGHTRED}{i}{bcolors.ENDC}")
+        print(f"{bcolors.OKGREEN}done{bcolors.ENDC}\n")
         
 class Level:
     def __init__(self, map, room_name:str="") -> None:
@@ -330,8 +340,9 @@ class Level:
             "west"  :2,
             "east"  :3
         }
-        
+        print("Creating rooms")
         self._create_rooms()
+        print(f"Creating Rooms {bcolors.OKGREEN}done{bcolors.ENDC}\nSetting starting room")
         if room_name == "":
             self.current_room:Room = self._rooms["startingRoom"]
         else:
@@ -344,17 +355,19 @@ class Level:
         creates a list of rooms stored to _rooms
         '''
         self._rooms = {}
+        print("  Parsing file", end=" ")
         self.data = self.read_json()
+        print(f"{bcolors.OKGREEN}done{bcolors.ENDC}\n  Loading objects",end=" ")
         self.objects = self.read_object_json()
+        print(f"{bcolors.OKGREEN}done{bcolors.ENDC}\n  Setting room data")
         for i in self.data:
             temp = Room()
             temp.set_room_data(i, self.data[i], self.objects)
             self._rooms[i] = temp
-        
 
     def read_json(self) -> dict:
         '''
-        Reads the config file and returns all the data in it
+        Reads the level file and returns all the data in it
         '''
         with open(self._map, "r") as f:
             data = json.load(f)
@@ -362,7 +375,7 @@ class Level:
     
     def read_object_json(self) -> dict:
         '''
-        Reads the config file and returns all the data in it
+        Reads the object file and returns all the data in it
         '''
         with open("./stuff/objects.json", "r") as f:
             data = json.load(f)
@@ -447,6 +460,7 @@ class Level:
         
         if game_items.dict_of_items[obj].type == "skill":
             return "you cant place a skill down"
+
         self.current_room.item_names.append(obj)
         self.data[self.current_room.name]["properties"]["items"] = self.current_room.item_names
         user.inventory[0].remove(obj)
@@ -494,17 +508,28 @@ def reset() -> None:
                 print("removing save", end=" ")
                 try:os.remove("./saves/save.csv")
                 except:pass
-                print("done\nDeleting level files", end=" ")
+                print(f"{bcolors.OKGREEN}done{bcolors.ENDC}\nDeleting level files", end=" ")
                 shutil.rmtree("./maps/")
-                print("done\nCopying files", end= " ")
+                print(f"{bcolors.OKGREEN}done{bcolors.ENDC}\nCopying files", end= " ")
                 shutil.copytree("./maps_spare/", "./maps/")
-                print("done\nCleaning up", end=" ")
+                print(f"{bcolors.OKGREEN}done{bcolors.ENDC}\nCleaning up", end=" ")
                 os.remove("./maps/readme.md")
-                print("done\nexiting game")
+                print(f"{bcolors.OKGREEN}done{bcolors.ENDC}\nexiting game")
                 os._exit(1)
             except:
                 print("An error occured, exiting game probably best to redownload")
                 os._exit(1)
+
+
+# Disable print
+def blockPrint():
+    sys.stdout = open(os.devnull, 'w')
+
+# Restore print
+def enablePrint():
+    sys.stdout = sys.__stdout__
+
+
 """
 blank room object
     "name":{
@@ -565,18 +590,31 @@ use <i/s>           use an item/skill
 help                display this list
 exit                save & close
 """
+
+try:
+    with open("./config/config.json", "r") as f:
+        data = json.load(f)
+    loading_status = data["loading_status"]
+except:
+    print("config not found, loading without")
+    loading_status = 1 # show debug on start
+
+del data
+
+if not loading_status:
+    blockPrint()
+
+print("Loading responses")
 response_gen:Responses = Responses()
 
 user:Player = Player()
-
+print(f"{bcolors.OKGREEN}done{bcolors.ENDC}\nLoading items:")
 game_items:List_of_items = List_of_items()
+print(f"{bcolors.OKGREEN}done{bcolors.ENDC}")
 
-try:
-    os.system("cls")
-except:
-    os.system("clear")
 
 if first_run:
+    enablePrint()
     """
     code that runs once on first run only
     """
@@ -616,6 +654,7 @@ if you want to restart just change the name of saves.json to something else
     user.gender = gender
 
     user.save(level_num, "startingRoom")
+    blockPrint()
 
 else:
     try:
@@ -625,8 +664,9 @@ else:
 
 
 try:
-    print(f"./maps/level{level_num}.json".encode())
+    print(f"loading level: ./maps/level{level_num}.json")
     level = Level(f"./maps/level{level_num}.json", room_name)
+    enablePrint()
     while True:
         """
         main loop

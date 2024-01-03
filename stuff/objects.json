@@ -16,5 +16,11 @@
         "description":"Within, a regal vase stands. Soft light filters in, creating a captivating interplay with the dust in the air. The vase adds a touch of elegance to the weathered surroundings.",
         "needs":"vase",
         "alt_desc":"A soft outline of dust, where an ornament once stood. Soft light filters in, creating a captivating interplay with the dust in the air."
+    },
+    "pedestal":{
+        "movable":0,
+        "description":"Placing the vase on the pedestal, the plate of the podium lowers with a soft click",
+        "needs":"vase",
+        "alt_desc":"A faint light falls into the alcove. A pedestal stands, adorned by dust"
     }
 }

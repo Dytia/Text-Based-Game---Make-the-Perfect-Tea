@@ -2,13 +2,40 @@
 <html>
     <style>
         .light-mode {
-        background-color: white;
-        color: black;
+            background-color: white;
+            color: black;
+            font-family: sans-serif;
         }
         .dark-mode{
             background-color: rgb(41, 41, 41);
             color: white;
         }
+        td {
+            padding: 5px;
+        }
+        .light-mode table, .light-mode tr {
+            border-bottom: 1px solid black;
+            border-collapse: collapse;
+        }
+        .dark-mode table, .dark-mode tr {
+            border-bottom: 1px solid white;
+            border-collapse: collapse;
+        }
+        .dark-mode #head {
+            padding: 5px;
+            text-align: left;
+            border-right: 1px solid white;
+            border-bottom: 1px solid white;
+            border-collapse: collapse;
+        }
+        .light-mode #head {
+            padding: 5px;
+            text-align: left;
+            border-right: 1px solid black;
+            border-bottom: 1px solid black;
+            border-collapse: collapse;
+        }
+
     </style>
     <button id="darkMode" onclick="toggle_visuals()">toggle light mode</button>
 
@@ -27,6 +54,18 @@
     </head>
     <body class="dark-mode" style="font-family:arial">
         <p>Text Based Tea Game</p>
-        <h1 style="font-family: Courier New, monospace;">%s</h1>
+        <h1 style="font-family: Courier New, monospace;">{times loaded}</h1>
+        <table>
+            <tr>
+                <td id="head">objects</td>
+                <td>bed</td>
+                <td>desk</td>
+            </tr>
+            <tr>
+                <td id="head">items</td>
+                <td>notebook</td>
+                <td>stick</td>
+            </tr>
+        </table>
     </body>
 </html>
