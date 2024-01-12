@@ -55,7 +55,7 @@
         "description": "",
         "properties": {
             "examine": [
-                "secret_alcove"
+                "pedestal"
             ],
             "items": []
         },

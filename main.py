@@ -134,6 +134,22 @@ class Responses:
         ]
         return f"{self.randomise(options)}\nor a simple typo happened"
 
+
+def load_stuff(location:str, type:int) -> dict: #type 0, item, type 1, obj
+    temporary = {}
+    try:
+        with open(location, "r") as f:
+            item_data = json.load(f)
+            for i in item_data:
+                print(item_data[i])
+                if type:
+                    temporary[i] = Obj(i, item_data[i])
+                else:
+                    temporary[i] = Item(i, item_data[i])
+    except KeyError as e:
+        abort(e, location)
+    return temporary
+
 class Item:
     """
     an object for an item, and how it performs actions
@@ -154,15 +170,7 @@ class List_of_items:
     """
     def __init__(self) -> None:
         location = "./stuff/items.json"
-        self.dict_of_items:Item = {}
-        try:
-            with open(location, "r") as f:
-                item_data = json.load(f)
-                for i in item_data:
-                    print(item_data[i])
-                    self.dict_of_items[i] = Item(i, item_data[i])
-        except KeyError as e:
-            abort(e, "./stuff/items.json")
+        self.dict_of_items:Item = load_stuff(location, 0)
     
     def inspect(self, name) -> (str):
         """
@@ -179,6 +187,52 @@ class List_of_items:
             return val
         else:
             return response_gen.examine()
+
+class Obj:
+    """
+    how objects perform actions
+    """
+    def __init__(self, name, obj_obj) -> None:
+        self.name = name
+        try:
+            self.alias = obj_obj["alias"].split(",")
+        except: self.alias = "a"*10
+        self.movable = obj_obj["movable"]
+        self.description = obj_obj["description"]
+        try:
+            self.needs = obj_obj["needs"]
+            self.alt_desc = obj_obj["alt_desc"]
+        except:
+            self.needs = None
+            self.alt_desc = None
+
+
+class List_of_objects:
+    """
+    contains all objects
+    """
+    def __init__(self) -> None:
+        location = "./stuff/objects.json"
+        self.dict_of_objects:Obj = load_stuff(location, 1)
+        self.alias_dict = {}
+        for i in self.dict_of_objects:
+            if self.dict_of_objects[i].alias != "a"*10:
+                for j in self.dict_of_objects[i].alias:
+                    self.alias_dict[j] = i
+        print("Alias dictionary:\n",self.alias_dict)
+    
+    def examine(self, obj) -> (str | bool):
+        """
+        returns the object if it finds it, otherwise returns false
+        """
+        print(obj, self.dict_of_objects)
+        if obj in self.dict_of_objects:
+            return self.dict_of_objects[obj]
+        print(obj, self.alias_dict)
+
+        if obj in self.alias_dict:
+            return self.dict_of_objects[self.alias_dict[obj]]
+        return False
 
 class Player:
     def __init__(self) -> None:
@@ -312,11 +366,7 @@ class Room:
         
         self.objects = {}
         print(f"{bcolors.OKGREEN}done{bcolors.ENDC}\n    Loading  Objects", end=" ")
-        for i in self.properties["examine"]:
-            try:
-                self.objects[i] = objects[i]
-            except:
-                print(f"\nObject does not exist: {bcolors.BRIGHTRED}{i}{bcolors.ENDC}")
+        self.objects:list = self.properties["examine"]
         print(f"{bcolors.OKGREEN}done{bcolors.ENDC}\n")
         
 class Level:
@@ -408,23 +458,20 @@ class Level:
         or if it is an item in the room
         """
         try:
-            try:
-                # fails if not there
-                examine = self.current_room.objects[obj]
-            except:
-                # is it an item?
-                if obj in self.current_room.item_names:
-                    return game_items.dict_of_items[obj].description
-                else: raise Exception
-            try: #ah so it is an object, check if it requires something
-                if examine["needs"] in self.current_room.item_names:
-                    return examine["description"]
-                else: # it does? here take the alt desc because the thing aint there
-                    return examine["alt_desc"]
-            except:pass 
-            return examine["description"] # ah just a plain old object, doesnt need anything
+            res_obj = game_objects.examine(obj)
+            print(res_obj, obj)
+            if res_obj == False:
+                if obj in self.current_room.objects:
+                    print("0",game_objects.dict_of_objects[obj].description)
+                else:
+                    if game_objects.dict_of_objects[obj].needs is not None and game_objects.dict_of_objects[obj].needs in self.current_room.item_names:
+                        print("1",res_obj)
+                    else:
+                        print("2",game_objects.dict_of_objects.alt_desc)
+        
         except:
-            return response_gen.examine() # you poop
+            return response_gen.examine()
+
     
     def take(self, obj, user:Player) -> str:
         """
@@ -520,7 +567,8 @@ def reset() -> None:
                 print("An error occured, exiting game probably best to redownload")
                 os._exit(1)
 
-
+a = List_of_objects()  
+a.examine("aaa")
 # Disable print
 def blockPrint():
     sys.stdout = open(os.devnull, 'w')
@@ -553,6 +601,14 @@ blank room object
 
         }
     },
+
+    "object":{
+        "alias":"a,comma,seperated,list,of,alias,optional",
+        "movable":0,
+        "description":"if the needs term is unmet this is shown",
+        "needs":"option category",
+        "alt_desc":"this is default if needs exists",
+    }
 """
 
 commands = [    #item/skill = i/s
@@ -610,8 +666,9 @@ response_gen:Responses = Responses()
 user:Player = Player()
 print(f"{bcolors.OKGREEN}done{bcolors.ENDC}\nLoading items:")
 game_items:List_of_items = List_of_items()
+print(f"{bcolors.OKGREEN}done{bcolors.ENDC}\nLoading objects:")
+game_objects:List_of_objects = List_of_objects()
 print(f"{bcolors.OKGREEN}done{bcolors.ENDC}")
-
 
 if first_run:
     enablePrint()
