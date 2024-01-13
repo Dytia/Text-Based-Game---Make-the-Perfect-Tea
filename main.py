@@ -22,7 +22,11 @@ else:
     first_run = True
 
 
-class bcolors:
+class bcolours:
+    """
+    contains colours for text
+    usage f"{bcolours.OKBLUE}word{bcolours.ENDC}"
+    """
     MAGENTA = '\033[95m'
     OKBLUE = '\033[94m'
     OKCYAN = '\033[96m'
@@ -35,7 +39,7 @@ class bcolors:
 
 class Responses:
     """
-    Due to lacking imagination, i used ai to help create more, good, responses to a situation
+    Due to lacking creative writing ability, i used ai to help create more, good, responses to a situation
     This class, the strings are the only thing made with help of AI
     """
     def __init__(self) -> None:
@@ -64,7 +68,7 @@ class Responses:
             "You attempt to phase through the wall, RPG-style. Turns out, this isn't a superhero game.",
             "Reality check: Your character finds that walls are surprisingly good at their job."
         ]
-        return f"{self.randomise(options)}\n{bcolors.YELLOW}You remain in the same room{bcolors.ENDC}"
+        return f"{self.randomise(options)}\n{bcolours.YELLOW}You remain in the same room{bcolours.ENDC}"
 
     def invalid_move(self) -> str:
         options = [
@@ -74,7 +78,7 @@ class Responses:
             "The game system rejects your unconventional move with a virtual shake of its head. It seems the rules are more rigid than your character's imagination.",
             "Your character attempts a move straight out of a fantasy novel, only to be met with the cold, hard reality of game mechanics. The system kindly informs you that such actions are beyond its programming. Time for plan B!"
         ]
-        return f"{self.randomise(options)}\n{bcolors.BRIGHTRED}Not a valid move{bcolors.ENDC}"
+        return f"{self.randomise(options)}\n{bcolours.BRIGHTRED}Not a valid move{bcolours.ENDC}"
 
     def examine(self) -> str:
         """
@@ -166,7 +170,7 @@ class List_of_items:
     
     def inspect(self, name) -> (str):
         """
-        inspecting the item gives its description
+        inspecting the item gives its description if certain conditions are met
         """
         if (name in user.inventory[0] 
             or name in user.inventory[1]
@@ -297,9 +301,9 @@ class Room:
         print(f"    Loading Room: {self.name}\n    Loading  Data",end=" ")
         self.description = data["description"]
         self.properties = data["properties"]
-        print(f"{bcolors.OKGREEN}done{bcolors.ENDC}\n    Loading  Items",end=" ")
+        print(f"{bcolours.OKGREEN}done{bcolours.ENDC}\n    Loading  Items",end=" ")
         self.item_names:list = self.properties["items"]
-        print(f"{bcolors.OKGREEN}done{bcolors.ENDC}\n    Creating connections",end=" ")
+        print(f"{bcolours.OKGREEN}done{bcolours.ENDC}\n    Creating connections",end=" ")
         for i in range(0,4):
             try:
                 self.connections.append(data[self._values[i]])
@@ -311,13 +315,13 @@ class Room:
             self.save = 0
         
         self.objects = {}
-        print(f"{bcolors.OKGREEN}done{bcolors.ENDC}\n    Loading  Objects", end=" ")
+        print(f"{bcolours.OKGREEN}done{bcolours.ENDC}\n    Loading  Objects", end=" ")
         for i in self.properties["examine"]:
             try:
                 self.objects[i] = objects[i]
             except:
-                print(f"\nObject does not exist: {bcolors.BRIGHTRED}{i}{bcolors.ENDC}")
-        print(f"{bcolors.OKGREEN}done{bcolors.ENDC}\n")
+                print(f"\nObject does not exist: {bcolours.BRIGHTRED}{i}{bcolours.ENDC}")
+        print(f"{bcolours.OKGREEN}done{bcolours.ENDC}\n")
         
 class Level:
     def __init__(self, map, room_name:str="") -> None:
@@ -342,7 +346,7 @@ class Level:
         }
         print("Creating rooms")
         self._create_rooms()
-        print(f"Creating Rooms {bcolors.OKGREEN}done{bcolors.ENDC}\nSetting starting room")
+        print(f"Creating Rooms {bcolours.OKGREEN}done{bcolours.ENDC}\nSetting starting room")
         if room_name == "":
             self.current_room:Room = self._rooms["startingRoom"]
         else:
@@ -357,9 +361,9 @@ class Level:
         self._rooms = {}
         print("  Parsing file", end=" ")
         self.data = self.read_json()
-        print(f"{bcolors.OKGREEN}done{bcolors.ENDC}\n  Loading objects",end=" ")
+        print(f"{bcolours.OKGREEN}done{bcolours.ENDC}\n  Loading objects",end=" ")
         self.objects = self.read_object_json()
-        print(f"{bcolors.OKGREEN}done{bcolors.ENDC}\n  Setting room data")
+        print(f"{bcolours.OKGREEN}done{bcolours.ENDC}\n  Setting room data")
         for i in self.data:
             temp = Room()
             temp.set_room_data(i, self.data[i], self.objects)
@@ -495,7 +499,7 @@ def abort(e, location) -> None:
     """
     aborts the program
     """
-    print(f"{bcolors.BRIGHTRED}Error: {bcolors.ENDC}{e}\nProgram aborting due to error in {bcolors.YELLOW}{location}{bcolors.ENDC} upon loading")
+    print(f"{bcolours.BRIGHTRED}Error: {bcolours.ENDC}{e}\nProgram aborting due to error in {bcolours.YELLOW}{location}{bcolours.ENDC} upon loading")
     os._exit(1)
 
 def reset() -> None:
@@ -508,13 +512,13 @@ def reset() -> None:
                 print("removing save", end=" ")
                 try:os.remove("./saves/save.csv")
                 except:pass
-                print(f"{bcolors.OKGREEN}done{bcolors.ENDC}\nDeleting level files", end=" ")
+                print(f"{bcolours.OKGREEN}done{bcolours.ENDC}\nDeleting level files", end=" ")
                 shutil.rmtree("./maps/")
-                print(f"{bcolors.OKGREEN}done{bcolors.ENDC}\nCopying files", end= " ")
+                print(f"{bcolours.OKGREEN}done{bcolours.ENDC}\nCopying files", end= " ")
                 shutil.copytree("./maps_spare/", "./maps/")
-                print(f"{bcolors.OKGREEN}done{bcolors.ENDC}\nCleaning up", end=" ")
+                print(f"{bcolours.OKGREEN}done{bcolours.ENDC}\nCleaning up", end=" ")
                 os.remove("./maps/readme.md")
-                print(f"{bcolors.OKGREEN}done{bcolors.ENDC}\nexiting game")
+                print(f"{bcolours.OKGREEN}done{bcolours.ENDC}\nexiting game")
                 os._exit(1)
             except:
                 print("An error occured, exiting game probably best to redownload")
@@ -608,9 +612,9 @@ print("Loading responses")
 response_gen:Responses = Responses()
 
 user:Player = Player()
-print(f"{bcolors.OKGREEN}done{bcolors.ENDC}\nLoading items:")
+print(f"{bcolours.OKGREEN}done{bcolours.ENDC}\nLoading items:")
 game_items:List_of_items = List_of_items()
-print(f"{bcolors.OKGREEN}done{bcolors.ENDC}")
+print(f"{bcolours.OKGREEN}done{bcolours.ENDC}")
 
 
 if first_run:
@@ -628,7 +632,7 @@ if you want to restart just change the name of saves.json to something else
     print("Character creation")
     # get character name
     while fail:
-        name = input(f"{bcolors.OKGREEN}name{bcolors.ENDC}? ")
+        name = input(f"{bcolours.OKGREEN}name{bcolours.ENDC}? ")
         for i in name:
             if ord(i) in range(65, 123) and not ord(i) in range(91,97):
                 fail = False
@@ -641,7 +645,7 @@ if you want to restart just change the name of saves.json to something else
     fail = True
     while fail:
         try:
-            age = int(input(f"{bcolors.OKGREEN}age{bcolors.ENDC}? "))
+            age = int(input(f"{bcolours.OKGREEN}age{bcolours.ENDC}? "))
             fail = False
             if age < 16 or age > 100:
                 os._exit(1)
@@ -650,7 +654,7 @@ if you want to restart just change the name of saves.json to something else
     user.age = age
 
     # get character gender (uses three options for overall vs precise)
-    gender = input(f"(for best experience use female, male or non-binary)\n{bcolors.OKGREEN}gender{bcolors.ENDC}? ")
+    gender = input(f"(for best experience use female, male or non-binary)\n{bcolours.OKGREEN}gender{bcolours.ENDC}? ")
     user.gender = gender
 
     user.save(level_num, "startingRoom")
@@ -675,7 +679,7 @@ try:
         if current_room != old_room:
             to_display(level.current_room.description)
             old_room = current_room
-        u_input = input(f"{bcolors.OKCYAN}> {bcolors.ENDC}").split(" ")
+        u_input = input(f"{bcolours.OKCYAN}> {bcolours.ENDC}").split(" ")
         try:
             content = u_input[1].lower()
         except IndexError:
@@ -707,7 +711,7 @@ try:
                 else:
                     to_display("Did you mean items or skills?")
             case "talk":
-                pass
+                pass # implement with npc
             case "examine":
                 #print(level.current_room.objects)
                 val = level.examine(content)
@@ -716,11 +720,11 @@ try:
                 val = game_items.inspect(content)
                 to_display(val)
             case "combine":
-                pass
+                pass # implement when more items
             case "read":
-                pass
+                pass # when sign
             case "use":
-                pass
+                pass # soon
             case "help":
                 dt = help_data.split("\n")
                 for i in dt:

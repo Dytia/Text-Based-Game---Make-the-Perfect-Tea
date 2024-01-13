@@ -15,7 +15,7 @@ table_array = [["objects", ["bed", "desk"]], ["items", ["notebook", "stick"]]]
 def webserver(counter) -> None:
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         #plain = '<!DOCTYPE HTML><html><style>.light-mode {background-color: white;color: black;}.dark-mode{background-color: rgb(41, 41, 41);color: white;}</style><button id="darkMode" onclick="toggle_visuals()">toggle light mode</button><head><script>var element = document.body;function toggle_visuals(){if (element.className == "dark-mode"){element.classList.replace("dark-mode", "light-mode" )} else {element.classList.replace("light-mode", "dark-mode" )}}; </script></head><body class="dark-mode"><p>Text Based Tea Game</p><h1 style="font-family: Courier New, monospace;">%s</h1></body><html>'
-        web_start = '<!DOCTYPE HTML><html><style>.light-mode {background-color: white;color: black;}.dark-mode{background-color: rgb(41, 41, 41);color: white;}td {padding: 5px;}.light-mode table, .light-mode tr {border-bottom: 1px solid black;border-collapse: collapse;}.dark-mode table, .dark-mode tr {border-bottom: 1px solid white;border-collapse: collapse;}.dark-mode #head {padding: 5px;text-align: left;border-right: 1px solid white;border-bottom: 1px solid white;border-collapse: collapse;}.light-mode #head {padding: 5px;text-align: left;border-right: 1px solid black;border-bottom: 1px solid black;border-collapse: collapse;}</style><button id="darkMode" onclick="toggle_visuals()">toggle light mode</button><head><script>var element = document.body;function toggle_visuals(){if (element.className == "dark-mode"){element.classList.replace("dark-mode", "light-mode" )} else {element.classList.replace("light-mode", "dark-mode" )}};     </script></head><body class="dark-mode" style="font-family:arial"><p>Text Based Tea Game</p><h1 style="font-family: Courier New, monospace;">Hello!</h1><table>'
+        web_start = '<!DOCTYPE HTML><html><style>.light-mode {background-color: white;color: black;}.dark-mode{background-color: rgb(41, 41, 41);color: white;}td {padding: 5px;}.light-mode table, .light-mode tr {border-bottom: 1px solid black;border-collapse: collapse;}.dark-mode table, .dark-mode tr {border-bottom: 1px solid white;border-collapse: collapse;}.dark-mode #head {padding: 5px;text-align: left;border-right: 1px solid white;border-bottom: 1px solid white;border-collapse: collapse;}.light-mode #head {padding: 5px;text-align: left;border-right: 1px solid black;border-bottom: 1px solid black;border-collapse: collapse;}</style><button id="darkMode" onclick="toggle_visuals()">toggle light mode</button><head><script>var element = document.body;function toggle_visuals(){if (element.className == "dark-mode"){element.classList.replace("dark-mode", "light-mode" )} else {element.classList.replace("light-mode", "dark-mode" )}};     </script></head><body class="dark-mode" style="font-family:arial"><p>Text Based Tea Game</p><h1 style="font-family: Courier New, monospace;">Hello!, '+str(g_counter)+'</h1><table>'
 
         web_end = '</table></body></html>'
         for i in table_array:
@@ -47,6 +47,15 @@ def webserver(counter) -> None:
                 conn.sendall(to_send.encode())
                 conn.sendall(b"a")
 
-print("http://"+HOST+":"+str(PORT))
-for i in range(0,10):
-    webserver(i)
+def a():
+    print("http://"+HOST+":"+str(PORT))
+    for i in range(0,10):
+        webserver(i)
+
+g_counter = 0
+if __name__ == '__main__':
+    val = multiprocessing.Process(target=a)
+    val.start()
+
+    for i in range(0,1000000):
+        g_counter = i
