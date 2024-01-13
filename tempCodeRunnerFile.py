@@ -1,1 +1,0 @@
-    val = multiprocessing.Process(target=a)

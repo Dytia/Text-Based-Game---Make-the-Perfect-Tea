@@ -14,3 +14,8 @@ loaded maps (and their edits)
 inventory bs
 
 90% chance enemy slime, 10% friendly
+
+Alias system for things, mainly objects
+alias works by if they refer to the object with that alias in that room it works fine
+
+you're currently working on objects and getting them into objects
