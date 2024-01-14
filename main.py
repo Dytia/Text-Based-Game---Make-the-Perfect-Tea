@@ -73,7 +73,7 @@ class Responses:
     def invalid_move(self) -> str:
         options = [
             "You attempt a move that defies the laws of the game universe. The game, however, insists on following said laws. Nice try!",
-            "Your character contemplates a daring maneuver, but the game responds with a gentle reminder that such acrobatics are not within the established rules. Better luck next time!",
+            "Your character contemplates a daring manoeuvre, but the game responds with a gentle reminder that such acrobatics are not within the established rules. Better luck next time!",
             "You try to perform a move that would make a gymnast proud, but the game, being a stickler for reality, denies your request. Your character sighs and considers more conventional actions.",
             "The game system rejects your unconventional move with a virtual shake of its head. It seems the rules are more rigid than your character's imagination.",
             "Your character attempts a move straight out of a fantasy novel, only to be met with the cold, hard reality of game mechanics. The system kindly informs you that such actions are beyond its programming. Time for plan B!"
@@ -198,9 +198,6 @@ class Obj:
     """
     def __init__(self, name, obj_obj) -> None:
         self.name = name
-        try:
-            self.alias = obj_obj["alias"].split(",")
-        except: self.alias = "a"*10
         self.movable = obj_obj["movable"]
         self.description = obj_obj["description"]
         try:
@@ -218,12 +215,6 @@ class List_of_objects:
     def __init__(self) -> None:
         location = "./stuff/objects.json"
         self.dict_of_objects:Obj = load_stuff(location, 1)
-        self.alias_dict = {}
-        for i in self.dict_of_objects:
-            if self.dict_of_objects[i].alias != "a"*10:
-                for j in self.dict_of_objects[i].alias:
-                    self.alias_dict[j] = i
-        print("Alias dictionary:\n",self.alias_dict)
     
     def examine(self, obj) -> (str | bool):
         """
@@ -232,10 +223,6 @@ class List_of_objects:
         print(obj, self.dict_of_objects)
         if obj in self.dict_of_objects:
             return self.dict_of_objects[obj]
-        print(obj, self.alias_dict)
-
-        if obj in self.alias_dict:
-            return self.dict_of_objects[self.alias_dict[obj]]
         return False
 
 class Player:
@@ -461,20 +448,26 @@ class Level:
         runs the examine thing and checks if its even an object in the room
         or if it is an item in the room
         """
+
+        # create list of object names in room (already done per room)
+        # check if on list (if obj in list_obj)
+        # check if its an item
         try:
-            res_obj = game_objects.examine(obj)
-            print(res_obj, obj)
-            if res_obj == False:
-                if obj in self.current_room.objects:
-                    print("0",game_objects.dict_of_objects[obj].description)
+            desc = None
+            if obj in self.current_room.objects:
+                if game_objects.dict_of_objects[obj].needs is not None and game_objects.dict_of_objects[obj].needs in self.current_room.item_names:
+                    return game_objects.dict_of_objects[obj].description
                 else:
-                    if game_objects.dict_of_objects[obj].needs is not None and game_objects.dict_of_objects[obj].needs in self.current_room.item_names:
-                        print("1",res_obj)
-                    else:
-                        print("2",game_objects.dict_of_objects.alt_desc)
-        
+                    return game_objects.dict_of_objects[obj].alt_desc
+
+            elif desc == None and self.current_room.item_names == obj:
+                    return self.current_room.item_names.description
+            else:
+                raise Exception
+            
         except:
             return response_gen.examine()
+
 
     
     def take(self, obj, user:Player) -> str:
@@ -607,7 +600,6 @@ blank room object
     },
 
     "object":{
-        "alias":"a,comma,seperated,list,of,alias,optional",
         "movable":0,
         "description":"if the needs term is unmet this is shown",
         "needs":"option category",
