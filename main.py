@@ -467,11 +467,10 @@ class Level:
         # check if on list (if obj in list_obj)
         # check if its an item
         try:
-            desc = None
             if obj in self.current_room.objects:
                 return check_needs(game_objects.dict_of_objects[obj])
 
-            elif desc == None and self.current_room.item_names == obj:
+            elif self.current_room.item_names == obj:
                     return game_items[obj].description
             else:
                 for i in self.current_room.objects:
@@ -579,8 +578,7 @@ def reset() -> None:
                 print("An error occured, exiting game probably best to redownload")
                 os._exit(1)
 
-a = List_of_objects()  
-a.examine("aaa")
+
 # Disable print
 def blockPrint():
     sys.stdout = open(os.devnull, 'w')
