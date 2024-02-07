@@ -231,7 +231,6 @@ class Player:
     def __init__(self) -> None:
         self.name = ""
         self.age = 0
-        self.gender = ""
         self.health = 10
         self.inventory = [
             [ # items (list of names)
@@ -247,13 +246,13 @@ class Player:
         """
         saves the user data to a csv
         
-        name,age,gender
+        name,age
         health
         items
         skills
         level,room
         """
-        row_one = self.name + "," + str(self.age) + "," + self.gender +"\n"
+        row_one = self.name + "," + str(self.age) +"\n"
         health = str(self.health) +"\n"
         items = ",".join(self.inventory[0]) + "\n"
         skills = ",".join(self.inventory[1]) +"\n"
@@ -279,7 +278,6 @@ class Player:
         
         self.name = stuff[0][0]
         self.age = stuff[0][1]
-        self.gender = stuff[0][2]
 
         self.health = int(stuff[1][0])
 
@@ -709,15 +707,11 @@ if you want to restart just change the name of saves.json to something else
         try:
             age = int(input(f"{bcolours.OKGREEN}age{bcolours.ENDC}? "))
             fail = False
-            if age < 16 or age > 100:
+            if age < 13 or age > 100:
                 os._exit(1)
         except ValueError:
             print("please use a number")
     user.age = age
-
-    # get character gender (uses three options for overall vs precise)
-    gender = input(f"(for best experience use female, male or non-binary)\n{bcolours.OKGREEN}gender{bcolours.ENDC}? ")
-    user.gender = gender
 
     user.save(level_num, "startingRoom")
     blockPrint()
