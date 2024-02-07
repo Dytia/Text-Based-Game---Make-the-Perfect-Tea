@@ -206,6 +206,8 @@ class Obj:
         except:
             self.needs = None
             self.alt_desc = None
+        try: self.alias = obj_obj["alias"]
+        except: self.alias = None
 
 
 class List_of_objects:
@@ -448,21 +450,33 @@ class Level:
         runs the examine thing and checks if its even an object in the room
         or if it is an item in the room
         """
-
+        def check_needs(obj:Obj):
+            if obj.needs is not None and obj.needs in self.current_room.item_names:
+                # check if needs exist, and if they are available
+                return obj.description
+            
+            elif obj.needs is not None:
+                # if needs exist but not there
+                return obj.alt_desc
+            
+            else:
+                # default
+                return obj.description 
+                 
         # create list of object names in room (already done per room)
         # check if on list (if obj in list_obj)
         # check if its an item
         try:
-            desc = None
             if obj in self.current_room.objects:
-                if game_objects.dict_of_objects[obj].needs is not None and game_objects.dict_of_objects[obj].needs in self.current_room.item_names:
-                    return game_objects.dict_of_objects[obj].description
-                else:
-                    return game_objects.dict_of_objects[obj].alt_desc
+                return check_needs(game_objects.dict_of_objects[obj])
 
-            elif desc == None and self.current_room.item_names == obj:
-                    return self.current_room.item_names.description
+            elif self.current_room.item_names == obj:
+                    return game_items[obj].description
             else:
+                for i in self.current_room.objects:
+                    #check through all objects in room for an alias
+                    if obj in game_objects.dict_of_objects[i].alias:
+                        return check_needs(game_objects.dict_of_objects[obj])
                 raise Exception
             
         except:
@@ -564,8 +578,7 @@ def reset() -> None:
                 print("An error occured, exiting game probably best to redownload")
                 os._exit(1)
 
-a = List_of_objects()  
-a.examine("aaa")
+
 # Disable print
 def blockPrint():
     sys.stdout = open(os.devnull, 'w')

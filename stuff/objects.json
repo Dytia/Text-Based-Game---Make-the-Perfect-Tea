@@ -18,6 +18,7 @@
         "alt_desc":"A soft outline of dust, where an ornament once stood. Soft light filters in, creating a captivating interplay with the dust in the air."
     },
     "pedestal":{
+        "alias":"alcove",
         "movable":0,
         "description":"Placing the vase on the pedestal, the plate of the podium lowers with a soft click",
         "needs":"vase",

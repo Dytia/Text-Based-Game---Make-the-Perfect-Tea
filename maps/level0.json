@@ -72,7 +72,7 @@
         "description":"",
         "properties":{
             "examine":[
-
+                "pedestal"
             ],
             "items":[
             
