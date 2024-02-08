@@ -1,6 +1,6 @@
 {
     "slime":{
-        "damage":"1",
+        "damage":[0,2],
         "description":"",
         "loot":[
             "slime"

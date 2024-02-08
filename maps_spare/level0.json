@@ -1,7 +1,7 @@
 {
     "startingRoom" : {
         "north": "vase",
-        "description":"You find yourself in a small room, theres a cozy bed with a lamp next to it, and on the opposite side of the room a window with a desk underneath, to the northern face of the room there's a door.",
+        "description":"You find yourself in a small room, to the southwest a bed, to the east a desk, and to the north a door",
         "properties":{
             "examine":[
                 "bed",
@@ -20,7 +20,7 @@
         "north": "splitPath1",
         "south":"startingRoom",
         "east":"secretRoom",
-        "description":"You're in a narrow corridor adorned with faded tapestries. Dim torchlight flickers, revealing an alcove halfway down. Within, a regal vase stands. Soft light filters in, creating a captivating interplay with the dust in the air. The vase adds a touch of elegance to the weathered surroundings. The corridor continues further north.",
+        "description":"Standing in a corridoor it continues to the north, on the western wall there is an alcove",
         "properties":{
             "examine":[
             ],
@@ -69,7 +69,7 @@
     "vasePlace":{
         "north": "splitPath2",
         "south":"cornerToDark",
-        "description":"",
+        "description":"A pedestal stands in an alcove, and to the south a corner to the west, and to the north an offshoot to the east",
         "properties":{
             "examine":[
                 "pedestal"
@@ -85,7 +85,7 @@
     "cornerToDark":{
         "north": "vasePlace",
         "west":"darkCorridor",
-        "description":"",
+        "description":"A corner, to the north a corridor with an alcove, the to west a dark, unlit place",
         "properties":{
             "examine":[
 
@@ -101,7 +101,7 @@
     "darkCorridor":{
         "west":"saveRoom1",
         "east":"cornerToDark",
-        "description":"",
+        "description":"The faint light from the east is barely enough to see around",
         "properties":{
             "examine":[
 
@@ -116,14 +116,15 @@
     },    
     "saveRoom1":{
         "east":"darkCorridor",
-        "description":"",
+        "description":"The room is fairly bright, a bed in the corner and a chair and desk aganst another",
         "properties":{
             "examine":[
 
             ],
             "items":[
             
-            ]
+            ],
+            "save":1
         },
         "data":{
 
@@ -139,8 +140,7 @@
             ],
             "items":[
             
-            ],
-            "save":1   
+            ]
         },
         
         "data":{
