@@ -1,7 +1,7 @@
 {
     "slime":{
         "damage":[0,2],
-        "description":"",
+        "description":"A small blob of slime that seems to have no intelligence, only a basic attack method",
         "loot":[
             "slime"
         ]
