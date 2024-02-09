@@ -151,7 +151,7 @@ class Responses:
             f"Your attempt to use the {item} on the {obj} meets with confusion and lack of progress.",
             f"It's clear that the {item} and the {obj} have different agendas; your attempt fails to bridge the gap."
         ]
-        return f"{self.randomise(options)}"
+        return f"{self.randomise(options)}\n"
 
 def load_stuff(location:str, type:int) -> dict: #type 0, item, type 1, obj
     temporary = {}
@@ -174,6 +174,8 @@ class Item:
     """
     def __init__(self, name, itm_obj) -> None:
         self.name = name
+        try: self.display = itm_obj["display_name"]
+        except: self.display = self.name
         self.type = itm_obj["type"]
         try: self.damage = itm_obj["damage"] # if < 0 it heals, because thats how stuff works
         except: self.damage = 0
@@ -493,7 +495,7 @@ class Level:
                 for i in self.current_room.objects:
                     #check through all objects in room for an alias
                     if obj in game_objects.dict_of_objects[i].alias:
-                        return check_needs(game_objects.dict_of_objects[obj])
+                        return check_needs(game_objects.dict_of_objects[i])
                 raise Exception
             
         except:
@@ -551,21 +553,22 @@ class Level:
             game_items.dict_of_items[item]
         except KeyError: 
             return response_gen.itemnt()
-
-        if item not in user.inventory[0] or item not in user.inventory[1]:
-            return "you dont appear to have that item or skill"
-
+        
         if game_items.dict_of_items[item].type == "skill":
+            if item not in user.inventory[1]:
+                return "you dont appear to have that skill"
             # todo: using skills in game
             pass
             
-        elif game_items.dict_of_items[item].type == "items":
+        elif game_items.dict_of_items[item].type == "item":
+            if item not in user.inventory[0]:
+                return "you dont appear to have that item"
             if obj == "":
                 # todo: using items in game
                 pass
             else:
-                if game_objects.dict_of_objects[obj].interaction[0] == item:
-                    self.place(item)
+                if item in game_objects.dict_of_objects[obj].interaction[0]:
+                    self.place(item, user)
                     return game_objects.dict_of_objects[obj].interaction[1]
                 else:
                     return response_gen.item_interaction_with_object_fail(item, obj)
@@ -797,11 +800,9 @@ try:
         else: 
             content = ""
 
-        print(content)
         if level.current_room.save == 1:
             # if room is a save room
             user.save(level_num, current_room)
-        
         match u_input:
             case "move":
                 val = level.move_room(content)
@@ -839,11 +840,8 @@ try:
                 pass # when sign
             case "use":
                 # uses the interaction bit of object class, and an item
-                if content[0] in user.inventory[0]:
-                    print("a")
-                else:
-                    print("b")
-                pass # soon
+                val =level.interact(content[0], content[1],user)
+                print(val)
             case "help":
                 dt = help_data.split("\n")
                 for i in dt:
