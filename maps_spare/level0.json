@@ -69,7 +69,7 @@
     "vasePlace":{
         "north": "splitPath2",
         "south":"cornerToDark",
-        "description":"A pedestal stands in an alcove, and to the south a corner to the west, and to the north an offshoot to the east",
+        "description":"A pedestal stands in an alcove, and to the south a corner to the west, and to the north a corridor with an offshoot to the east",
         "properties":{
             "examine":[
                 "pedestal"

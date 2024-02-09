@@ -22,3 +22,7 @@ you're currently working on objects and getting them into objects
 
 
 maybe add weight system?
+
+allow combat with wall?
+
+Currently implementing interaction with items on objecs

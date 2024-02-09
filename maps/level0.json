@@ -1,246 +1,165 @@
 {
-    "startingRoom" : {
+    "startingRoom": {
         "north": "vase",
-        "description":"You find yourself in a small room, theres a cozy bed with a lamp next to it, and on the opposite side of the room a window with a desk underneath, to the northern face of the room there's a door.",
-        "properties":{
-            "examine":[
+        "description": "You find yourself in a small room, to the southwest a bed, to the east a desk, and to the north a door",
+        "properties": {
+            "examine": [
                 "bed",
                 "desk"
             ],
-            "items":[
+            "items": [
                 "notebook",
                 "stick"
-            ]     
-        }, 
-        "data":{
-        
-        }
+            ]
+        },
+        "data": {}
     },
-    "vase" : {
+    "vase": {
         "north": "splitPath1",
-        "south":"startingRoom",
-        "east":"secretRoom",
-        "description":"You're in a narrow corridor adorned with faded tapestries. Dim torchlight flickers, revealing an alcove halfway down. Within, a regal vase stands. Soft light filters in, creating a captivating interplay with the dust in the air. The vase adds a touch of elegance to the weathered surroundings. The corridor continues further north.",
-        "properties":{
-            "examine":[
-            ],
-            "items":[
-                "vase"
-            ]
+        "south": "startingRoom",
+        "east": "secretRoom",
+        "description": "Standing in a corridoor it continues to the north, on the western wall there is an alcove",
+        "properties": {
+            "examine": [],
+            "items": []
         },
-        "data":{
-            
-        }
+        "data": {}
     },
-    "splitPath1" : {
-        "south":"vase",
-        "west":"splitPath2",
-        "east":"rickyBridge",
-        "description":"You enter an intersection between corridors, to the south, east and west the path continues, lit by the light of flickering torches and an occasional patch of sunlight.",
-        "properties":{
-            "examine":[
-
-            ],
-            "items":[
-            
-            ]
+    "splitPath1": {
+        "south": "vase",
+        "west": "splitPath2",
+        "east": "rickyBridge",
+        "description": "You enter an intersection between corridors, to the south, east and west the path continues, lit by the light of flickering torches and an occasional patch of sunlight.",
+        "properties": {
+            "examine": [],
+            "items": []
         },
-        "data":{
-
-        }            
+        "data": {}
     },
-    "splitPath2":{
+    "splitPath2": {
         "north": "cornerToStairs",
-        "south":"vasePlace",
-        "east":"splitPath1",
-        "description":"A staircase decends into the depths to the north, and to the south and east more corridor.",
-        "properties":{
-            "examine":[
-
-            ],
-            "items":[
-            
-            ]
+        "south": "vasePlace",
+        "east": "splitPath1",
+        "description": "A staircase decends into the depths to the north, and to the south and east more corridor.",
+        "properties": {
+            "examine": [],
+            "items": []
         },
-        "data":{
-
-        }
+        "data": {}
     },
-    "vasePlace":{
+    "vasePlace": {
         "north": "splitPath2",
-        "south":"cornerToDark",
-        "description":"A pedestal stands in an alcove, and to the south a corner to the west, and to the north an offshoot to the east",
-        "properties":{
-            "examine":[
+        "south": "cornerToDark",
+        "description": "A pedestal stands in an alcove, and to the south a corner to the west, and to the north a corridor with an offshoot to the east",
+        "properties": {
+            "examine": [
                 "pedestal"
             ],
-            "items":[
-            
-            ]
+            "items": []
         },
-        "data":{
-            "secretItem":"vase"
+        "data": {
+            "secretItem": "vase"
         }
     },
-    "cornerToDark":{
+    "cornerToDark": {
         "north": "vasePlace",
-        "west":"darkCorridor",
-        "description":"A corner, to the north a corridor with an alcove, the to west a dark, unlit place",
-        "properties":{
-            "examine":[
-
-            ],
-            "items":[
-            
-            ]
+        "west": "darkCorridor",
+        "description": "A corner, to the north a corridor with an alcove, the to west a dark, unlit place",
+        "properties": {
+            "examine": [],
+            "items": []
         },
-        "data":{
-
-        }
+        "data": {}
     },
-    "darkCorridor":{
-        "west":"saveRoom1",
-        "east":"cornerToDark",
-        "description":"Unable to see anything, you can only follow the wall",
-        "properties":{
-            "examine":[
-
-            ],
-            "items":[
-            
-            ]
+    "darkCorridor": {
+        "west": "saveRoom1",
+        "east": "cornerToDark",
+        "description": "The faint light from the east is barely enough to see around",
+        "properties": {
+            "examine": [],
+            "items": []
         },
-        "data":{
-
-        }
-    },    
-    "saveRoom1":{
-        "east":"darkCorridor",
-        "description":"The room is fairly bright, a bed in the corner and a chair and desk aganst another",
-        "properties":{
-            "examine":[
-
-            ],
-            "items":[
-            
-            ],
-            "save":1
-        },
-        "data":{
-
-        }
+        "data": {}
     },
-    "secretRoom":{
-        "south":"vase",
-        "west":"rickyBridge",
-        "description":"",
-        "properties":{
-            "examine":[
-
-            ],
-            "items":[
-            
-            ]
+    "saveRoom1": {
+        "east": "darkCorridor",
+        "description": "The room is fairly bright, a bed in the corner and a chair and desk aganst another",
+        "properties": {
+            "examine": [],
+            "items": [],
+            "save": 1
         },
-        
-        "data":{
-
-        }
+        "data": {}
     },
-    "rickyBridge":{
-        "west":"splitPath1",
-        "description":"",
-        "properties":{
-            "examine":[
-
-            ],
-            "items":[
-            
-            ]
+    "secretRoom": {
+        "south": "vase",
+        "west": "rickyBridge",
+        "description": "",
+        "properties": {
+            "examine": [],
+            "items": []
         },
-        "data":{
-
-        }
+        "data": {}
     },
-    "cornerToStairs":{
-        "south":"splitPath2",
-        "west":"stairs",
-        "description":"",
-        "properties":{
-            "examine":[
-
-            ],
-            "items":[
-            
-            ]
+    "rickyBridge": {
+        "west": "splitPath1",
+        "description": "",
+        "properties": {
+            "examine": [],
+            "items": []
         },
-        "data":{
-
-        }
+        "data": {}
     },
-    "stairs":{
-        "west":"splitPathSecret",
-        "east":"cornerToStairs",
-        "description":"",
-        "properties":{
-            "examine":[
-
-            ],
-            "items":[
-            
-            ]
+    "cornerToStairs": {
+        "south": "splitPath2",
+        "west": "stairs",
+        "description": "",
+        "properties": {
+            "examine": [],
+            "items": []
         },
-        "data":{
-
-        }
+        "data": {}
     },
-    "splitPathSecret":{
+    "stairs": {
+        "west": "splitPathSecret",
+        "east": "cornerToStairs",
+        "description": "",
+        "properties": {
+            "examine": [],
+            "items": []
+        },
+        "data": {}
+    },
+    "splitPathSecret": {
         "north": "stairs",
-        "south":"secretItem",
-        "east":"stairs2",
-        "description":"",
-        "properties":{
-            "examine":[
-
-            ],
-            "items":[
-            
-            ]
+        "south": "secretItem",
+        "east": "stairs2",
+        "description": "",
+        "properties": {
+            "examine": [],
+            "items": []
         },
-        "data":{
-
-        }
+        "data": {}
     },
-    "stairs2":{
+    "stairs2": {
         "north": "startingRoom",
-        "south":"splitPathSecret",
-        "description":"",
-        "properties":{
-            "examine":[
-
-            ],
-            "items":[
-            
-            ]
+        "south": "splitPathSecret",
+        "description": "",
+        "properties": {
+            "examine": [],
+            "items": []
         },
-        "data":{
-
-        }
+        "data": {}
     },
-    "secretItem":{
+    "secretItem": {
         "north": "splitPathSecret",
-        "description":"",
-        "properties":{
-            "examine":[
-
-            ],
-            "items":[
-            
-            ]
+        "description": "",
+        "properties": {
+            "examine": [],
+            "items": []
         },
-        "data":{
-            "secretItem":"Fancy China Teapot"
+        "data": {
+            "secretItem": "Fancy China Teapot"
         }
     }
-
 }

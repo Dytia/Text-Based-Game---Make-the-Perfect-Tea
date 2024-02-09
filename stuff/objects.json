@@ -3,10 +3,6 @@
         "movable":0,
         "description":"Against one wall, you spot a well-made bed with neatly arranged sheets and plump pillows. The bedframe is sturdy, and a cozy-looking quilt is neatly folded at the foot of the mattress. It seems like a comfortable place for rest and respite."
     },
-    "vase":{
-        "movable":1,
-        "description":"A regal vase, its porcelain surface painted with scenes of nature"
-    },
     "desk":{
         "movable":0,
         "description":"You see a small notebook, a picture of a cup of tea with biscuits, and a few pencils scattered about"
@@ -20,7 +16,8 @@
     "pedestal":{
         "alias":"alcove",
         "movable":0,
-        "description":"Placing the vase on the pedestal, the plate of the podium lowers with a soft click",
+        "interaction":["vase", "You place the vase on the pedestal, it lowers with a soft click"],
+        "description":"A vase sits on a pedestal, slightly inset into it",
         "needs":"vase",
         "alt_desc":"A faint light falls into the alcove. A pedestal stands, adorned by dust"
     }

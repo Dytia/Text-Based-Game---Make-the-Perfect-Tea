@@ -138,6 +138,20 @@ class Responses:
         ]
         return f"{self.randomise(options)}\nor a simple typo happened"
 
+    def item_interaction_with_object_fail(self,item,obj) -> str:
+        options = [
+            f"You try to use the {item} on the {obj}, but it doesn't seem to have any effect.",
+            f"Your attempt to use the {item} on the {obj} yields no results.",
+            f"The {item}'s function doesn't seem compatible with the {obj} you're trying to use it on.",
+            f"You attempt to use the {item} on the {obj}, but it's like trying to fit a square peg in a round hole.",
+            f"Using the {item} on the {obj} proves unsuccessful; they just don't seem meant to interact.",
+            f"The {item}'s purpose doesn't align with the {obj}'s function, resulting in a failed attempt.",
+            f"You give it a try, but the {item} and the {obj} don't seem to see eye to eye.",
+            f"No matter how you try to use the {item} on the {obj}, it simply doesn't work.",
+            f"Your attempt to use the {item} on the {obj} meets with confusion and lack of progress.",
+            f"It's clear that the {item} and the {obj} have different agendas; your attempt fails to bridge the gap."
+        ]
+        return f"{self.randomise(options)}"
 
 def load_stuff(location:str, type:int) -> dict: #type 0, item, type 1, obj
     temporary = {}
@@ -206,8 +220,12 @@ class Obj:
         except:
             self.needs = None
             self.alt_desc = None
+
         try: self.alias = obj_obj["alias"]
         except: self.alias = None
+
+        try: self.interaction = obj_obj["interaction"]
+        except: self.interaction = None
 
 
 class List_of_objects:
@@ -319,6 +337,7 @@ class Player:
             self.inventory[1].append(obj)
 
         self.sort_inventory()
+
 
 class Room:
     """
@@ -510,12 +529,12 @@ class Level:
         place an object from inventory into the world
         """
         try:
-            game_items.dict_of_items[obj]
-        except KeyError:
-            return response_gen.itemnt()
-        
-        if game_items.dict_of_items[obj].type == "skill":
-            return "you cant place a skill down"
+            if game_items.dict_of_items[obj].type == "skill":
+                return "you cant place a skill down"
+        except KeyError: return response_gen.itemnt()
+
+        if obj not in user.inventory[0]:
+            return "you dont appear to have that item"
 
         self.current_room.item_names.append(obj)
         self.data[self.current_room.name]["properties"]["items"] = self.current_room.item_names
@@ -523,6 +542,35 @@ class Level:
         with open(self._map, "w") as f:
             json.dump(self.data, f, indent=4)
         return "you successfully place down " +obj
+    
+    def interact(self, item, obj, user:Player) -> str:
+        """
+        use an item/skill (on an object) and how it affects the world
+        """
+        try:
+            game_items.dict_of_items[item]
+        except KeyError: 
+            return response_gen.itemnt()
+
+        if item not in user.inventory[0] or item not in user.inventory[1]:
+            return "you dont appear to have that item or skill"
+
+        if game_items.dict_of_items[item].type == "skill":
+            # todo: using skills in game
+            pass
+            
+        elif game_items.dict_of_items[item].type == "items":
+            if obj == "":
+                # todo: using items in game
+                pass
+            else:
+                if game_objects.dict_of_objects[obj].interaction[0] == item:
+                    self.place(item)
+                    return game_objects.dict_of_objects[obj].interaction[1]
+                else:
+                    return response_gen.item_interaction_with_object_fail(item, obj)
+
+
 
        
 def to_display(val) -> None:
@@ -611,7 +659,9 @@ blank room object
     },
 
     "object":{
+        "alias":"string,list,aa",
         "movable":0,
+        "interaction":["item", "result"],
         "description":"if the needs term is unmet this is shown",
         "needs":"option category",
         "alt_desc":"this is default if needs exists",
@@ -629,7 +679,7 @@ commands = [    #item/skill = i/s
     "inspect",  # inspect <i/s>         | inspect an item in inventory
     "combine",  # combine <i/s> <i/s>   | combine items in inventory
     "read",     # read <object>         | read a sign or book or whatever
-    "use",      # use <i/s>             | use an item or skill
+    "use",      # use <i/s> [object]    | use an item or skill
     "help",     # help                  | display commands
     "drink",    # drink <tea>           | drink tea, or if coffee specified, quit without saving
     "exit"      # exit                  | saves & quits the game
@@ -735,17 +785,24 @@ try:
         if current_room != old_room:
             to_display(level.current_room.description)
             old_room = current_room
-        u_input = input(f"{bcolours.OKCYAN}> {bcolours.ENDC}").split(" ")
-        try:
-            content = u_input[1].lower()
-        except IndexError:
+        vals = input(f"{bcolours.OKCYAN}> {bcolours.ENDC}").strip().split(" ")
+        u_input = vals.pop(0).lower()
+        
+        if len(vals) == 1:
+            content = vals[0]
+        elif len(vals) > 1:
+            content = []
+            for i in vals:
+                content.append(i.lower())
+        else: 
             content = ""
 
+        print(content)
         if level.current_room.save == 1:
             # if room is a save room
             user.save(level_num, current_room)
         
-        match u_input[0]:
+        match u_input:
             case "move":
                 val = level.move_room(content)
                 if val != True:
@@ -765,7 +822,8 @@ try:
                 elif content == "skills":
                     to_display("The skills you have are:\n"+ "\n".join(user.inventory[1]))
                 else:
-                    to_display("Did you mean items or skills?")
+                    to_display("Your inventory contains:\n"+"\n".join(user.inventory[0]))
+                    to_display("The skills you have are:\n"+ "\n".join(user.inventory[1]))
             case "talk":
                 pass # implement with npc
             case "examine":
@@ -780,6 +838,11 @@ try:
             case "read":
                 pass # when sign
             case "use":
+                # uses the interaction bit of object class, and an item
+                if content[0] in user.inventory[0]:
+                    print("a")
+                else:
+                    print("b")
                 pass # soon
             case "help":
                 dt = help_data.split("\n")
