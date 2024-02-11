@@ -174,8 +174,6 @@ class Item:
     """
     def __init__(self, name, itm_obj) -> None:
         self.name = name
-        try: self.display = itm_obj["display_name"]
-        except: self.display = self.name
         self.type = itm_obj["type"]
         try: self.damage = itm_obj["damage"] # if < 0 it heals, because thats how stuff works
         except: self.damage = 0
@@ -339,6 +337,36 @@ class Player:
             self.inventory[1].append(obj)
 
         self.sort_inventory()
+
+    def display_inventory(self, inv_type:str) -> str:
+        """
+        gets it ready for display
+        item = 0
+        skill = 1
+        """
+        def create_list(self:Player, itype:str) -> str:
+            to_return = []
+            if len(self.inventory[itype]) >0:
+                for i in self.inventory[itype]:
+                    if i != "":
+                        to_return.append(game_items.dict_of_items[i].name)
+            else: to_return == ""
+            return to_return
+
+        items = "Your inventory contains:\n"
+        skills = "The skills you have are:\n"
+
+        if inv_type != "":
+            # check if it is either, otherwise show both
+            if inv_type == "item":
+                return items+"\n".join(create_list(self, 0))
+            
+            elif inv_type == "skill":
+                return skills+ "\n".join(create_list(self, 1))
+        else:
+            val = items + "\n".join(create_list(self, 0))
+            val += "\n\n" + skills +"\n".join(create_list(self, 1))
+            return val
 
 
 class Room:
@@ -549,7 +577,7 @@ class Level:
         """
         use an item/skill (on an object) and how it affects the world
         """
-        try:
+        try: # validation 
             game_items.dict_of_items[item]
         except KeyError: 
             return response_gen.itemnt()
@@ -678,7 +706,7 @@ commands = [    #item/skill = i/s
     "look",     # look                  | look around an area
     "inventory",# inventory [type]      | show items & skills (inventory items would only show items)
     "talk",     # talk <name>           | talk to an npc 
-    "examine",  # examine <name>        | examine an object in the world #object in world can be item in room
+    "examine",  # examine <object>      | examine an object in the world #object in world can be item in room
     "inspect",  # inspect <i/s>         | inspect an item in inventory
     "combine",  # combine <i/s> <i/s>   | combine items in inventory
     "read",     # read <object>         | read a sign or book or whatever
@@ -696,9 +724,9 @@ move <direction>    move north, south, east or west
 take <item>         take an item from the world
 place <item>        place an item to the world
 look                look around
-inventory [type]    view inventory, and optionally specify type (ie skills or items)
+inventory [type]    view inventory, and optionally specify type options = item || skill
 talk <name>         talk with an npc of that name
-examine <name>      better look at an object of that name
+examine <object>    better look at an object of that name
 inspect <i/s>       take a closer look at an item or skill
 combine <i/s>       merge two items together
 read <object>       read the text on a sign or poster
@@ -818,15 +846,10 @@ try:
             case "look":
                 to_display(level.current_room.description)
             case "inventory":
-                if content == "items":
-                    to_display("Your inventory contains:\n"+"\n".join(user.inventory[0]))
-                elif content == "skills":
-                    to_display("The skills you have are:\n"+ "\n".join(user.inventory[1]))
-                else:
-                    to_display("Your inventory contains:\n"+"\n".join(user.inventory[0]))
-                    to_display("The skills you have are:\n"+ "\n".join(user.inventory[1]))
+                val = user.display_inventory(content)
+                to_display(val)
             case "talk":
-                pass # implement with npc
+                pass # implement with npcs
             case "examine":
                 #print(level.current_room.objects)
                 val = level.examine(content)

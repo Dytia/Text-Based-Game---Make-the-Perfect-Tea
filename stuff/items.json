@@ -1,6 +1,5 @@
 {
-    "noteBook":{
-        "display_name":"Notebook",
+    "notebook":{
         "type":"item",
         "pages":{
             "1":"",
@@ -18,8 +17,7 @@
         "damage":"2",
         "description":"just fireball"
     },
-    "makeTea":{
-        "display_name":"Make Tea",
+    "make tea":{
         "type":"skill",
         "damage":"-1",
         "description":"makes a cup of tea"
