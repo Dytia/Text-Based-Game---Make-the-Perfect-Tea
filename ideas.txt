@@ -26,3 +26,5 @@ maybe add weight system?
 allow combat with wall?
 
 Currently implementing interaction with items on objecs
+
+combat!?

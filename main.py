@@ -153,17 +153,19 @@ class Responses:
         ]
         return f"{self.randomise(options)}\n"
 
-def load_stuff(location:str, type:int) -> dict: #type 0, item, type 1, obj
+def load_stuff(location:str, type) -> dict: #type 0, item, type 1, obj
     temporary = {}
     try:
         with open(location, "r") as f:
             item_data = json.load(f)
             for i in item_data:
                 print(item_data[i])
-                if type:
+                if type == "obj":
                     temporary[i] = Obj(i, item_data[i])
-                else:
+                elif type == "itm":
                     temporary[i] = Item(i, item_data[i])
+                else:
+                    temporary[i] = Enemy(i, item_data[i])
     except KeyError as e:
         abort(e, location)
     return temporary
@@ -188,7 +190,7 @@ class List_of_items:
     """
     def __init__(self) -> None:
         location = "./stuff/items.json"
-        self.dict_of_items:Item = load_stuff(location, 0)
+        self.dict_of_items:Item = load_stuff(location, "itm")
     
     def inspect(self, name) -> (str):
         """
@@ -234,7 +236,7 @@ class List_of_objects:
     """
     def __init__(self) -> None:
         location = "./stuff/objects.json"
-        self.dict_of_objects:Obj = load_stuff(location, 1)
+        self.dict_of_objects:Obj = load_stuff(location, "obj")
     
     def examine(self, obj) -> (str | bool):
         """
@@ -244,6 +246,27 @@ class List_of_objects:
         if obj in self.dict_of_objects:
             return self.dict_of_objects[obj]
         return False
+
+class Enemy:
+    """
+    an object for an Enemy, and how it performs actions
+    """
+    def __init__(self, name, ene_obj) -> None:
+        self.name = name
+        self.loot = ene_obj["loot"]
+        try: self.damage = ene_obj["damage"] # if < 0 it heals, because thats how stuff works
+        except: self.damage = 0
+        self.description = ene_obj["description"]
+        self.health = ene_obj["health"]
+
+class List_of_enemies:
+    """
+    contains all enemies
+    """
+    def __init__(self) -> None:
+        location = "./stuff/enemies.json"
+        self.dict_of_enemies:Enemy = load_stuff(location, "ene")
+
 
 class Player:
     def __init__(self) -> None:
@@ -885,7 +908,6 @@ try:
             case _:
                 to_display(response_gen.invalid_move())
             
-
 
 
 except KeyboardInterrupt:

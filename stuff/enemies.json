@@ -4,6 +4,15 @@
         "description":"A small blob of slime that seems to have no intelligence, only a basic attack method",
         "loot":[
             "slime"
-        ]
+        ],
+        "health":[2,4]
+    },
+    "skeleton":{
+        "damage":[2,4],
+        "description":"A humanoid skeleton with some light armour",
+        "loot":[
+            "bone"
+        ],
+        "health":[4,8]
     }
 }

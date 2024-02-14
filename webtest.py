@@ -2,6 +2,8 @@ import os
 import asyncio
 import multiprocessing
 import socket
+import json
+import time
 
 HOST = "127.0.0.1"  # Standard loopback interface address (localhost)
 PORT = 65432  # Port to listen on (non-privileged ports are > 1023)
@@ -11,25 +13,120 @@ table_array = [["objects", ["bed", "desk"]], ["items", ["notebook", "stick"]]]
 
 #from doctype to table
 
+def load_stuff(location:str, type) -> dict: #type 0, item, type 1, obj
+    temporary = {}
+    try:
+        with open(location, "r") as f:
+            item_data = json.load(f)
+            for i in item_data:
+                print(item_data[i])
+                if type == "obj":
+                    temporary[i] = Obj(i, item_data[i])
+                elif type == "itm":
+                    temporary[i] = Item(i, item_data[i])
+                else:
+                    temporary[i] = Enemy(i, item_data[i])
+    except KeyError as e:
+        print(e, location)
+    return temporary
+
+class Item:
+    """
+    an object for an item, and how it performs actions
+    """
+    def __init__(self, name, itm_obj) -> None:
+        self.name = name
+        self.type = itm_obj["type"]
+        try: self.damage = itm_obj["damage"] # if < 0 it heals, because thats how stuff works
+        except: self.damage = 0
+        self.description = itm_obj["description"]
+    
+    def inspect(self) -> str:
+        return self.description
+
+class List_of_items:
+    """
+    contains a list of all items and skills in the game
+    """
+    def __init__(self) -> None:
+        location = "./stuff/items.json"
+        self.dict_of_items:Item = load_stuff(location, "itm")
+    
+
+class Obj:
+    """
+    how objects perform actions
+    """
+    def __init__(self, name, obj_obj) -> None:
+        self.name = name
+        self.movable = obj_obj["movable"]
+        self.description = obj_obj["description"]
+        try:
+            self.needs = obj_obj["needs"]
+            self.alt_desc = obj_obj["alt_desc"]
+        except:
+            self.needs = None
+            self.alt_desc = None
+
+        try: self.alias = obj_obj["alias"]
+        except: self.alias = None
+
+        try: self.interaction = obj_obj["interaction"]
+        except: self.interaction = None
+
+
+class List_of_objects:
+    """
+    contains all objects
+    """
+    def __init__(self) -> None:
+        location = "./stuff/objects.json"
+        self.dict_of_objects:Obj = load_stuff(location, "obj")
+    
+
+class Enemy:
+    """
+    an object for an Enemy, and how it performs actions
+    """
+    def __init__(self, name, ene_obj) -> None:
+        self.name = name
+        self.loot = ene_obj["loot"]
+        try: self.damage = ene_obj["damage"] # if < 0 it heals, because thats how stuff works
+        except: self.damage = 0
+        self.description = ene_obj["description"]
+
+class List_of_enemies:
+    """
+    contains all enemies
+    """
+    def __init__(self) -> None:
+        location = "./stuff/enemies.json"
+        self.dict_of_enemies:Enemy = load_stuff(location, "ene")
+
+list_of_enemies = List_of_enemies()
+list_of_items   = List_of_items()
+list_of_objects = List_of_objects()
+
+list_of_dicts = [list_of_enemies.dict_of_enemies,list_of_items.dict_of_items,list_of_objects.dict_of_objects]
+
+print(list_of_enemies.__dict__)
 
 def webserver(counter) -> None:
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         #plain = '<!DOCTYPE HTML><html><style>.light-mode {background-color: white;color: black;}.dark-mode{background-color: rgb(41, 41, 41);color: white;}</style><button id="darkMode" onclick="toggle_visuals()">toggle light mode</button><head><script>var element = document.body;function toggle_visuals(){if (element.className == "dark-mode"){element.classList.replace("dark-mode", "light-mode" )} else {element.classList.replace("light-mode", "dark-mode" )}}; </script></head><body class="dark-mode"><p>Text Based Tea Game</p><h1 style="font-family: Courier New, monospace;">%s</h1></body><html>'
-        web_start = '<!DOCTYPE HTML><html><style>.light-mode {background-color: white;color: black;}.dark-mode{background-color: rgb(41, 41, 41);color: white;}td {padding: 5px;}.light-mode table, .light-mode tr {border-bottom: 1px solid black;border-collapse: collapse;}.dark-mode table, .dark-mode tr {border-bottom: 1px solid white;border-collapse: collapse;}.dark-mode #head {padding: 5px;text-align: left;border-right: 1px solid white;border-bottom: 1px solid white;border-collapse: collapse;}.light-mode #head {padding: 5px;text-align: left;border-right: 1px solid black;border-bottom: 1px solid black;border-collapse: collapse;}</style><button id="darkMode" onclick="toggle_visuals()">toggle light mode</button><head><script>var element = document.body;function toggle_visuals(){if (element.className == "dark-mode"){element.classList.replace("dark-mode", "light-mode" )} else {element.classList.replace("light-mode", "dark-mode" )}};     </script></head><body class="dark-mode" style="font-family:arial"><p>Text Based Tea Game</p><h1 style="font-family: Courier New, monospace;">Hello!, '+str(g_counter)+'</h1><table>'
+        web_start = '<!DOCTYPE HTML><html><style>.light-mode {background-color: white;color: black;font-family: sans-serif;}.dark-mode{background-color: rgb(41, 41, 41);color: white;}</style><button id="darkMode" onclick="toggle_visuals()">toggle light mode</button><head><script>var element = document.body;function toggle_visuals(){if (element.className == "dark-mode"){element.classList.replace("dark-mode", "light-mode" )} else {element.classList.replace("light-mode", "dark-mode" )}};function hide_alt_tables(){document.getElementById("enemies").style.display="none";document.getElementById("items").style.display="none";document.getElementById("objects").style.display="none";}function enemy_select(){hide_alt_tables();document.getElementById("enemies").style.display="block";document.getElementById("opt_display").innerHTML="Enemies";};function item_select(){hide_alt_tables();document.getElementById("items").style.display="block";document.getElementById("opt_display").innerHTML="Items";};function object_select(){hide_alt_tables();document.getElementById("objects").style.display="block";document.getElementById("opt_display").innerHTML="Objects";};</script></head><body class="dark-mode" style="font-family:arial"><p>Text Based Tea Game</p><h1 style="font-family: Courier New, monospace;">{times loaded}</h1><button id="enemyButton" onclick="enemy_select()">Enemies</button><button id="itemButton" onclick="item_select()">Items</button><button id="objectButton" onclick="object_select()">Objects</button><p id="opt_display">Enemies</p>'
+        web_end = '</body></html>'
 
-        web_end = '</table></body></html>'
-        for i in table_array:
-            web_start = web_start + '<tr>'
-            for j in i:
-                if len(j[0]) > 1:
-                    for k in j:
-                        web_start = web_start + '<td>' + k + '</td>'
-                else:
-                    web_start = web_start + '<td id="head">' + j + '</td>'
-            web_start = web_start + '</tr>'
-
-        data = web_start + web_end
-
+        array_of_div_names = ["<div id='enemies'>", "<div id='items' style='display:none'>","<div id='objects' style='display:none'>"]
+        
+        for i in range(0,3):
+            web_start += array_of_div_names[i]
+            for j in list_of_dicts[i]:
+                web_start += f'<details><summary>{j}</summary><p>{list_of_dicts[i][j].description}</p></details>'
+            web_start += "</div>"
+        
+        web_start += web_end
+        data = web_start
         s.bind((HOST, PORT))
         s.listen()
         conn, addr = s.accept()
@@ -54,8 +151,13 @@ def a():
 
 g_counter = 0
 if __name__ == '__main__':
-    val = multiprocessing.Process(target=a)
-    val.start()
+    try:
+        val = multiprocessing.Process(target=a)
+        val.start()
 
-    for i in range(0,1000000):
-        g_counter = i
+        for i in range(0,1000000):
+            g_counter = i
+            print(i)
+            time.sleep(0.5)
+    except:
+        val.kill()

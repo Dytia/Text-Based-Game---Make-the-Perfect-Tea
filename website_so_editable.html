@@ -10,31 +10,7 @@
             background-color: rgb(41, 41, 41);
             color: white;
         }
-        td {
-            padding: 5px;
-        }
-        .light-mode table, .light-mode tr {
-            border-bottom: 1px solid black;
-            border-collapse: collapse;
-        }
-        .dark-mode table, .dark-mode tr {
-            border-bottom: 1px solid white;
-            border-collapse: collapse;
-        }
-        .dark-mode #head {
-            padding: 5px;
-            text-align: left;
-            border-right: 1px solid white;
-            border-bottom: 1px solid white;
-            border-collapse: collapse;
-        }
-        .light-mode #head {
-            padding: 5px;
-            text-align: left;
-            border-right: 1px solid black;
-            border-bottom: 1px solid black;
-            border-collapse: collapse;
-        }
+
 
     </style>
     <button id="darkMode" onclick="toggle_visuals()">toggle light mode</button>
@@ -50,29 +26,69 @@
                     element.classList.replace("light-mode", "dark-mode" )
                 }
             };
+
+            function hide_alt_tables(){
+                document.getElementById("enemies").style.display="none"; //visible
+                document.getElementById("items").style.display="none";
+                document.getElementById("objects").style.display="none";
+            };
+            function enemy_select(){
+                hide_alt_tables();
+                document.getElementById("enemies").style.display="block";
+                document.getElementById("opt_display").innerHTML="Enemies";
+            };
+            function item_select(){
+                hide_alt_tables();
+                document.getElementById("items").style.display="block"
+                document.getElementById("opt_display").innerHTML="Items"
+            };
+            function object_select(){
+                hide_alt_tables();
+                document.getElementById("objects").style.display="block"
+                document.getElementById("opt_display").innerHTML="Objects"
+            };
         </script>
     </head>
     <body class="dark-mode" style="font-family:arial">
         <p>Text Based Tea Game</p>
         <h1 style="font-family: Courier New, monospace;">{times loaded}</h1>
-        <table>
-            <tr>
-                <td id="head">objects</td>
-                <td>bed</td>
-                <td>desk</td>
-            </tr>
-            <tr>
-                <td id="head">items</td>
-                <td>notebook</td>
-                <td>stick</td>
-            </tr>
-        </table>
-        <ul>
+
+        <button id="enemyButton" onclick="enemy_select()">Enemies</button>
+        <button id="itemButton" onclick="item_select()">Items</button>
+        <button id="objectButton" onclick="object_select()">Objects</button>
+        <p id="opt_display">Enemies</p>
+
+        <div id='enemies'>
             <details>
-            <summary>See More</summary>
-                <li>aa</li>
-                <li>aaa</li>
-        </details>
-        </ul>
+                <summary>Slime</summary>
+                    <p>a</p>
+            </details>
+            <details>
+                <summary>See More2</summary>
+                    <p>aaaaaaaaaaaaaaaaaaaaa</p>
+            </details>
+        </div>
+
+        <div id='items' style='display:none'>
+            <details>
+                <summary>See More3</summary>
+                    <p>aaaaaaaaaaaaaaaaaaaaa</p>
+            </details>
+            <details>
+                <summary>See More6</summary>
+                    <p>aaaaaaaaaaaaaaaaaaaaa</p>
+            </details>
+        </div>
+
+        <div id='objects' style='display:none'>
+            <details>
+                <summary>See More4</summary>
+                    <p>aaaaaaaaaaaaaaaaaaaaa</p>
+            </details>
+            <details>
+                <summary>See More5</summary>
+                    <p>aaaaaaaaaaaaaaaaaaaaa</p>
+            </details>
+        </div>
     </body>
 </html>
