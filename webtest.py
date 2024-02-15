@@ -94,6 +94,7 @@ class Enemy:
         try: self.damage = ene_obj["damage"] # if < 0 it heals, because thats how stuff works
         except: self.damage = 0
         self.description = ene_obj["description"]
+        self.health = ene_obj["health"]
 
 class List_of_enemies:
     """
@@ -107,26 +108,42 @@ list_of_enemies = List_of_enemies()
 list_of_items   = List_of_items()
 list_of_objects = List_of_objects()
 
-list_of_dicts = [list_of_enemies.dict_of_enemies,list_of_items.dict_of_items,list_of_objects.dict_of_objects]
+class player:
+    def __init__(self) -> None:
+        self.name = "ada"
 
-print(list_of_enemies.__dict__)
+user = player()
 
+print(os.environ.get('USERNAME'))
 def webserver(counter) -> None:
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         #plain = '<!DOCTYPE HTML><html><style>.light-mode {background-color: white;color: black;}.dark-mode{background-color: rgb(41, 41, 41);color: white;}</style><button id="darkMode" onclick="toggle_visuals()">toggle light mode</button><head><script>var element = document.body;function toggle_visuals(){if (element.className == "dark-mode"){element.classList.replace("dark-mode", "light-mode" )} else {element.classList.replace("light-mode", "dark-mode" )}}; </script></head><body class="dark-mode"><p>Text Based Tea Game</p><h1 style="font-family: Courier New, monospace;">%s</h1></body><html>'
-        web_start = '<!DOCTYPE HTML><html><style>.light-mode {background-color: white;color: black;font-family: sans-serif;}.dark-mode{background-color: rgb(41, 41, 41);color: white;}</style><button id="darkMode" onclick="toggle_visuals()">toggle light mode</button><head><script>var element = document.body;function toggle_visuals(){if (element.className == "dark-mode"){element.classList.replace("dark-mode", "light-mode" )} else {element.classList.replace("light-mode", "dark-mode" )}};function hide_alt_tables(){document.getElementById("enemies").style.display="none";document.getElementById("items").style.display="none";document.getElementById("objects").style.display="none";}function enemy_select(){hide_alt_tables();document.getElementById("enemies").style.display="block";document.getElementById("opt_display").innerHTML="Enemies";};function item_select(){hide_alt_tables();document.getElementById("items").style.display="block";document.getElementById("opt_display").innerHTML="Items";};function object_select(){hide_alt_tables();document.getElementById("objects").style.display="block";document.getElementById("opt_display").innerHTML="Objects";};</script></head><body class="dark-mode" style="font-family:arial"><p>Text Based Tea Game</p><h1 style="font-family: Courier New, monospace;">{times loaded}</h1><button id="enemyButton" onclick="enemy_select()">Enemies</button><button id="itemButton" onclick="item_select()">Items</button><button id="objectButton" onclick="object_select()">Objects</button><p id="opt_display">Enemies</p>'
+        web_start = '<!DOCTYPE HTML><html><style>p{margin:5px 0;}.light-mode {background-color: white;color: black;font-family: sans-serif;}.dark-mode{background-color: rgb(0, 0, 0);color: white;}</style><button id="darkMode" onclick="toggle_visuals()">toggle light mode</button><head><script>var element = document.body;function toggle_visuals(){if (element.className == "dark-mode"){element.classList.replace("dark-mode", "light-mode" )} else {element.classList.replace("light-mode", "dark-mode" )}};function hide_alt_tables(){document.getElementById("enemies").style.display="none";document.getElementById("items").style.display="none";document.getElementById("objects").style.display="none";}function enemy_select(){hide_alt_tables();document.getElementById("enemies").style.display="block";document.getElementById("opt_display").innerHTML="Enemies";};function item_select(){hide_alt_tables();document.getElementById("items").style.display="block";document.getElementById("opt_display").innerHTML="Items";};function object_select(){hide_alt_tables();document.getElementById("objects").style.display="block";document.getElementById("opt_display").innerHTML="Objects";};</script></head><body class="dark-mode" style="font-family:arial"><p>Text Based Tea Game</p><p>Hello '+os.environ.get('USERNAME') + ' </p><p>playing as '+ user.name+' </p><button id="enemyButton" onclick="enemy_select()">Enemies</button><button id="itemButton" onclick="item_select()">Items</button><button id="objectButton" onclick="object_select()">Objects</button><p id="opt_display">Enemies</p>'
         web_end = '</body></html>'
-
-        array_of_div_names = ["<div id='enemies'>", "<div id='items' style='display:none'>","<div id='objects' style='display:none'>"]
         
-        for i in range(0,3):
-            web_start += array_of_div_names[i]
-            for j in list_of_dicts[i]:
-                web_start += f'<details><summary>{j}</summary><p>{list_of_dicts[i][j].description}</p></details>'
-            web_start += "</div>"
+        tmp = list_of_enemies.dict_of_enemies
+        web_start += "<div id='enemies'>"
+        for i in tmp:
+            web_start += f'<details><summary>{i}</summary><p>{tmp[i].description}</p><p>Drops: {", ".join(tmp[i].loot)}</p><p>Health range: {tmp[i].health[0]} to {tmp[i].health[1]}</p><p>Attack damage: {tmp[i].damage[0]} to {tmp[i].damage[1]}</p></details>'
+        web_start += "</div>"
+
+        tmp = list_of_items.dict_of_items
+        web_start += "<div id='items' style='display:none'>"
+        for i in tmp:
+            web_start += f'<details><summary>{i}</summary><p>{tmp[i].description}</p><p>Type: {tmp[i].type}</p>{"" if tmp[i].damage == 0 else f"<p>Damage: {tmp[i].damage}</p>"}</details>'
+        web_start += "</div>"
+
+        tmp = list_of_objects.dict_of_objects
+        web_start += "<div id='objects' style='display:none'>"
+        for i in tmp:
+            web_start += f'<details><summary>{i}</summary><p>{tmp[i].description}</p></details>'
+        web_start += "</div>"
         
         web_start += web_end
+
         data = web_start
+
+
         s.bind((HOST, PORT))
         s.listen()
         conn, addr = s.accept()
@@ -157,7 +174,7 @@ if __name__ == '__main__':
 
         for i in range(0,1000000):
             g_counter = i
-            print(i)
+            #print(i)
             time.sleep(0.5)
     except:
         val.kill()

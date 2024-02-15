@@ -25,7 +25,7 @@
     "bread":{
         "type":"item",
         "damage":"-2",
-        "description":"a load of bread"
+        "description":"a loaf of bread"
     },
     "vase":{
         "type":"item",
