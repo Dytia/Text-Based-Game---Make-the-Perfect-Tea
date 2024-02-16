@@ -274,9 +274,13 @@ class Enemy:
         except: self.damage = 0
         self.description = ene_obj["description"]
         self.health_range = ene_obj["health"]
-        self.health = random.randint(self.health_range[0], self.health_range[1]+1)
         self.hit = ene_obj["hit"]
         self.armour = 10 + ene_obj["armour"]
+        try: self.atk_pat = ene_obj["attack_pattern"]
+        except: self.atk_pat = [self.damage]
+
+    def return_health(self) -> int:
+        return random.randint(self.health_range[0], self.health_range[1])
 
 class List_of_enemies:
     """
@@ -648,15 +652,28 @@ def combat(user:Player, thing=None) -> str:
     """
     Combat loop and whatnot
     """
+    def roll():
+        return random.randint(1,20)
+
     to_display("Exiting will not save combat!")
     if thing==None:
         return "You cant attack nothing!"
 
     if thing in game_enemies.dict_of_enemies:
-        enemy = game_enemies.dict_of_enemies[thing]
+        enemy:Enemy = game_enemies.dict_of_enemies[thing]
     else: return response_gen.none_of_that_enemy_here()
 
     combat_is_happening = True
+
+    tmp = enemy.return_health()
+    enemy = [
+        tmp,              # max hp
+        tmp,              # hp
+        enemy.armour,     # AC
+        enemy.hit,        # Attack mod
+        enemy.atk_pat     # attack pattern (damage vals for them)
+    ]
+
     while combat_is_happening:
         # show percentage of player health, and enemy health
 
@@ -672,10 +689,15 @@ def combat(user:Player, thing=None) -> str:
         else: 
             content = ""        
 
-
+        rolls = [
+            roll(), # player
+            roll() # enemy
+        ]
+        
         match u_input:
             case "attack":
-                pass
+                if rolls[0]:
+                    pass
 
                 
             case "defend":
@@ -695,7 +717,7 @@ def combat(user:Player, thing=None) -> str:
                     to_display(i)
             case _:
                 pass
-
+            
         #enemy move
 
 

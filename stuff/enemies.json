@@ -10,13 +10,14 @@
         "health":[2,4]
     },
     "skeleton":{
-        "damage":[2,4],
+        "damage":[2,5],
         "hit":0,
         "armour":2,
         "description":"A humanoid skeleton with some light armour",
         "loot":[
             "bone"
         ],
-        "health":[4,8]
+        "health":[4,8],
+        "attack_pattern":[[2,3],[2,3],[4,5]]
     }
 }
