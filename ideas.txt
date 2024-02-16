@@ -28,3 +28,14 @@ allow combat with wall?
 Currently implementing interaction with items on objecs
 
 combat!?
+
+Dumb enemies always attack
+semi sentient ones defend when player defends
+smart ones are smart
+
+
+Currently doing enemies, see paper
+
+percentage based attacks
+attack patterns? 3 small 1 big?
+random!??

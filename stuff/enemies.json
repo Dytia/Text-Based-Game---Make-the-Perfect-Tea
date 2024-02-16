@@ -1,6 +1,8 @@
 {
     "slime":{
         "damage":[0,2],
+        "hit":0,
+        "armour":0,
         "description":"A small blob of slime that seems to have no intelligence, only a basic attack method",
         "loot":[
             "slime"
@@ -9,6 +11,8 @@
     },
     "skeleton":{
         "damage":[2,4],
+        "hit":0,
+        "armour":2,
         "description":"A humanoid skeleton with some light armour",
         "loot":[
             "bone"

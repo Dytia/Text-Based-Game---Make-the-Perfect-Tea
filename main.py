@@ -119,7 +119,7 @@ class Responses:
             "You scour the area but find no trace of the item.",
             "The item seems to be playing a game of hide and seek.",
             "Despite your best efforts, the item stays hidden.",
-            "Your search proves fruitless; the item is not present.",
+            "Your search proves fruitless; the item is not present."
         ]
         return f"{self.randomise(options)}\nOr, a typo"
 
@@ -152,6 +152,20 @@ class Responses:
             f"It's clear that the {item} and the {obj} have different agendas; your attempt fails to bridge the gap."
         ]
         return f"{self.randomise(options)}\n"
+    
+    def none_of_that_enemy_here(self) -> str:
+        options= [
+            "Your search yields nothing; the enemy seems elusive.",
+            "Despite your efforts, the enemy remains elusive.",
+            "No luck - the enemy is nowhere to be found.",
+            "Your thorough search turns up empty-handed.",
+            "The enemy you seek eludes your searching gaze.",
+            "Unfortunately, the enemy is not in this vicinity.",
+            "You scour the area but find no trace of the enemy.",
+            "The item seems to be playing a game of hide and seek.",
+            "Your search proves fruitless; the enemy is not present."
+        ]
+        return f"{self.randomise(options)}\nor a megre typo happened"
 
 def load_stuff(location:str, type) -> dict: #type 0, item, type 1, obj
     temporary = {}
@@ -178,8 +192,10 @@ class Item:
         self.name = name
         self.type = itm_obj["type"]
         try: self.damage = itm_obj["damage"] # if < 0 it heals, because thats how stuff works
-        except: self.damage = 0
+        except: self.damage = [0,0]
         self.description = itm_obj["description"]
+        try: self.hit = itm_obj["hit"] # hit bonus
+        except: self.hit = 0
     
     def inspect(self) -> str:
         return self.description
@@ -257,7 +273,10 @@ class Enemy:
         try: self.damage = ene_obj["damage"] # if < 0 it heals, because thats how stuff works
         except: self.damage = 0
         self.description = ene_obj["description"]
-        self.health = ene_obj["health"]
+        self.health_range = ene_obj["health"]
+        self.health = random.randint(self.health_range[0], self.health_range[1]+1)
+        self.hit = ene_obj["hit"]
+        self.armour = 10 + ene_obj["armour"]
 
 class List_of_enemies:
     """
@@ -625,6 +644,60 @@ class Level:
                     return response_gen.item_interaction_with_object_fail(item, obj)
 
 
+def combat(user:Player, thing=None) -> str:
+    """
+    Combat loop and whatnot
+    """
+    to_display("Exiting will not save combat!")
+    if thing==None:
+        return "You cant attack nothing!"
+
+    if thing in game_enemies.dict_of_enemies:
+        enemy = game_enemies.dict_of_enemies[thing]
+    else: return response_gen.none_of_that_enemy_here()
+
+    combat_is_happening = True
+    while combat_is_happening:
+        # show percentage of player health, and enemy health
+
+        vals = input(f"{bcolours.OKCYAN}> {bcolours.ENDC}").strip().split(" ")
+        u_input = vals.pop(0).lower()
+        
+        if len(vals) == 1:
+            content = vals[0]
+        elif len(vals) > 1:
+            content = []
+            for i in vals:
+                content.append(i.lower())
+        else: 
+            content = ""        
+
+
+        match u_input:
+            case "attack":
+                pass
+
+                
+            case "defend":
+                pass
+            
+            case "use":
+                pass
+            case "flee":
+                pass
+
+            case "wait":
+                pass
+            
+            case "help":
+                dt = help_combat.split("\n")
+                for i in dt:
+                    to_display(i)
+            case _:
+                pass
+
+        #enemy move
+
 
        
 def to_display(val) -> None:
@@ -734,6 +807,7 @@ commands = [    #item/skill = i/s
     "combine",  # combine <i/s> <i/s>   | combine items in inventory
     "read",     # read <object>         | read a sign or book or whatever
     "use",      # use <i/s> [object]    | use an item or skill
+    "attack",   # attack <enemy>        | Attack an enemy and start combat
     "help",     # help                  | display commands
     "drink",    # drink <tea>           | drink tea, or if coffee specified, quit without saving
     "exit"      # exit                  | saves & quits the game
@@ -747,15 +821,38 @@ move <direction>    move north, south, east or west
 take <item>         take an item from the world
 place <item>        place an item to the world
 look                look around
-inventory [type]    view inventory, and optionally specify type options = item || skill
+inventory [i/s]     view inventory
 talk <name>         talk with an npc of that name
 examine <object>    better look at an object of that name
 inspect <i/s>       take a closer look at an item or skill
 combine <i/s>       merge two items together
 read <object>       read the text on a sign or poster
 use <i/s>           use an item/skill
+attack <enemy>      initiate combat
 help                display this list
 exit                save & close
+"""
+
+combat_commands = [ #i/s = item/skill
+    "attack",   # attack                | attack the selected enemy with the last used object
+    "defend",   # defend                | decreases damage input by 50%
+    "use",      # use <i/s>             | use an item or skill
+    "flee",     # flee                  | chance to escape combat based on factors
+    "wait",     # wait                  | Skip!
+    "help"      # help                  | help list
+]
+
+help_combat = """
+Help menu
+i/s means item/skill
+
+attack              Attack the enemy with last used item/skill
+defend              reduce damage taken
+use i/s             use an item or a skill
+flee                attempt to escape combat
+wait                skip your turn
+help                display this list
+
 """
 
 try:
@@ -779,6 +876,8 @@ print(f"{bcolours.OKGREEN}done{bcolours.ENDC}\nLoading items:")
 game_items:List_of_items = List_of_items()
 print(f"{bcolours.OKGREEN}done{bcolours.ENDC}\nLoading objects:")
 game_objects:List_of_objects = List_of_objects()
+print(f"{bcolours.OKGREEN}done{bcolours.ENDC}\nLoading enemies:")
+game_enemies:List_of_enemies = List_of_enemies()
 print(f"{bcolours.OKGREEN}done{bcolours.ENDC}")
 
 if first_run:
@@ -826,6 +925,7 @@ else:
     except Exception as e:
         abort(e, "./saves/save.csv")
 
+#call website
 
 try:
     print(f"loading level: ./maps/level{level_num}.json")
@@ -887,7 +987,10 @@ try:
             case "use":
                 # uses the interaction bit of object class, and an item
                 val =level.interact(content[0], content[1],user)
-                print(val)
+                to_display(val)
+            case "attack":
+                val = combat()
+                to_display(val)
             case "help":
                 dt = help_data.split("\n")
                 for i in dt:

@@ -4,6 +4,7 @@ import multiprocessing
 import socket
 import json
 import time
+import random
 
 HOST = "127.0.0.1"  # Standard loopback interface address (localhost)
 PORT = 65432  # Port to listen on (non-privileged ports are > 1023)
@@ -38,8 +39,10 @@ class Item:
         self.name = name
         self.type = itm_obj["type"]
         try: self.damage = itm_obj["damage"] # if < 0 it heals, because thats how stuff works
-        except: self.damage = 0
+        except: self.damage = [0,0]
         self.description = itm_obj["description"]
+        try: self.hit = itm_obj["hit"] # hit bonus
+        except: self.hit = 0
     
     def inspect(self) -> str:
         return self.description
@@ -94,7 +97,11 @@ class Enemy:
         try: self.damage = ene_obj["damage"] # if < 0 it heals, because thats how stuff works
         except: self.damage = 0
         self.description = ene_obj["description"]
-        self.health = ene_obj["health"]
+        self.health_range = ene_obj["health"]
+        self.health = random.randint(self.health_range[0], self.health_range[1]+1)
+        self.hit = ene_obj["hit"]
+        self.armour = 10 + ene_obj["armour"]
+
 
 class List_of_enemies:
     """
@@ -124,13 +131,13 @@ def webserver(counter) -> None:
         tmp = list_of_enemies.dict_of_enemies
         web_start += "<div id='enemies'>"
         for i in tmp:
-            web_start += f'<details><summary>{i}</summary><p>{tmp[i].description}</p><p>Drops: {", ".join(tmp[i].loot)}</p><p>Health range: {tmp[i].health[0]} to {tmp[i].health[1]}</p><p>Attack damage: {tmp[i].damage[0]} to {tmp[i].damage[1]}</p></details>'
+            web_start += f'<details><summary>{i}</summary><p>{tmp[i].description}</p><p>Drops: {", ".join(tmp[i].loot)}</p><p>Health range: {tmp[i].health_range[0]} to {tmp[i].health_range[1]}</p><p>Attack damage: {tmp[i].damage[0]} to {tmp[i].damage[1]}</p></details>'
         web_start += "</div>"
 
         tmp = list_of_items.dict_of_items
         web_start += "<div id='items' style='display:none'>"
         for i in tmp:
-            web_start += f'<details><summary>{i}</summary><p>{tmp[i].description}</p><p>Type: {tmp[i].type}</p>{"" if tmp[i].damage == 0 else f"<p>Damage: {tmp[i].damage}</p>"}</details>'
+            web_start += f'<details><summary>{i}</summary><p>{tmp[i].description}</p><p>Type: {tmp[i].type}{" " if tmp[i].damage == [0,0] else f"</p><p>Hit bonus: {tmp[i].hit}</p><p>Damage range: {tmp[i].damage[0]} to {tmp[i].damage[1]}</p>"}</details>'
         web_start += "</div>"
 
         tmp = list_of_objects.dict_of_objects
