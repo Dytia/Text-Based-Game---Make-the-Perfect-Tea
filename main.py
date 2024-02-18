@@ -694,10 +694,29 @@ def combat(user:Player, thing=None) -> str:
             roll() # enemy
         ]
         
+        player_last_attack = [
+            0, # atk mod
+            [0,0], # damage range
+            0, # if somethins is here
+            1  # free uses left
+        ]
+
         match u_input:
             case "attack":
-                if rolls[0]:
-                    pass
+                if content == "" and player_last_attack[2] == 0:
+                    to_display("You dont appear to have an attack! skipping round\n0/1free skips left")
+                    player_last_attack[3] = 0
+                    continue
+                
+                elif content != "" and player_last_attack[2] == 0:
+                    if content in game_items.dict_of_items:
+                        data:Item = game_items.dict_of_items[content]
+                        player_last_attack[0] = data.hit
+                        player_last_attack[1] = data.damage
+                        player_last_attack[2] = 1
+                    
+                    if rolls[0]:
+                        pass
 
                 
             case "defend":
@@ -856,7 +875,7 @@ exit                save & close
 """
 
 combat_commands = [ #i/s = item/skill
-    "attack",   # attack                | attack the selected enemy with the last used object
+    "attack",   # attack [i/s]          | attack the selected enemy with the last used thing, or new one
     "defend",   # defend                | decreases damage input by 50%
     "use",      # use <i/s>             | use an item or skill
     "flee",     # flee                  | chance to escape combat based on factors
