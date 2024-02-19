@@ -121,7 +121,7 @@ class Responses:
             "Despite your best efforts, the item stays hidden.",
             "Your search proves fruitless; the item is not present."
         ]
-        return f"{self.randomise(options)}\nOr, a typo"
+        return f"{self.randomise(options)}\nOr, a typo, perhaps you just dont have it in your inventory"
 
     def itemnt(self) -> str:
         options = [
@@ -450,7 +450,14 @@ class Room:
         except:
             self.save = 0
         
-        self.objects = {}
+        self.enemies = []
+        print(f"{bcolours.OKGREEN}done{bcolours.ENDC}\n    Loading  Enemies", end=" ")
+        try:
+            self.enemies = self.properties["enemies"] # list of names
+        except:
+            self.enemies = []
+
+        self.objects = []
         print(f"{bcolours.OKGREEN}done{bcolours.ENDC}\n    Loading  Objects", end=" ")
         self.objects:list = self.properties["examine"]
         print(f"{bcolours.OKGREEN}done{bcolours.ENDC}\n")
@@ -648,20 +655,32 @@ class Level:
                     return response_gen.item_interaction_with_object_fail(item, obj)
 
 
-def combat(user:Player, thing=None) -> str:
+def combat(user:Player, room:Room, thing=None) -> str:
     """
     Combat loop and whatnot
-    """
-    def roll():
-        return random.randint(1,20)
-
-    to_display("Exiting will not save combat!")
-    if thing==None:
-        return "You cant attack nothing!"
-
+    """    
+    if thing==None or thing == "":
+        return "You can't attack nothing!"
+    
     if thing in game_enemies.dict_of_enemies:
+        
         enemy:Enemy = game_enemies.dict_of_enemies[thing]
     else: return response_gen.none_of_that_enemy_here()
+
+
+    def roll():
+        return random.randint(1,20)
+    
+    def set_player_attack_data(player:list, hit:int, damage_range:list) -> list:
+        player[0] = hit
+        player[1] = damage_range
+        player[3] = 1
+        return player
+
+    to_display("Exiting will not save combat!")
+
+
+
 
     combat_is_happening = True
 
@@ -674,10 +693,18 @@ def combat(user:Player, thing=None) -> str:
         enemy.atk_pat     # attack pattern (damage vals for them)
     ]
 
+    player_last_attack = [
+        0, # atk mod
+        [0,0], # damage range
+        0, # if somethins is here
+        1  # free uses left
+    ]
+
     while combat_is_happening:
         # show percentage of player health, and enemy health
 
-        vals = input(f"{bcolours.OKCYAN}> {bcolours.ENDC}").strip().split(" ")
+        vals = input(f"{bcolours.BRIGHTRED}> {bcolours.ENDC}").strip().split(" ")
+        print(vals)
         u_input = vals.pop(0).lower()
         
         if len(vals) == 1:
@@ -694,13 +721,7 @@ def combat(user:Player, thing=None) -> str:
             roll() # enemy
         ]
         
-        player_last_attack = [
-            0, # atk mod
-            [0,0], # damage range
-            0, # if somethins is here
-            1  # free uses left
-        ]
-
+        
         match u_input:
             case "attack":
                 if content == "" and player_last_attack[2] == 0:
@@ -708,13 +729,14 @@ def combat(user:Player, thing=None) -> str:
                     player_last_attack[3] = 0
                     continue
                 
-                elif content != "" and player_last_attack[2] == 0:
-                    if content in game_items.dict_of_items:
+                elif content != "":
+                    if content in user.inventory[0] or content in user.inventory[1]:
                         data:Item = game_items.dict_of_items[content]
-                        player_last_attack[0] = data.hit
-                        player_last_attack[1] = data.damage
-                        player_last_attack[2] = 1
-                    
+                        player_last_attack = set_player_attack_data(player_last_attack, data.hit, data.damage)
+                    else:
+                        to_display(response_gen.cant_find_item())
+
+                        
                     if rolls[0]:
                         pass
 
@@ -1030,7 +1052,7 @@ try:
                 val =level.interact(content[0], content[1],user)
                 to_display(val)
             case "attack":
-                val = combat()
+                val = combat(user, level.current_room, thing=content)
                 to_display(val)
             case "help":
                 dt = help_data.split("\n")

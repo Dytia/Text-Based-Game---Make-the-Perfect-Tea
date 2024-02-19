@@ -32,7 +32,10 @@
         "description": "You enter an intersection between corridors, to the south, east and west the path continues, lit by the light of flickering torches and an occasional patch of sunlight.",
         "properties": {
             "examine": [],
-            "items": []
+            "items": [],
+            "enemies":[
+                "slime"
+            ]
         },
         "data": {}
     },
