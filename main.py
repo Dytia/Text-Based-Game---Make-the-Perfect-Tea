@@ -188,7 +188,10 @@ class Responses:
         ]
         return f"{self.randomise(options)}"
 
-    def generic_hit(self, enemy:str) -> str:
+    def generic_enemy_hit(self, enemy:str) -> str:
+        """
+        when enemy hits player
+        """
         options = [
             f"The {enemy}'s attack connects, dealing damage to you.",
             f"You feel the impact as the {enemy}'s strike lands.",
@@ -200,6 +203,43 @@ class Responses:
             f"You grit your teeth as the {enemy}'s attack lands true.",
             f"You suffer the consequences as the {enemy}'s attack connects.",
             f"The {enemy}'s attack hits, causing you to wince in pain."
+        ]
+        return f"{self.randomise(options)}"
+    
+    def generic_player_hit(self, enemy:str) -> str:
+        """
+        when player hits enemy
+        """
+        options = [
+            f"Your attack strikes true, dealing damage to the {enemy}.",
+            f"You hit the {enemy}, causing them to stagger from the blow.",
+            f"Your strike connects, inflicting damage upon the {enemy}.",
+            f"The {enemy} recoils as your attack lands squarely.",
+            f"You successfully hit the {enemy}",
+            f"The {enemy} takes damage as your attack connects.",
+            f"Your strike finds its mark, causing the {enemy} to falter.",
+            f"You land a solid hit on the {enemy}, rattling them.",
+            f"The {enemy} feels the impact of your successful attack."
+        ]
+        return f"{self.randomise(options)}"
+
+    def player_miss(self, enemy:str) -> str:
+        options = [
+            f"Your attack misses, leaving you off-balance.",
+            f"You swing wide, narrowly missing the {enemy}.",
+            f"The {enemy} evades your attack, leaving you frustrated.",
+            f"Your strike falls short, much to your dismay.",
+            f"You whiff your attack, cursing your poor aim.",
+            f"You swing and miss, feeling a pang of frustration.",
+            f"Your attack fails to connect",
+            f"Your strike misses its mark, leaving you momentarily exposed."
+        ]
+        return f"{self.randomise(options)}"
+
+    def player_miss_dodge(self, enemy:str) -> str:
+        options = [
+            f"The {enemy} sidesteps your blow, avoiding harm.",
+            f"The {enemy} deftly dodges your attack, mocking your effort."
         ]
         return f"{self.randomise(options)}"
 
@@ -715,9 +755,16 @@ def combat(user:Player, room:Room, thing=None) -> str:
         player[3] = 1
         return player
 
+    def apply_modifiers(damage:int) -> int:
+        if player_defend == True:
+            damage = damage * defend_mod
+        elif player_dodge == True:
+            damage = damage * dodge_mod
+
+        damage = round(damage)
+        return damage
+
     to_display("Exiting will not save combat!")
-
-
 
 
     combat_is_happening = True
@@ -731,7 +778,7 @@ def combat(user:Player, room:Room, thing=None) -> str:
         enemy.atk_pat,    # 4 | attack pattern (damage vals for them)
         enemy.atk_chance, # 5 | chance of attacking
         False,            # 6 | defend
-        False,            # 7 | dodge
+        False,            # 7 | dodge (ac one)
         enemy.name        # 9 | the enemys name
     ]
 
@@ -748,7 +795,9 @@ def combat(user:Player, room:Room, thing=None) -> str:
         player_defend = False
         # show percentage of player health, and enemy health
 
+        enablePrint()
         vals = input(f"{bcolours.BRIGHTRED}> {bcolours.ENDC}").strip().split(" ")
+        blockPrint()
         print(vals)
         u_input = vals.pop(0).lower()
         
@@ -762,28 +811,37 @@ def combat(user:Player, room:Room, thing=None) -> str:
             content = ""        
 
         
-        
         match u_input:
             case "attack":
-                if content == "" and player_last_attack[2] == 0:
-                    to_display("You dont appear to have an attack! skipping round\n0/1free skips left")
+                if content == "" and player_last_attack[2] == 0: # no attack to attack
+                    to_display(f"You dont appear to have an attack! {'skipping round 0/1 free skips left' if player_last_attack[3] ==1 else '' }")
                     if player_last_attack[3]:
                         player_last_attack[3] = 0
                         skip = True
-                    continue
-                
-                elif content != "":
+                    
+                elif content != "" or player_last_attack[2] == 1:
                     if content in user.inventory[0] or content in user.inventory[1]:
                         data:Item = game_items.dict_of_items[content]
                         player_last_attack = set_player_attack_data(player_last_attack, data.hit, data.damage)
+
+                        if roll() + player_last_attack[0] >= enemy_data[2] if not enemy_data[7] else enemy_data[2] + dodge_mod:
+                            damage = random.randint(player_last_attack[1][0], player_last_attack[1][1])
+                            damage = apply_modifiers(damage)
+                            to_display(f"you deal {bcolours.OKGREEN}{damage}{bcolours.ENDC} damage")
+                            
+                            enemy_data[1] -= damage
+                        else: # missing
+                            if player_dodge == True:
+                                to_display(response_gen.player_miss_dodge(enemy_data[8]))
+                            else:
+                                if random.randint(0,1):
+                                    to_display(response_gen.player_miss(enemy_data[8]))
+                                else:
+                                    to_display(response_gen.player_miss_dodge(enemy_data[8]))
+                            
                     else:
                         to_display(response_gen.cant_find_item())
 
-                        
-                    if roll():
-                        pass
-
-                
             case "defend":
                 player_defend = True
 
@@ -792,6 +850,7 @@ def combat(user:Player, room:Room, thing=None) -> str:
             
             case "use":
                 pass
+
             case "flee":
                 pass
 
@@ -818,15 +877,9 @@ def combat(user:Player, room:Room, thing=None) -> str:
                 if atk_roll >= user.ac if player_dodge == False else user.ac + dodge_ac_boost:
                     tmp = enemy_data[4][attack_pattern_position]
                     damage = random.randint(tmp[0], tmp[1])
-                    to_display(response_gen.generic_hit(enemy_data[8]))                
-                    
-                    # apply damage modifiers
-                    if player_defend == True:
-                        damage = damage * defend_mod
-                    elif player_dodge == True:
-                        damage = damage * dodge_mod
+                    to_display(response_gen.generic_enemy_hit(enemy_data[8]))                
 
-                    damage = round(damage)
+                    damage = apply_modifiers(damage)
                     to_display(f"it deals {bcolours.BRIGHTRED}{damage}{bcolours.ENDC} damage")
                     user.health -= damage # take away damage
 
@@ -835,11 +888,12 @@ def combat(user:Player, room:Room, thing=None) -> str:
                         to_display(response_gen.enemy_miss_dodge(enemy_data[8]))
                     else:
                         to_display(response_gen.enemy_miss(enemy_data[8]))
-
+                
+                print("b",attack_pattern_position)
                 attack_pattern_position +=1
-                print(attack_pattern_position)
+                print("a",attack_pattern_position)
                 print(enemy_data)
-                if attack_pattern_position > len(enemy_data[4]):
+                if attack_pattern_position >= len(enemy_data[4]):
                     attack_pattern_position = 0
         
 
@@ -851,12 +905,10 @@ def combat(user:Player, room:Room, thing=None) -> str:
                 else:
                     enemy_data[7] = True
         
-        enemy_percent_health = enemy_data[0]/enemy_data[1] * 100
-        print(f"Player: {user.health} | {enemy_data[8]}: {enemy_percent_health}")
+        enemy_percent_health = enemy_data[1]/enemy_data[0] * 100
+        print(f"{user.name}: {user.health} | {enemy_data[8]}: {enemy_percent_health}")
             
                     
-
-
 
 
        
@@ -864,6 +916,7 @@ def to_display(val) -> None:
     """
     parse and send so newlines occur in a space rather than mid word
     """
+    enablePrint()
     size = os.get_terminal_size().columns
     last_space = 0
     vals = val.split("\n")
@@ -881,6 +934,7 @@ def to_display(val) -> None:
                 print(val)
                 break
             val = val[last_space+1:]
+    blockPrint()
 
 def abort(e, location) -> None:
     """
@@ -910,15 +964,6 @@ def reset() -> None:
             except:
                 print("An error occured, exiting game probably best to redownload")
                 os._exit(1)
-
-
-# Disable print
-def blockPrint():
-    sys.stdout = open(os.devnull, 'w')
-
-# Restore print
-def enablePrint():
-    sys.stdout = sys.__stdout__
 
 
 """
@@ -1036,10 +1081,24 @@ except:
     defend_mod = 0.5
 
 
+if not loading_status:
+    # Disable print
+    def blockPrint():
+        sys.stdout = open(os.devnull, 'w')
+
+    # Restore print
+    def enablePrint():
+        sys.stdout = sys.__stdout__
+else:
+    def blockPrint():
+        pass
+    
+    def enablePrint():
+        pass
+
 del data
 
-if not loading_status:
-    blockPrint()
+blockPrint()
 
 print("Loading responses")
 response_gen:Responses = Responses()
@@ -1112,7 +1171,11 @@ try:
         if current_room != old_room:
             to_display(level.current_room.description)
             old_room = current_room
+
+        enablePrint()
         vals = input(f"{bcolours.OKCYAN}> {bcolours.ENDC}").strip().split(" ")
+        blockPrint()
+
         u_input = vals.pop(0).lower()
         
         if len(vals) == 1:
@@ -1190,4 +1253,5 @@ except KeyboardInterrupt:
     user.save(level_num, current_room)
     pass
 finally:
+    enablePrint()
     print("bye")
