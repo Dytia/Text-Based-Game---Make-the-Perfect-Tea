@@ -945,6 +945,7 @@ def abort(e, location) -> None:
 
 def reset() -> None:
     to_display("Are you sure? this process is not reversible [y/N]")
+    enablePrint()
     val = input().lower()
     if val == "y":
         val = input("Are you sure you're sure? [y/N]\n").lower()
@@ -1123,6 +1124,7 @@ keep your eye out for interesting things, and good luck
 if you want to restart just change the name of saves.json to something else
 """
     to_display(content)
+    enablePrint()
     fail = True
     print("Character creation")
     # get character name
@@ -1169,7 +1171,7 @@ try:
         """
         current_room = level.current_room.name
         if current_room != old_room:
-            to_display(level.current_room.description)
+            to_display("\n"+level.current_room.description)
             old_room = current_room
 
         enablePrint()
@@ -1184,6 +1186,8 @@ try:
             content = []
             for i in vals:
                 content.append(i.lower())
+            if u_input != "use":
+                content = content[0]
         else: 
             content = ""
 
@@ -1222,7 +1226,7 @@ try:
                 pass # when sign
             case "use":
                 # uses the interaction bit of object class, and an item
-                val =level.interact(content[0], content[1],user)
+                val =level.interact(content[0], content[1], user)
                 to_display(val)
             case "attack":
                 val = combat(user, level.current_room, thing=content)
@@ -1242,7 +1246,7 @@ try:
                 raise KeyboardInterrupt
             case "":
                 continue
-            case "Game_Reset_sf9RIWzCEoSxepo6":
+            case "game_reset_sf9riwzceosxepo6":
                 reset()
             case _:
                 to_display(response_gen.invalid_move())
