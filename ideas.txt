@@ -39,3 +39,6 @@ Currently doing enemies, see paper
 percentage based attacks
 attack patterns? 3 small 1 big?
 random!??
+
+defened = half damage intake
+dodge = 1.5x damage, but +5 ac

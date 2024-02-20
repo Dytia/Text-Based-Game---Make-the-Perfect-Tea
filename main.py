@@ -151,7 +151,7 @@ class Responses:
             f"Your attempt to use the {item} on the {obj} meets with confusion and lack of progress.",
             f"It's clear that the {item} and the {obj} have different agendas; your attempt fails to bridge the gap."
         ]
-        return f"{self.randomise(options)}\n"
+        return f"{self.randomise(options)}"
     
     def none_of_that_enemy_here(self) -> str:
         options= [
@@ -166,6 +166,42 @@ class Responses:
             "Your search proves fruitless; the enemy is not present."
         ]
         return f"{self.randomise(options)}\nor a megre typo happened"
+    
+    def enemy_miss_dodge(self, enemy:str) ->str:
+        options = [
+            f"You deftly evade the {enemy}'s attack, sidestepping just in time.",
+            f"You dodge the {enemy}'s attack effortlessly, leaving them off-balance.",
+            f"The {enemy}'s strike misses.",
+            f"You easily evade the {enemy}'s clumsy attack, feeling a rush of satisfaction.",
+            f"Your quick reflexes allow you to dodge the {enemy}'s attack with ease.",
+            f"You sidestep the {enemy}'s attack."
+        ]
+        return f"{self.randomise(options)}"
+    
+    def enemy_miss(self, enemy:str) -> str:
+        options = [
+            f"The {enemy}'s attack misses its mark, narrowly avoiding you.",
+            f"The {enemy}'s strike misses.",
+            f"The {enemy} swings, but their attack whiffs harmlessly past you.",
+            f"The {enemy}'s swing misses its mark, their frustration evident.",
+            f"The {enemy}'s attack falls short, leaving them frustrated."
+        ]
+        return f"{self.randomise(options)}"
+
+    def generic_hit(self, enemy:str) -> str:
+        options = [
+            f"The {enemy}'s attack connects, dealing damage to you.",
+            f"You feel the impact as the {enemy}'s strike lands.",
+            f"The {enemy}'s attack hits home, causing you pain.",
+            f"You take damage as the {enemy}'s attack connects.",
+            f"The {enemy}'s blow lands squarely, leaving you reeling.",
+            f"You feel the sting of the {enemy}'s successful attack.",
+            f"The {enemy}'s strike finds its mark, inflicting harm upon you.",
+            f"You grit your teeth as the {enemy}'s attack lands true.",
+            f"You suffer the consequences as the {enemy}'s attack connects.",
+            f"The {enemy}'s attack hits, causing you to wince in pain."
+        ]
+        return f"{self.randomise(options)}"
 
 def load_stuff(location:str, type) -> dict: #type 0, item, type 1, obj
     temporary = {}
@@ -278,6 +314,7 @@ class Enemy:
         self.armour = 10 + ene_obj["armour"]
         try: self.atk_pat = ene_obj["attack_pattern"]
         except: self.atk_pat = [self.damage]
+        self.atk_chance = ene_obj["attack_chance"]
 
     def return_health(self) -> int:
         return random.randint(self.health_range[0], self.health_range[1])
@@ -296,6 +333,7 @@ class Player:
         self.name = ""
         self.age = 0
         self.health = 10
+        self.ac = 10
         self.inventory = [
             [ # items (list of names)
                 
@@ -683,14 +721,18 @@ def combat(user:Player, room:Room, thing=None) -> str:
 
 
     combat_is_happening = True
-
+    attack_pattern_position = 0
     tmp = enemy.return_health()
-    enemy = [
-        tmp,              # max hp
-        tmp,              # hp
-        enemy.armour,     # AC
-        enemy.hit,        # Attack mod
-        enemy.atk_pat     # attack pattern (damage vals for them)
+    enemy_data = [
+        tmp,              # 0 | max hp
+        tmp,              # 1 | hp
+        enemy.armour,     # 2 | AC
+        enemy.hit,        # 3 | Attack mod
+        enemy.atk_pat,    # 4 | attack pattern (damage vals for them)
+        enemy.atk_chance, # 5 | chance of attacking
+        False,            # 6 | defend
+        False,            # 7 | dodge
+        enemy.name        # 9 | the enemys name
     ]
 
     player_last_attack = [
@@ -701,6 +743,9 @@ def combat(user:Player, room:Room, thing=None) -> str:
     ]
 
     while combat_is_happening:
+        skip = False
+        player_dodge = False
+        player_defend = False
         # show percentage of player health, and enemy health
 
         vals = input(f"{bcolours.BRIGHTRED}> {bcolours.ENDC}").strip().split(" ")
@@ -716,17 +761,15 @@ def combat(user:Player, room:Room, thing=None) -> str:
         else: 
             content = ""        
 
-        rolls = [
-            roll(), # player
-            roll() # enemy
-        ]
         
         
         match u_input:
             case "attack":
                 if content == "" and player_last_attack[2] == 0:
                     to_display("You dont appear to have an attack! skipping round\n0/1free skips left")
-                    player_last_attack[3] = 0
+                    if player_last_attack[3]:
+                        player_last_attack[3] = 0
+                        skip = True
                     continue
                 
                 elif content != "":
@@ -737,12 +780,15 @@ def combat(user:Player, room:Room, thing=None) -> str:
                         to_display(response_gen.cant_find_item())
 
                         
-                    if rolls[0]:
+                    if roll():
                         pass
 
                 
             case "defend":
-                pass
+                player_defend = True
+
+            case "dodge":
+                player_dodge = True
             
             case "use":
                 pass
@@ -758,8 +804,59 @@ def combat(user:Player, room:Room, thing=None) -> str:
                     to_display(i)
             case _:
                 pass
+
+
+        enemy_data[6] = False
+        enemy_data[7] = False
+
+        if not skip: 
+            #enemy move
+            attack_check = random.randint(1,100)
+            if attack_check <= enemy_data[5]: # check if they attack
+                
+                atk_roll = roll() + enemy_data[3]
+                if atk_roll >= user.ac if player_dodge == False else user.ac + dodge_ac_boost:
+                    tmp = enemy_data[4][attack_pattern_position]
+                    damage = random.randint(tmp[0], tmp[1])
+                    to_display(response_gen.generic_hit(enemy_data[8]))                
+                    
+                    # apply damage modifiers
+                    if player_defend == True:
+                        damage = damage * defend_mod
+                    elif player_dodge == True:
+                        damage = damage * dodge_mod
+
+                    damage = round(damage)
+                    to_display(f"it deals {bcolours.BRIGHTRED}{damage}{bcolours.ENDC} damage")
+                    user.health -= damage # take away damage
+
+                else:
+                    if player_dodge == True:
+                        to_display(response_gen.enemy_miss_dodge(enemy_data[8]))
+                    else:
+                        to_display(response_gen.enemy_miss(enemy_data[8]))
+
+                attack_pattern_position +=1
+                print(attack_pattern_position)
+                print(enemy_data)
+                if attack_pattern_position > len(enemy_data[4]):
+                    attack_pattern_position = 0
+        
+
             
-        #enemy move
+            else:   # check if they dodge or defend
+                check = random.randint(1,100)
+                if check <= enemy_data[5]:
+                    enemy_data[6] = True
+                else:
+                    enemy_data[7] = True
+        
+        enemy_percent_health = enemy_data[0]/enemy_data[1] * 100
+        print(f"Player: {user.health} | {enemy_data[8]}: {enemy_percent_health}")
+            
+                    
+
+
 
 
        
@@ -899,6 +996,7 @@ exit                save & close
 combat_commands = [ #i/s = item/skill
     "attack",   # attack [i/s]          | attack the selected enemy with the last used thing, or new one
     "defend",   # defend                | decreases damage input by 50%
+    "dodge",    # dodge                 | increase AC, increase damage input by 50%
     "use",      # use <i/s>             | use an item or skill
     "flee",     # flee                  | chance to escape combat based on factors
     "wait",     # wait                  | Skip!
@@ -911,6 +1009,7 @@ i/s means item/skill
 
 attack              Attack the enemy with last used item/skill
 defend              reduce damage taken
+dodge               less likely to be hit, but increased damage if hit
 use i/s             use an item or a skill
 flee                attempt to escape combat
 wait                skip your turn
@@ -922,9 +1021,20 @@ try:
     with open("./config/config.json", "r") as f:
         data = json.load(f)
     loading_status = data["loading_status"]
+
+    dodge_mod = data["dodge_mod"]
+    dodge_ac_boost = data["dodge_ac_boost"]
+    defend_mod = data["defend_mod"]
+
 except:
     print("config not found, loading without")
     loading_status = 1 # show debug on start
+
+    # defaults
+    dodge_mod = 1.5
+    dodge_ac_boost = 5
+    defend_mod = 0.5
+
 
 del data
 

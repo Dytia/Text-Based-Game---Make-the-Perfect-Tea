@@ -7,7 +7,8 @@
         "loot":[
             "slime"
         ],
-        "health":[2,4]
+        "health":[2,4],
+        "attack_chance":100
     },
     "skeleton":{
         "damage":[2,5],
@@ -18,6 +19,7 @@
             "bone"
         ],
         "health":[4,8],
-        "attack_pattern":[[2,3],[2,3],[4,5]]
+        "attack_pattern":[[2,3],[2,3],[4,5]],
+        "attack_chance":100
     }
 }
