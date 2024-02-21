@@ -907,9 +907,15 @@ def combat(user:Player, room:Room, thing=None) -> str:
         
         enemy_percent_health = enemy_data[1]/enemy_data[0] * 100
         print(f"{user.name}: {user.health} | {enemy_data[8]}: {enemy_percent_health}")
-            
-                    
 
+        # death
+
+        if user.health <= 0:
+            pass
+
+        if enemy_data[1] <= 0: 
+            pass
+                    
 
        
 def to_display(val) -> None:
