@@ -732,19 +732,38 @@ class Level:
                 else:
                     return response_gen.item_interaction_with_object_fail(item, obj)
 
+    def get_description(self) -> str:
+        """
+        Return description
+        """
+        description = "\n"+self.current_room.description 
+        if len(self.current_room.enemies) > 0:
+            description += f"\n{bcolours.BRIGHTRED}Enemies{bcolours.ENDC}" 
+            for i in self.current_room.enemies:
+                description += f"\n    {i}"
+        
+        if len(self.current_room.item_names) > 0:
+            description += f"\n{bcolours.OKGREEN}Items{bcolours.ENDC}" 
+            for i in self.current_room.item_names:
+                description += f"\n    {i}"
+        
+        return description
 
-def combat(user:Player, room:Room, thing=None) -> str:
+
+def combat(user:Player, level:Level, room:str, thing=None) -> str:
     """
     Combat loop and whatnot
     """    
     if thing==None or thing == "":
-        return "You can't attack nothing!"
+        return level, user, "You can't attack nothing!"
     
     if thing in game_enemies.dict_of_enemies:
         
         enemy:Enemy = game_enemies.dict_of_enemies[thing]
-    else: return response_gen.none_of_that_enemy_here()
+    else: return level, user, response_gen.none_of_that_enemy_here()
 
+    if thing not in level.current_room.enemies:
+        return level, user, response_gen.none_of_that_enemy_here()
 
     def roll():
         return random.randint(1,20)
@@ -752,7 +771,7 @@ def combat(user:Player, room:Room, thing=None) -> str:
     def set_player_attack_data(player:list, hit:int, damage_range:list) -> list:
         player[0] = hit
         player[1] = damage_range
-        player[3] = 1
+        player[2] = 1
         return player
 
     def apply_modifiers(damage:int) -> int:
@@ -779,7 +798,8 @@ def combat(user:Player, room:Room, thing=None) -> str:
         enemy.atk_chance, # 5 | chance of attacking
         False,            # 6 | defend
         False,            # 7 | dodge (ac one)
-        enemy.name        # 9 | the enemys name
+        enemy.name,       # 8 | the enemys name
+        enemy.loot        # 9 | list of drops
     ]
 
     player_last_attack = [
@@ -807,10 +827,12 @@ def combat(user:Player, room:Room, thing=None) -> str:
             content = []
             for i in vals:
                 content.append(i.lower())
+            if u_input != "use":
+                content = content[0]
         else: 
             content = ""        
 
-        
+        print(player_last_attack)
         match u_input:
             case "attack":
                 if content == "" and player_last_attack[2] == 0: # no attack to attack
@@ -820,9 +842,11 @@ def combat(user:Player, room:Room, thing=None) -> str:
                         skip = True
                     
                 elif content != "" or player_last_attack[2] == 1:
-                    if content in user.inventory[0] or content in user.inventory[1]:
-                        data:Item = game_items.dict_of_items[content]
-                        player_last_attack = set_player_attack_data(player_last_attack, data.hit, data.damage)
+                    if content in user.inventory[0] or content in user.inventory[1] or player_last_attack[2] ==1:
+                        try:
+                            data:Item = game_items.dict_of_items[content]
+                            player_last_attack = set_player_attack_data(player_last_attack, data.hit, data.damage)
+                        except: pass
 
                         if roll() + player_last_attack[0] >= enemy_data[2] if not enemy_data[7] else enemy_data[2] + dodge_mod:
                             damage = random.randint(player_last_attack[1][0], player_last_attack[1][1])
@@ -914,7 +938,10 @@ def combat(user:Player, room:Room, thing=None) -> str:
             pass
 
         if enemy_data[1] <= 0: 
-            pass
+            item_dropped = random.choice(enemy_data[9]) #random item
+            user.inventory[0].append(item_dropped) #place item in inv
+            level.current_room.enemies.remove(enemy_data[8]) #remove enemy from room
+            return level, user, "enemy ded lol look at items in room"
                     
 
        
@@ -1177,7 +1204,7 @@ try:
         """
         current_room = level.current_room.name
         if current_room != old_room:
-            to_display("\n"+level.current_room.description)
+            to_display(level.get_description())
             old_room = current_room
 
         enablePrint()
@@ -1213,7 +1240,7 @@ try:
                 val = level.place(content, user)
                 to_display(val)
             case "look":
-                to_display(level.current_room.description)
+                to_display(level.get_description())
             case "inventory":
                 val = user.display_inventory(content)
                 to_display(val)
@@ -1235,7 +1262,7 @@ try:
                 val =level.interact(content[0], content[1], user)
                 to_display(val)
             case "attack":
-                val = combat(user, level.current_room, thing=content)
+                level, user, val = combat(user, level, current_room, thing=content)
                 to_display(val)
             case "help":
                 dt = help_data.split("\n")
