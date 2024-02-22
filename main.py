@@ -751,16 +751,18 @@ class Level:
         return description
 
 
-def player_death(self, level:Level, user:Player) -> tuple[Level, Player]:
+def player_death(level:Level, user:Player) -> tuple[Level, Player]:
     """
     level side of player death
     """
-    level.current_room = self._rooms["startingRoom"]
+    level.current_room = level._rooms["startingRoom"]
     level.deathCount =+ 1
     
     match level.deathCount:
         case 1:
+            to_display("You died. You find yourself in a familiar place, but you feel weak")
             user.health = 5
+            
         case 2:
             user.health = 3
         case 3:
@@ -948,12 +950,12 @@ def combat(user:Player, level:Level, room:str, thing=None) -> tuple[Level, Playe
                     enemy_data[7] = True
         
         enemy_percent_health = enemy_data[1]/enemy_data[0] * 100
-        print(f"{user.name}: {user.health} | {enemy_data[8]}: {enemy_percent_health}")
+        to_display(f"{user.name}: {user.health} | {enemy_data[8]}: {enemy_percent_health}")
 
         # death
 
         if user.health <= 0:
-            pass
+            level, user = player_death(level, user)
 
         if enemy_data[1] <= 0: 
             item_dropped = random.choice(enemy_data[9]) #random item
@@ -1088,6 +1090,8 @@ use <i/s>           use an item/skill
 attack <enemy>      initiate combat
 help                display this list
 exit                save & close
+
+Tip: Dying 3 times in a level is permadeath
 """
 
 combat_commands = [ #i/s = item/skill
