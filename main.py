@@ -569,6 +569,7 @@ class Level:
         else:
             self.current_room:Room = self._rooms[room_name]
         self.responses = Responses()
+        self.deathCount = 0
 
 
     def _create_rooms(self) -> None:
@@ -750,7 +751,24 @@ class Level:
         return description
 
 
-def combat(user:Player, level:Level, room:str, thing=None) -> str:
+def player_death(self, level:Level, user:Player) -> tuple[Level, Player]:
+    """
+    level side of player death
+    """
+    level.current_room = self._rooms["startingRoom"]
+    level.deathCount =+ 1
+    
+    match level.deathCount:
+        case 1:
+            user.health = 5
+        case 2:
+            user.health = 3
+        case 3:
+            # uh ohh you died too much, game reset
+            pass
+
+
+def combat(user:Player, level:Level, room:str, thing=None) -> tuple[Level, Player]:
     """
     Combat loop and whatnot
     """    

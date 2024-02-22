@@ -44,3 +44,5 @@ defened = half damage intake
 dodge = 1.5x damage, but +5 ac
 
 room specific commands, ie go to sleep
+
+pc death, = level from starting room and half hp, if die in same level again, restart
