@@ -15,6 +15,8 @@ room_name = ""
 save_dir = "./saves"
 
 old_room = ""
+deathcount = 0
+
 
 if os.path.isfile("./saves/save.csv"):
     first_run = False #save to variable for later use
@@ -242,6 +244,34 @@ class Responses:
             f"The {enemy} deftly dodges your attack, mocking your effort."
         ]
         return f"{self.randomise(options)}"
+    
+    def player_death(self) -> str:
+        options = [
+            "You have fallen in battle, your journey ends here.",
+            "Your life force fades away as darkness claims you.",
+            "Death embraces you, your adventure comes to an end.",
+            "Defeat overwhelms you, your story reaches its final chapter.",
+            "Your quest ends abruptly as you succumb to fate.",
+            "The shadows consume you, your legacy fades into obscurity.",
+            "You breathe your last, leaving behind an unfinished tale.",
+            "Your journey concludes, lost to the annals of history.",
+            "In the end, mortality claims you, your saga ends.",
+            "Your valiant effort ends in defeat, your legend fades away."
+        ]
+        return f"{self.randomise(options)}\n{bcolours.BRIGHTRED}Game over.{bcolours.ENDC}"
+
+    def enemy_death(self, enemy:str) -> str:
+        options = [
+            f"The {enemy} falls, vanquished by your hand.",
+            f"Victory is yours as you defeat the {enemy}.",
+            f"Your strike proves fatal, the {enemy} is no more.",
+            f"The {enemy} crumbles before your might, defeated.",
+            f"You emerge triumphant, the {enemy} lies defeated.",
+            f"With a final blow, the {enemy} meets its end.",
+            f"The {enemy} meets its demise at your hands.",
+            f"Your skill in combat prevails, the {enemy} is slain."
+        ]
+        return f"{self.randomise(options)}\nDropped items are on the floor"
 
 def load_stuff(location:str, type) -> dict: #type 0, item, type 1, obj
     temporary = {}
@@ -384,7 +414,7 @@ class Player:
         ]
 
 
-    def save(self, level:int, room_name:str) -> None:
+    def save(self, level:int, room_name:str, deathcount:int) -> None:
         """
         saves the user data to a csv
         
@@ -398,7 +428,7 @@ class Player:
         health = str(self.health) +"\n"
         items = ",".join(self.inventory[0]) + "\n"
         skills = ",".join(self.inventory[1]) +"\n"
-        map_dat = str(level)+ ","+room_name
+        map_dat = str(level)+ ","+room_name+","+str(deathcount)
 
         content = row_one + health +items + skills + map_dat
 
@@ -468,9 +498,26 @@ class Player:
         item = 0
         skill = 1
         """
-        def create_list(self:Player, itype:str) -> str:
+        def group_items(array) -> list:
+            current_pos = 0
             to_return = []
-            if len(self.inventory[itype]) >0:
+            while True: # loop
+                counter = 0
+                search = array[current_pos]
+                for i in array[current_pos:]:
+                    if i == search:
+                        counter += 1 # if item = search then add one
+                
+                current_pos += counter # move our position to end of last search
+                to_return.append(f"{str(counter+1 if counter == 0 else counter)}x {search}") #append
+                if current_pos >= len(array):# check if at end
+                    break
+            return to_return
+                
+        
+        def create_list(self:Player, itype:str) -> (list | str):
+            to_return = []
+            if len(self.inventory[itype]) > 0:
                 for i in self.inventory[itype]:
                     if i != "":
                         to_return.append(game_items.dict_of_items[i].name)
@@ -483,12 +530,12 @@ class Player:
         if inv_type != "":
             # check if it is either, otherwise show both
             if inv_type == "item":
-                return items+"\n".join(create_list(self, 0))
+                return items+"\n".join(group_items(create_list(self, 0)))
             
             elif inv_type == "skill":
                 return skills+ "\n".join(create_list(self, 1))
         else:
-            val = items + "\n".join(create_list(self, 0))
+            val = items + "\n".join(group_items(create_list(self, 0)))
             val += "\n\n" + skills +"\n".join(create_list(self, 1))
             return val
 
@@ -541,7 +588,7 @@ class Room:
         print(f"{bcolours.OKGREEN}done{bcolours.ENDC}\n")
         
 class Level:
-    def __init__(self, map, room_name:str="") -> None:
+    def __init__(self, map, room_name:str="", deathcount:int=0) -> None:
         '''
         1: location of map file
         startingRoom will always be the first room
@@ -569,7 +616,7 @@ class Level:
         else:
             self.current_room:Room = self._rooms[room_name]
         self.responses = Responses()
-        self.deathCount = 0
+        self.deathCount = deathcount
 
 
     def _create_rooms(self) -> None:
@@ -756,19 +803,21 @@ def player_death(level:Level, user:Player) -> tuple[Level, Player]:
     level side of player death
     """
     level.current_room = level._rooms["startingRoom"]
-    level.deathCount =+ 1
-    
+    level.deathCount += 1
+    print("deathcount =",level.deathCount)
     match level.deathCount:
         case 1:
             to_display("You died. You find yourself in a familiar place, but you feel weak")
             user.health = 5
             
         case 2:
-            user.health = 3
+            to_display("You have again become one with the spirits; You find yourself in a familar place, feeling vastly weakend")
+            user.health = 2
         case 3:
             # uh ohh you died too much, game reset
-            pass
-
+            to_display(response_gen.player_death())
+            reset()
+    return level, user
 
 def combat(user:Player, level:Level, room:str, thing=None) -> tuple[Level, Player]:
     """
@@ -828,6 +877,9 @@ def combat(user:Player, level:Level, room:str, thing=None) -> tuple[Level, Playe
         0, # if somethins is here
         1  # free uses left
     ]
+    
+    enemy_percent_health = enemy_data[1]/enemy_data[0] * 100
+    to_display(f"{user.name}: {user.health} | {enemy_data[8]}: {enemy_percent_health}")
 
     while combat_is_happening:
         skip = False
@@ -956,12 +1008,18 @@ def combat(user:Player, level:Level, room:str, thing=None) -> tuple[Level, Playe
 
         if user.health <= 0:
             level, user = player_death(level, user)
+            break
 
         if enemy_data[1] <= 0: 
             item_dropped = random.choice(enemy_data[9]) #random item
             user.inventory[0].append(item_dropped) #place item in inv
+            print(level.current_room.enemies)
             level.current_room.enemies.remove(enemy_data[8]) #remove enemy from room
-            return level, user, "enemy ded lol look at items in room"
+            level.place(item_dropped, user)
+            print(level.current_room.enemies)
+            return level, user, response_gen.enemy_death(enemy_data[8])
+
+    return level, user, ""
                     
 
        
@@ -996,28 +1054,31 @@ def abort(e, location) -> None:
     print(f"{bcolours.BRIGHTRED}Error: {bcolours.ENDC}{e}\nProgram aborting due to error in {bcolours.YELLOW}{location}{bcolours.ENDC} upon loading")
     os._exit(1)
 
-def reset() -> None:
+def reset_check() -> None:
     to_display("Are you sure? this process is not reversible [y/N]")
     enablePrint()
     val = input().lower()
     if val == "y":
         val = input("Are you sure you're sure? [y/N]\n").lower()
         if val == "y":
-            try:
-                print("removing save", end=" ")
-                try:os.remove("./saves/save.csv")
-                except:pass
-                print(f"{bcolours.OKGREEN}done{bcolours.ENDC}\nDeleting level files", end=" ")
-                shutil.rmtree("./maps/")
-                print(f"{bcolours.OKGREEN}done{bcolours.ENDC}\nCopying files", end= " ")
-                shutil.copytree("./maps_spare/", "./maps/")
-                print(f"{bcolours.OKGREEN}done{bcolours.ENDC}\nCleaning up", end=" ")
-                os.remove("./maps/readme.md")
-                print(f"{bcolours.OKGREEN}done{bcolours.ENDC}\nexiting game")
-                os._exit(1)
-            except:
-                print("An error occured, exiting game probably best to redownload")
-                os._exit(1)
+            reset()   
+
+def reset() -> None:
+    try:
+        print("removing save", end=" ")
+        try:os.remove("./saves/save.csv")
+        except:pass
+        print(f"{bcolours.OKGREEN}done{bcolours.ENDC}\nDeleting level files", end=" ")
+        shutil.rmtree("./maps/")
+        print(f"{bcolours.OKGREEN}done{bcolours.ENDC}\nCopying files", end= " ")
+        shutil.copytree("./maps_spare/", "./maps/")
+        print(f"{bcolours.OKGREEN}done{bcolours.ENDC}\nCleaning up", end=" ")
+        os.remove("./maps/readme.md")
+        print(f"{bcolours.OKGREEN}done{bcolours.ENDC}\nexiting game")
+        os._exit(1)
+    except:
+        print("An error occured, exiting game probably best to redownload")
+        os._exit(1)
 
 
 """
@@ -1153,7 +1214,6 @@ else:
         pass
 
 del data
-
 blockPrint()
 
 print("Loading responses")
@@ -1205,12 +1265,12 @@ if you want to restart just change the name of saves.json to something else
             print("please use a number")
     user.age = age
 
-    user.save(level_num, "startingRoom")
+    user.save(level_num, "startingRoom", deathcount)
     blockPrint()
 
 else:
     try:
-        level_num, room_name = user.load_save()
+        level_num, room_name, deathcount = user.load_save()
     except Exception as e:
         abort(e, "./saves/save.csv")
 
@@ -1218,7 +1278,8 @@ else:
 
 try:
     print(f"loading level: ./maps/level{level_num}.json")
-    level = Level(f"./maps/level{level_num}.json", room_name)
+    level = Level(f"./maps/level{level_num}.json", room_name, int(deathcount))
+    deathcount = 0
     enablePrint()
     while True:
         """
@@ -1248,7 +1309,7 @@ try:
 
         if level.current_room.save == 1:
             # if room is a save room
-            user.save(level_num, current_room)
+            user.save(level_num, current_room, level.deathCount)
         match u_input:
             case "move":
                 val = level.move_room(content)
@@ -1285,6 +1346,7 @@ try:
                 to_display(val)
             case "attack":
                 level, user, val = combat(user, level, current_room, thing=content)
+                print("deathcount =",level.deathCount)
                 to_display(val)
             case "help":
                 dt = help_data.split("\n")
@@ -1302,14 +1364,14 @@ try:
             case "":
                 continue
             case "game_reset_sf9riwzceosxepo6":
-                reset()
+                reset_check()
             case _:
                 to_display(response_gen.invalid_move())
             
 
 
 except KeyboardInterrupt:
-    user.save(level_num, current_room)
+    user.save(level_num, current_room, level.deathCount)
     pass
 finally:
     enablePrint()

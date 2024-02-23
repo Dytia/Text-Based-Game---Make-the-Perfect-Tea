@@ -8,8 +8,7 @@
                 "desk"
             ],
             "items": [
-                "notebook",
-                "stick"
+                "notebook"
             ]
         },
         "data": {}
@@ -21,7 +20,9 @@
         "description": "Standing in a corridoor it continues to the north, on the western wall there is an alcove",
         "properties": {
             "examine": [],
-            "items": []
+            "items": [
+                "vase"
+            ]
         },
         "data": {}
     },
@@ -33,9 +34,7 @@
         "properties": {
             "examine": [],
             "items": [],
-            "enemies":[
-                "slime"
-            ]
+            "enemies": []
         },
         "data": {}
     },
@@ -58,9 +57,7 @@
             "examine": [
                 "pedestal"
             ],
-            "items": [
-                "vase"
-            ]
+            "items": []
         },
         "data": {
             "secretItem": "vase"

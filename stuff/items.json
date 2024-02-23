@@ -32,5 +32,9 @@
     "vase":{
         "type":"item",
         "description":"A regal vase, its porcelain surface painted with scenes of nature"
+    },
+    "slime":{
+        "type":"item",
+        "description":"sticky ball of slime"
     }
 }
