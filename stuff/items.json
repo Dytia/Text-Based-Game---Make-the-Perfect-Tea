@@ -27,7 +27,8 @@
     "bread":{
         "type":"item",
         "damage":[-3,-1],
-        "description":"a loaf of bread"
+        "description":"a loaf of bread",
+        "on_use":"You eat some bread, feeling slightly better because of it"
     },
     "vase":{
         "type":"item",

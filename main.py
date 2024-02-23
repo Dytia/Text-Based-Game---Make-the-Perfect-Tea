@@ -302,7 +302,9 @@ class Item:
         self.description = itm_obj["description"]
         try: self.hit = itm_obj["hit"] # hit bonus
         except: self.hit = 0
-    
+        try: self.on_use = itm_obj["on_use"]
+        except: self.on_use = None
+
     def inspect(self) -> str:
         return self.description
 
@@ -923,7 +925,7 @@ def combat(user:Player, level:Level, room:str, thing=None) -> tuple[Level, Playe
                         if roll() + player_last_attack[0] >= enemy_data[2] if not enemy_data[7] else enemy_data[2] + dodge_mod:
                             damage = random.randint(player_last_attack[1][0], player_last_attack[1][1])
                             damage = apply_modifiers(damage)
-                            to_display(f"you deal {bcolours.OKGREEN}{damage}{bcolours.ENDC} damage")
+                            to_display(f"you {'d' if damage >= 0 else 'h'}eal {bcolours.OKGREEN}{damage}{bcolours.ENDC} damage")
                             
                             enemy_data[1] -= damage
                         else: # missing
@@ -945,7 +947,17 @@ def combat(user:Player, level:Level, room:str, thing=None) -> tuple[Level, Playe
                 player_dodge = True
             
             case "use":
-                pass
+                if content in user.inventory[0] or content in user.inventory[1] or player_last_attack[2] ==1:
+                    data:Item = game_items.dict_of_items[content]
+                    
+                    damage = random.randint(data.damage[0], data.damage[1])
+                    if data.on_use is not None:
+                        to_display(data.on_use)
+                    to_display(f"you {'d' if damage >= 0 else 'h'}eal {bcolours.OKGREEN}{damage}{bcolours.ENDC} damage")
+                    user.health -= damage
+
+                else:
+                    to_display(response_gen.cant_find_item())
 
             case "flee":
                 pass
@@ -958,7 +970,7 @@ def combat(user:Player, level:Level, room:str, thing=None) -> tuple[Level, Playe
                 for i in dt:
                     to_display(i)
             case _:
-                pass
+                to_display("Your turn is forfit!")
 
 
         enemy_data[6] = False
@@ -1159,7 +1171,7 @@ combat_commands = [ #i/s = item/skill
     "attack",   # attack [i/s]          | attack the selected enemy with the last used thing, or new one
     "defend",   # defend                | decreases damage input by 50%
     "dodge",    # dodge                 | increase AC, increase damage input by 50%
-    "use",      # use <i/s>             | use an item or skill
+    "use",      # use <i/s>             | use an item or skill on self
     "flee",     # flee                  | chance to escape combat based on factors
     "wait",     # wait                  | Skip!
     "help"      # help                  | help list
