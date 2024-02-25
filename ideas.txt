@@ -50,3 +50,4 @@ pc death, = level from starting room and half hp, if die in same level again, re
 todo: inventory display item count
 done
 
+Last feature: secret unlocks a passage

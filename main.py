@@ -854,7 +854,7 @@ def combat(user:Player, level:Level, room:str, thing=None) -> tuple[Level, Playe
         damage = round(damage)
         return damage
 
-    to_display("Exiting will not save combat!")
+    to_display("Exiting will not save combat! (it will save some things like your hp though)")
 
 
     combat_is_happening = True
@@ -997,14 +997,11 @@ def combat(user:Player, level:Level, room:str, thing=None) -> tuple[Level, Playe
                     else:
                         to_display(response_gen.enemy_miss(enemy_data[8]))
                 
-                print("b",attack_pattern_position)
                 attack_pattern_position +=1
-                print("a",attack_pattern_position)
+                print(attack_pattern_position)
                 print(enemy_data)
                 if attack_pattern_position >= len(enemy_data[4]):
                     attack_pattern_position = 0
-        
-
             
             else:   # check if they dodge or defend
                 check = random.randint(1,100)
@@ -1184,7 +1181,7 @@ i/s means item/skill
 attack              Attack the enemy with last used item/skill
 defend              reduce damage taken
 dodge               less likely to be hit, but increased damage if hit
-use i/s             use an item or a skill
+use i/s             use an item or a skill on self
 flee                attempt to escape combat
 wait                skip your turn
 help                display this list
