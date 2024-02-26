@@ -1210,7 +1210,7 @@ combat_commands = [ #i/s = item/skill
     "attack",   # attack [i/s]          | attack the selected enemy with the last used thing, or new one
     "defend",   # defend                | decreases damage input by 50%
     "dodge",    # dodge                 | increase AC, increase damage input by 50%
-    "use",      # use <i/s>             | use an item or skill on self
+    "use",      # use <i/s> [object]    | use an item or skill on self
     "flee",     # flee                  | chance to escape combat based on factors
     "wait",     # wait                  | Skip!
     "help"      # help                  | help list

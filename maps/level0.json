@@ -30,7 +30,9 @@
         "properties": {
             "examine": [],
             "items": [],
-            "enemies": []
+            "enemies": [
+                "slime"
+            ]
         }
     },
     "splitPath2": {
@@ -62,7 +64,10 @@
         "description": "A corner, to the north a corridor with an alcove, the to west a dark, unlit place",
         "properties": {
             "examine": [],
-            "items": []
+            "items": [],
+            "enemies": [
+                "skeleton"
+            ]
         }
     },
     "darkCorridor": {
@@ -89,9 +94,7 @@
         "description": "A table sits in the middle, on it a stick of bonking",
         "properties": {
             "examine": [],
-            "items": [
-                "stick"
-            ],
+            "items": [],
             "enemies": [
                 "slime"
             ]

@@ -54,4 +54,9 @@ Last feature: secret unlocks a passage
 
 currently: reworking combat for no attack to be unarmed which does 1,1 dmg 
 done
-Working on secret cross room
+Working on secret cross room done
+
+Add an option display for rooms that arent passable at the minute
+add flee command to combat
+
+fix multi word stuff
