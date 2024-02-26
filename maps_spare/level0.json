@@ -1,249 +1,178 @@
 {
-    "startingRoom" : {
+    "startingRoom": {
         "north": "vase",
-        "description":"You find yourself in a small room, to the southwest a bed, to the east a desk, and to the north a door",
-        "properties":{
-            "examine":[
+        "description": "You find yourself in a small room, to the southwest a bed, to the east a desk, and to the north a door",
+        "properties": {
+            "examine": [
                 "bed",
                 "desk"
             ],
-            "items":[
+            "items": [
                 "notebook",
                 "bread"
-            ]     
-        }, 
-        "data":{
-        
+            ]
         }
     },
-    "vase" : {
+    "vase": {
         "north": "splitPath1",
-        "south":"startingRoom",
-        "east":"secretRoom",
-        "description":"Standing in a corridoor it continues to the north, on the western wall there is an alcove",
-        "properties":{
-            "examine":[
-            ],
-            "items":[
+        "south": "startingRoom",
+        "east": "secretRoom",
+        "description": "Standing in a corridoor it continues to the north, on the western wall there is an alcove",
+        "properties": {
+            "examine": [],
+            "items": [
                 "vase"
             ]
-        },
-        "data":{
-            
         }
     },
-    "splitPath1" : {
-        "south":"vase",
-        "west":"splitPath2",
-        "east":"rickyBridge",
-        "description":"You enter an intersection between corridors, to the south, east and west the path continues, lit by the light of flickering torches and an occasional patch of sunlight.",
-        "properties":{
-            "examine":[
-
-            ],
-            "items":[
-            
-            ],
-            "enemies":[
+    "splitPath1": {
+        "south": "vase",
+        "west": "splitPath2",
+        "east": "rickyBridge",
+        "description": "You enter an intersection between corridors, to the south, east and west the path continues, lit by the light of flickering torches and an occasional patch of sunlight.",
+        "properties": {
+            "examine": [],
+            "items": [],
+            "enemies": [
                 "slime"
             ]
-        },
-        "data":{
-
-        }            
-    },
-    "splitPath2":{
-        "north": "cornerToStairs",
-        "south":"vasePlace",
-        "east":"splitPath1",
-        "description":"A staircase decends into the depths to the north, and to the south and east more corridor.",
-        "properties":{
-            "examine":[
-
-            ],
-            "items":[
-            
-            ]
-        },
-        "data":{
-
         }
     },
-    "vasePlace":{
+    "splitPath2": {
+        "north": "cornerToStairs",
+        "south": "vasePlace",
+        "east": "splitPath1",
+        "description": "A staircase decends into the depths to the north, and to the south and east more corridor.",
+        "properties": {
+            "examine": [],
+            "items": []
+        }
+    },
+    "vasePlace": {
         "north": "splitPath2",
-        "south":"cornerToDark",
-        "description":"A pedestal stands in an alcove, and to the south a corner to the west, and to the north a corridor with an offshoot to the east",
-        "properties":{
-            "examine":[
+        "south": "cornerToDark",
+        "description": "A pedestal stands in an alcove, and to the south a corner to the west, and to the north a corridor with an offshoot to the east",
+        "properties": {
+            "examine": [
                 "pedestal"
             ],
-            "items":[
-            
-            ]
-        },
-        "data":{
-            "secretItem":"vase"
+            "items": []
         }
     },
-    "cornerToDark":{
+    "cornerToDark": {
         "north": "vasePlace",
-        "west":"darkCorridor",
-        "description":"A corner, to the north a corridor with an alcove, the to west a dark, unlit place",
-        "properties":{
-            "examine":[
-
-            ],
-            "items":[
-            
+        "west": "darkCorridor",
+        "description": "A corner, to the north a corridor with an alcove, the to west a dark, unlit place",
+        "properties": {
+            "examine": [],
+            "items": [],
+            "enemies":[
+                "skeleton"
             ]
-        },
-        "data":{
-
         }
     },
-    "darkCorridor":{
-        "west":"saveRoom1",
-        "east":"cornerToDark",
-        "description":"The faint light from the east is barely enough to see around",
-        "properties":{
-            "examine":[
-
-            ],
-            "items":[
-            
-            ]
-        },
-        "data":{
-
-        }
-    },    
-    "saveRoom1":{
-        "east":"darkCorridor",
-        "description":"The room is fairly bright, a bed in the corner and a chair and desk aganst another",
-        "properties":{
-            "examine":[
-
-            ],
-            "items":[
-            
-            ],
-            "save":1
-        },
-        "data":{
-
+    "darkCorridor": {
+        "west": "saveRoom1",
+        "east": "cornerToDark",
+        "description": "The faint light from the east is barely enough to see around",
+        "properties": {
+            "examine": [],
+            "items": []
         }
     },
-    "secretRoom":{
-        "south":"vase",
-        "west":"rickyBridge",
-        "description":"",
-        "properties":{
-            "examine":[
-
-            ],
-            "items":[
-            
-            ]
-        },
-        
-        "data":{
-
+    "saveRoom1": {
+        "east": "darkCorridor",
+        "description": "The room is fairly bright, a bed in the corner and a chair and desk aganst another",
+        "properties": {
+            "examine": [],
+            "items": [],
+            "save": 1
         }
     },
-    "rickyBridge":{
-        "west":"splitPath1",
-        "description":"",
-        "properties":{
-            "examine":[
-
+    "secretRoom": {
+        "south": "vase",
+        "west": "rickyBridge",
+        "description": "A table sits in the middle, on it a stick of bonking",
+        "properties": {
+            "examine": [],
+            "items": [
+                "stick"
             ],
-            "items":[
-            
+            "enemies": [
+                "slime"
             ]
-        },
-        "data":{
-
         }
     },
-    "cornerToStairs":{
-        "south":"splitPath2",
-        "west":"stairs",
-        "description":"",
-        "properties":{
-            "examine":[
-
-            ],
-            "items":[
-            
-            ]
-        },
-        "data":{
-
+    "rickyBridge": {
+        "west": "splitPath1",
+        "description": "",
+        "properties": {
+            "passable": 0,
+            "examine": [],
+            "items": []
         }
     },
-    "stairs":{
-        "west":"splitPathSecret",
-        "east":"cornerToStairs",
-        "description":"",
-        "properties":{
-            "examine":[
-
-            ],
-            "items":[
-            
-            ]
-        },
-        "data":{
-
+    "cornerToStairs": {
+        "south": "splitPath2",
+        "west": "stairs",
+        "description": "",
+        "properties": {
+            "examine": [],
+            "items": []
         }
     },
-    "splitPathSecret":{
+    "stairs": {
+        "west": "splitPathSecret",
+        "east": "cornerToStairs",
+        "description": "",
+        "properties": {
+            "examine": [],
+            "items": []
+        }
+    },
+    "splitPathSecret": {
         "north": "stairs",
-        "south":"secretItem",
-        "east":"stairs2",
-        "description":"",
-        "properties":{
-            "examine":[
-
-            ],
-            "items":[
-            
-            ]
+        "south": "secretItem",
+        "east": "stairs2",
+        "description": "To the north the corridoor continues for a while before curving east and to the east the corridoor continues before curving north",
+        "dependant": {
+            "room": "vasePlace",
+            "item": "vase",
+            "results": {
+                "description": "To the north the corridoor continues for a while before curving east and to the east the corridoor continues before curving north. And to the south a doorway"
+            }
         },
-        "data":{
-
+        "properties": {
+            "examine": [],
+            "items": []
         }
     },
-    "stairs2":{
+    "stairs2": {
         "north": "startingRoom",
-        "south":"splitPathSecret",
-        "description":"",
-        "properties":{
-            "examine":[
-
-            ],
-            "items":[
-            
-            ]
-        },
-        "data":{
-
+        "south": "splitPathSecret",
+        "description": "",
+        "properties": {
+            "examine": [],
+            "items": []
         }
     },
-    "secretItem":{
+    "secretItem": {
         "north": "splitPathSecret",
-        "description":"",
-        "properties":{
-            "examine":[
-
-            ],
-            "items":[
-            
-            ]
+        "description": "abc",
+        "dependant": {
+            "room": "vasePlace",
+            "item": "vase",
+            "results": {
+                "description": "aaaaaaaaaaaaaaaaa",
+                "passable": 1
+            }
         },
-        "data":{
-            "secretItem":"Fancy China Teapot"
+        "properties": {
+            "passable": 0,
+            "examine": [],
+            "items": [
+                "Fancy China Teapot"
+            ]
         }
     }
-
 }
