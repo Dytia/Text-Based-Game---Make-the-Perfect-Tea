@@ -51,3 +51,7 @@ todo: inventory display item count
 done
 
 Last feature: secret unlocks a passage
+
+currently: reworking combat for no attack to be unarmed which does 1,1 dmg 
+done
+Working on secret cross room

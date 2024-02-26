@@ -10,8 +10,7 @@
             "items": [
                 "notebook"
             ]
-        },
-        "data": {}
+        }
     },
     "vase": {
         "north": "splitPath1",
@@ -20,11 +19,8 @@
         "description": "Standing in a corridoor it continues to the north, on the western wall there is an alcove",
         "properties": {
             "examine": [],
-            "items": [
-                "vase"
-            ]
-        },
-        "data": {}
+            "items": []
+        }
     },
     "splitPath1": {
         "south": "vase",
@@ -35,8 +31,7 @@
             "examine": [],
             "items": [],
             "enemies": []
-        },
-        "data": {}
+        }
     },
     "splitPath2": {
         "north": "cornerToStairs",
@@ -46,8 +41,7 @@
         "properties": {
             "examine": [],
             "items": []
-        },
-        "data": {}
+        }
     },
     "vasePlace": {
         "north": "splitPath2",
@@ -57,10 +51,9 @@
             "examine": [
                 "pedestal"
             ],
-            "items": []
-        },
-        "data": {
-            "secretItem": "vase"
+            "items": [
+                "vase"
+            ]
         }
     },
     "cornerToDark": {
@@ -70,8 +63,7 @@
         "properties": {
             "examine": [],
             "items": []
-        },
-        "data": {}
+        }
     },
     "darkCorridor": {
         "west": "saveRoom1",
@@ -80,8 +72,7 @@
         "properties": {
             "examine": [],
             "items": []
-        },
-        "data": {}
+        }
     },
     "saveRoom1": {
         "east": "darkCorridor",
@@ -90,27 +81,30 @@
             "examine": [],
             "items": [],
             "save": 1
-        },
-        "data": {}
+        }
     },
     "secretRoom": {
         "south": "vase",
         "west": "rickyBridge",
-        "description": "",
+        "description": "A table sits in the middle, on it a stick of bonking",
         "properties": {
             "examine": [],
-            "items": []
-        },
-        "data": {}
+            "items": [
+                "stick"
+            ],
+            "enemies": [
+                "slime"
+            ]
+        }
     },
     "rickyBridge": {
         "west": "splitPath1",
         "description": "",
         "properties": {
+            "passable": 0,
             "examine": [],
             "items": []
-        },
-        "data": {}
+        }
     },
     "cornerToStairs": {
         "south": "splitPath2",
@@ -119,8 +113,7 @@
         "properties": {
             "examine": [],
             "items": []
-        },
-        "data": {}
+        }
     },
     "stairs": {
         "west": "splitPathSecret",
@@ -129,19 +122,24 @@
         "properties": {
             "examine": [],
             "items": []
-        },
-        "data": {}
+        }
     },
     "splitPathSecret": {
         "north": "stairs",
         "south": "secretItem",
         "east": "stairs2",
-        "description": "",
+        "description": "To the north the corridoor continues for a while before curving east and to the east the corridoor continues before curving north",
+        "dependant": {
+            "room": "vasePlace",
+            "item": "vase",
+            "results": {
+                "description": "To the north the corridoor continues for a while before curving east and to the east the corridoor continues before curving north. And to the south a doorway"
+            }
+        },
         "properties": {
             "examine": [],
             "items": []
-        },
-        "data": {}
+        }
     },
     "stairs2": {
         "north": "startingRoom",
@@ -150,18 +148,25 @@
         "properties": {
             "examine": [],
             "items": []
-        },
-        "data": {}
+        }
     },
     "secretItem": {
         "north": "splitPathSecret",
-        "description": "",
-        "properties": {
-            "examine": [],
-            "items": []
+        "description": "abc",
+        "dependant": {
+            "room": "vasePlace",
+            "item": "vase",
+            "results": {
+                "description": "aaaaaaaaaaaaaaaaa",
+                "passable": 1
+            }
         },
-        "data": {
-            "secretItem": "Fancy China Teapot"
+        "properties": {
+            "passable": 0,
+            "examine": [],
+            "items": [
+                "Fancy China Teapot"
+            ]
         }
     }
 }

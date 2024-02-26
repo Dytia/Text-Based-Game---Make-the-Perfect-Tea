@@ -564,6 +564,10 @@ class Room:
         print(f"    Loading Room: {self.name}\n    Loading  Data",end=" ")
         self.description = data["description"]
         self.properties = data["properties"]
+        try: self.dependants = data["dependant"]
+        except: self.dependants = None
+        try: self.passable = self.properties["passable"]
+        except: self.passable = 1
         print(f"{bcolours.OKGREEN}done{bcolours.ENDC}\n    Loading  Items",end=" ")
         self.item_names:list = self.properties["items"]
         print(f"{bcolours.OKGREEN}done{bcolours.ENDC}\n    Creating connections",end=" ")
@@ -588,6 +592,8 @@ class Room:
         print(f"{bcolours.OKGREEN}done{bcolours.ENDC}\n    Loading  Objects", end=" ")
         self.objects:list = self.properties["examine"]
         print(f"{bcolours.OKGREEN}done{bcolours.ENDC}\n")
+        
+        
         
 class Level:
     def __init__(self, map, room_name:str="", deathcount:int=0) -> None:
@@ -655,15 +661,34 @@ class Level:
     def move_room(self, move) -> (bool | str):
         """
         checks if its a valid room and moves to that room
+                
+        if not passable 
+            check dependants
+            if changes it to 1: success
+            else: false
 
+        else: success
+                
         """
         success = False
         if move in self._moves:
             move_in = self._moves_dict[move]
             room_to_go = self.current_room.connections[move_in]
             try:
-                self.current_room = self._rooms[room_to_go]
-                success = True
+
+                if self._rooms[room_to_go].passable == 0:
+                    if self.check_dependants(room_to_go):
+                        try: # getting here means the room isnt passable, so we check if dependants, if there are then check if passable is one of them, then check if it turns it to 1
+                            passable = self._rooms[room_to_go].dependants["results"]["passable"]
+                            if passable == 1:
+                                self.current_room = self._rooms[room_to_go]
+                                success = True
+                        except:
+                            pass
+                
+                else:
+                    self.current_room = self._rooms[room_to_go]
+                    success = True
             except KeyError:
                 success = False
             if success:
@@ -782,11 +807,26 @@ class Level:
                 else:
                     return response_gen.item_interaction_with_object_fail(item, obj)
 
+    def check_dependants(self, room_name:str) -> bool:
+        """
+        check dependants and change properties as required
+        """
+        target = self._rooms[room_name].dependants
+        if target is not None:
+            if target["item"] in self._rooms[target["room"]].item_names:
+                return True
+        
+        return False
+
     def get_description(self) -> str:
         """
         Return description
         """
-        description = "\n"+self.current_room.description 
+        if self.check_dependants(self.current_room.name):
+            description = "\n"+self.current_room.dependants["results"]["description"]
+        else:
+            description = "\n"+self.current_room.description 
+
         if len(self.current_room.enemies) > 0:
             description += f"\n{bcolours.BRIGHTRED}Enemies{bcolours.ENDC}" 
             for i in self.current_room.enemies:
@@ -798,11 +838,13 @@ class Level:
                 description += f"\n    {i}"
         
         return description
+    
+
 
 
 def player_death(level:Level, user:Player) -> tuple[Level, Player]:
     """
-    level side of player death
+    player death
     """
     level.current_room = level._rooms["startingRoom"]
     level.deathCount += 1
@@ -872,13 +914,6 @@ def combat(user:Player, level:Level, room:str, thing=None) -> tuple[Level, Playe
         enemy.name,       # 8 | the enemys name
         enemy.loot        # 9 | list of drops
     ]
-
-    player_last_attack = [
-        0, # atk mod
-        [0,0], # damage range
-        0, # if somethins is here
-        1  # free uses left
-    ]
     
     enemy_percent_health = enemy_data[1]/enemy_data[0] * 100
     to_display(f"{user.name}: {user.health} | {enemy_data[8]}: {enemy_percent_health}")
@@ -906,24 +941,23 @@ def combat(user:Player, level:Level, room:str, thing=None) -> tuple[Level, Playe
         else: 
             content = ""        
 
-        print(player_last_attack)
         match u_input:
             case "attack":
-                if content == "" and player_last_attack[2] == 0: # no attack to attack
-                    to_display(f"You dont appear to have an attack! {'skipping round 0/1 free skips left' if player_last_attack[3] ==1 else '' }")
-                    if player_last_attack[3]:
-                        player_last_attack[3] = 0
-                        skip = True
+                if content == "": # no attack to attack therefore unarmed
+                    to_display(f"You dont appear to have an attack! Using unarmed")
+                    if roll() >= enemy_data[2] if not enemy_data[7] else enemy_data[2] + dodge_mod:
+                        damage = 1
+                        enemy_data[1] -= damage
+                        to_display(f"you deal {bcolours.OKGREEN}{damage}{bcolours.ENDC} damage")
+                    else:
+                        to_display(response_gen.player_miss(enemy_data[8]))
                     
-                elif content != "" or player_last_attack[2] == 1:
-                    if content in user.inventory[0] or content in user.inventory[1] or player_last_attack[2] ==1:
-                        try:
-                            data:Item = game_items.dict_of_items[content]
-                            player_last_attack = set_player_attack_data(player_last_attack, data.hit, data.damage)
-                        except: pass
+                elif content != "":
+                    if content in user.inventory[0] or content in user.inventory[1]:
+                        data:Item = game_items.dict_of_items[content]
 
-                        if roll() + player_last_attack[0] >= enemy_data[2] if not enemy_data[7] else enemy_data[2] + dodge_mod:
-                            damage = random.randint(player_last_attack[1][0], player_last_attack[1][1])
+                        if roll() + data.hit >= enemy_data[2] if not enemy_data[7] else enemy_data[2] + dodge_mod:
+                            damage = random.randint(data.damage[0], data.damage[1])
                             damage = apply_modifiers(damage)
                             to_display(f"you {'d' if damage >= 0 else 'h'}eal {bcolours.OKGREEN}{damage}{bcolours.ENDC} damage")
                             
@@ -947,7 +981,7 @@ def combat(user:Player, level:Level, room:str, thing=None) -> tuple[Level, Playe
                 player_dodge = True
             
             case "use":
-                if content in user.inventory[0] or content in user.inventory[1] or player_last_attack[2] ==1:
+                if content in user.inventory[0] or content in user.inventory[1]:
                     data:Item = game_items.dict_of_items[content]
                     
                     damage = random.randint(data.damage[0], data.damage[1])
@@ -1098,6 +1132,14 @@ blank room object
         "east":"",
         "west":""
         "description":"",
+        "dependant":{
+            "room" : "",
+            "item" : "",
+            "results":{
+                "description" : ""
+                "other funny stuff":""
+            }
+        },
         "properties":{
             "examine":[
                 "",
@@ -1107,10 +1149,10 @@ blank room object
                 "",
                 ""
             ],
-        },
-
-        "data":{
-
+            "enemies":[
+                "",
+                ""
+            ]
         }
     },
 
