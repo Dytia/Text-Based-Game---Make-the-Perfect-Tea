@@ -279,7 +279,7 @@ def load_stuff(location:str, type) -> dict: #type 0, item, type 1, obj
         with open(location, "r") as f:
             item_data = json.load(f)
             for i in item_data:
-                print(item_data[i])
+                print(i, item_data[i])
                 if type == "obj":
                     temporary[i] = Obj(i, item_data[i])
                 elif type == "itm":
@@ -756,7 +756,7 @@ class Level:
             return "you successfully take the " + obj
         else:
             # it doesnt exist in this room
-            return "scouring the room up and down, looking everywhere, you cant "
+            return "scouring the room up and down, looking everywhere, you cant find it"
 
 
 
@@ -988,6 +988,9 @@ def combat(user:Player, level:Level, room:str, thing=None) -> tuple[Level, Playe
                     to_display(response_gen.cant_find_item())
 
             case "flee":
+                """
+                escape combat code
+                """
                 pass
 
             case "wait":
@@ -1348,7 +1351,8 @@ try:
             for i in vals:
                 content.append(i.lower())
             if u_input != "use":
-                content = content[0]
+                content = " ".join(content)
+            print(content)
         else: 
             content = ""
 

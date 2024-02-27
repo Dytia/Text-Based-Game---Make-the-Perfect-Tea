@@ -37,5 +37,9 @@
     "slime":{
         "type":"item",
         "description":"sticky ball of slime"
+    },
+    "fancy china teapot":{
+        "type":"item",
+        "description":"An ornately crafted teapot"
     }
 }
