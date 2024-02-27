@@ -880,12 +880,6 @@ def combat(user:Player, level:Level, room:str, thing=None) -> tuple[Level, Playe
 
     def roll():
         return random.randint(1,20)
-    
-    def set_player_attack_data(player:list, hit:int, damage_range:list) -> list:
-        player[0] = hit
-        player[1] = damage_range
-        player[2] = 1
-        return player
 
     def apply_modifiers(damage:int) -> int:
         if player_defend == True:
