@@ -122,10 +122,10 @@ class player:
 user = player()
 
 print(os.environ.get('USERNAME'))
-def webserver(counter) -> None:
+def webserver() -> None:
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         #plain = '<!DOCTYPE HTML><html><style>.light-mode {background-color: white;color: black;}.dark-mode{background-color: rgb(41, 41, 41);color: white;}</style><button id="darkMode" onclick="toggle_visuals()">toggle light mode</button><head><script>var element = document.body;function toggle_visuals(){if (element.className == "dark-mode"){element.classList.replace("dark-mode", "light-mode" )} else {element.classList.replace("light-mode", "dark-mode" )}}; </script></head><body class="dark-mode"><p>Text Based Tea Game</p><h1 style="font-family: Courier New, monospace;">%s</h1></body><html>'
-        web_start = '<!DOCTYPE HTML><html><style>p{margin:5px 0;}.light-mode {background-color: white;color: black;font-family: sans-serif;}.dark-mode{background-color: rgb(0, 0, 0);color: white;}</style><button id="darkMode" onclick="toggle_visuals()">toggle light mode</button><head><script>var element = document.body;function toggle_visuals(){if (element.className == "dark-mode"){element.classList.replace("dark-mode", "light-mode" )} else {element.classList.replace("light-mode", "dark-mode" )}};function hide_alt_tables(){document.getElementById("enemies").style.display="none";document.getElementById("items").style.display="none";document.getElementById("objects").style.display="none";}function enemy_select(){hide_alt_tables();document.getElementById("enemies").style.display="block";document.getElementById("opt_display").innerHTML="Enemies";};function item_select(){hide_alt_tables();document.getElementById("items").style.display="block";document.getElementById("opt_display").innerHTML="Items";};function object_select(){hide_alt_tables();document.getElementById("objects").style.display="block";document.getElementById("opt_display").innerHTML="Objects";};</script></head><body class="dark-mode" style="font-family:arial"><p>Text Based Tea Game</p><p>Hello '+os.environ.get('USERNAME') + ' </p><p>playing as '+ user.name+' </p><button id="enemyButton" onclick="enemy_select()">Enemies</button><button id="itemButton" onclick="item_select()">Items</button><button id="objectButton" onclick="object_select()">Objects</button><p id="opt_display">Enemies</p>'
+        web_start = '<!DOCTYPE HTML><html><style>p{margin:5px 0;}.light-mode {background-color: white;color: black;font-family: sans-serif;}.dark-mode{background-color: rgb(0, 0, 0);color: white;}</style><button id="darkMode" onclick="toggle_visuals()">toggle light mode</button><head><script>var element = document.body;function toggle_visuals(){if (element.className == "dark-mode"){element.classList.replace("dark-mode", "light-mode" )} else {element.classList.replace("light-mode", "dark-mode" )}};function hide_alt_tables(){document.getElementById("enemies").style.display="none";document.getElementById("items").style.display="none";document.getElementById("objects").style.display="none";}function enemy_select(){hide_alt_tables();document.getElementById("enemies").style.display="block";document.getElementById("opt_display").innerHTML="Enemies";};function item_select(){hide_alt_tables();document.getElementById("items").style.display="block";document.getElementById("opt_display").innerHTML="Items";};function object_select(){hide_alt_tables();document.getElementById("objects").style.display="block";document.getElementById("opt_display").innerHTML="Objects";};</script></head><body class="dark-mode" style="font-family:arial"><p>Text Based Tea Game</p><p>playing as '+ user.name+' </p><button id="enemyButton" onclick="enemy_select()">Enemies</button><button id="itemButton" onclick="item_select()">Items</button><button id="objectButton" onclick="object_select()">Objects</button><p id="opt_display">Enemies</p>'
         web_end = '</body></html>'
         
         tmp = list_of_enemies.dict_of_enemies
@@ -155,8 +155,6 @@ def webserver(counter) -> None:
         s.listen()
         conn, addr = s.accept()
         with conn:
-            #data = plain%counter
-            counter = counter +1
             to_send:str = "HTTP/1.1 200 OK\r\nHost: "+addr[0]+"\r\nContent-Length: "+str(len(data))+"\r\nContent-Type: text/html\r\n\r\n"+data+"\r\n\r\n" 
 
             print(f"Connected by {addr}")
@@ -171,7 +169,7 @@ def webserver(counter) -> None:
 def a():
     print("http://"+HOST+":"+str(PORT))
     for i in range(0,10):
-        webserver(i)
+        webserver()
 
 g_counter = 0
 if __name__ == '__main__':

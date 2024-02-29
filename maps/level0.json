@@ -8,7 +8,8 @@
                 "desk"
             ],
             "items": [
-                "notebook"
+                "notebook",
+                "bread"
             ]
         }
     },
@@ -19,7 +20,9 @@
         "description": "Standing in a corridoor it continues to the north, on the western wall there is an alcove",
         "properties": {
             "examine": [],
-            "items": []
+            "items": [
+                "vase"
+            ]
         }
     },
     "splitPath1": {
@@ -53,9 +56,7 @@
             "examine": [
                 "pedestal"
             ],
-            "items": [
-                "vase"
-            ]
+            "items": []
         }
     },
     "cornerToDark": {
@@ -131,7 +132,7 @@
         "north": "stairs",
         "south": "secretItem",
         "east": "stairs2",
-        "description": "To the north the corridoor continues for a while before curving east and to the east the corridoor continues before curving north",
+        "description": "To the north the corridoor continues for a while before curving east and to the east the corridoor continues",
         "dependant": {
             "room": "vasePlace",
             "item": "vase",

@@ -60,3 +60,6 @@ Add an option display for rooms that arent passable at the minute
 add flee command to combat
 
 fix multi word stuff done
+
+flee chance compares hp
+less chance if have less hp than enemy and vice versa

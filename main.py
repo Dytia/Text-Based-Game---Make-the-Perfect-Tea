@@ -3,7 +3,8 @@ import os
 import random
 import shutil
 import sys
-import time
+import socket
+import multiprocessing
 
 #https://en.wikipedia.org/wiki/ANSI_escape_code#Colors
 a = 1
@@ -17,6 +18,8 @@ save_dir = "./saves"
 old_room = ""
 deathcount = 0
 
+HOST = "127.0.0.1"  # Standard loopback interface address (localhost)
+PORT = 65432  # Port to listen on (non-privileged ports are > 1023)
 
 if os.path.isfile("./saves/save.csv"):
     first_run = False #save to variable for later use
@@ -272,6 +275,35 @@ class Responses:
             f"Your skill in combat prevails, the {enemy} is slain."
         ]
         return f"{self.randomise(options)}\nDropped items are on the floor"
+
+    def retreat_success(self) -> str:
+        options = [
+            "You make a hasty retreat, fleeing from combat.",
+            "With a quick turn, you escape from the battle.",
+            "You beat a hasty retreat, avoiding further confrontation.",
+            "Deciding discretion is the better part of valor, you flee from combat.",
+            "You flee the battle, seeking safety in retreat.",
+            "Recognizing the danger, you hastily withdraw from combat.",
+            "You turn tail and run, seeking to avoid further conflict.",
+            "Feeling overwhelmed, you choose to flee from the fight.",
+            "In the face of danger, you opt for a strategic retreat.",
+            "You flee the battlefield, regrouping for another day."
+        ]
+        return f"{self.randomise(options)}"
+
+    def retreat_fail(self, enemy) -> str:
+        options = [
+            "Your attempt to flee fails, leaving you trapped in combat."
+            f"The {enemy} blocks your escape route, preventing your retreat."
+            "You stumble in your attempt to flee, unable to escape combat."
+            f"Your retreat is thwarted as the {enemy} closes in on you."
+            "Your escape plan falters, leaving you stranded in combat."
+            f"The {enemy} intercepts your retreat, blocking your path."
+            "You attempt to flee, but fear paralyzes you in place."
+            "Your desperate attempt to escape fails, leaving you surrounded."
+            "As you turn to flee, you trip and fall, unable to escape combat."
+        ]
+        return f"{self.randomise(options)}"
 
 def load_stuff(location:str, type) -> dict: #type 0, item, type 1, obj
     temporary = {}
@@ -931,7 +963,8 @@ def combat(user:Player, level:Level, room:str, thing=None) -> tuple[Level, Playe
             for i in vals:
                 content.append(i.lower())
             if u_input != "use":
-                content = content[0]
+                content = " ".join(content)
+            print(content)
         else: 
             content = ""        
 
@@ -991,7 +1024,13 @@ def combat(user:Player, level:Level, room:str, thing=None) -> tuple[Level, Playe
                 """
                 escape combat code
                 """
-                pass
+                totalhp = enemy_data[1] + user.health
+                player_percent = user.health / totalhp * 100
+                if random.randint(1,100) <= player_percent:
+                    to_display(response_gen.retreat_success())
+                else:
+                    to_display(response_gen.retreat_fail(enemy_data[8]))
+                
 
             case "wait":
                 pass
@@ -1120,6 +1159,54 @@ def reset() -> None:
         print("An error occured, exiting game probably best to redownload")
         os._exit(1)
 
+def webserver() -> None:
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        #plain = '<!DOCTYPE HTML><html><style>.light-mode {background-color: white;color: black;}.dark-mode{background-color: rgb(41, 41, 41);color: white;}</style><button id="darkMode" onclick="toggle_visuals()">toggle light mode</button><head><script>var element = document.body;function toggle_visuals(){if (element.className == "dark-mode"){element.classList.replace("dark-mode", "light-mode" )} else {element.classList.replace("light-mode", "dark-mode" )}}; </script></head><body class="dark-mode"><p>Text Based Tea Game</p><h1 style="font-family: Courier New, monospace;">%s</h1></body><html>'
+        web_start = '<!DOCTYPE HTML><html><style>p{margin:5px 0;}.light-mode {background-color: white;color: black;font-family: sans-serif;}.dark-mode{background-color: rgb(0, 0, 0);color: white;}</style><button id="darkMode" onclick="toggle_visuals()">toggle light mode</button><head><script>var element = document.body;function toggle_visuals(){if (element.className == "dark-mode"){element.classList.replace("dark-mode", "light-mode" )} else {element.classList.replace("light-mode", "dark-mode" )}};function hide_alt_tables(){document.getElementById("enemies").style.display="none";document.getElementById("items").style.display="none";document.getElementById("objects").style.display="none";}function enemy_select(){hide_alt_tables();document.getElementById("enemies").style.display="block";document.getElementById("opt_display").innerHTML="Enemies";};function item_select(){hide_alt_tables();document.getElementById("items").style.display="block";document.getElementById("opt_display").innerHTML="Items";};function object_select(){hide_alt_tables();document.getElementById("objects").style.display="block";document.getElementById("opt_display").innerHTML="Objects";};</script></head><body class="dark-mode" style="font-family:arial"><p>Text Based Tea Game</p><p>playing as '+ user.name+' </p><button id="enemyButton" onclick="enemy_select()">Enemies</button><button id="itemButton" onclick="item_select()">Items</button><button id="objectButton" onclick="object_select()">Objects</button><p id="opt_display">Enemies</p>'
+        web_end = '</body></html>'
+        
+        tmp = game_enemies.dict_of_enemies
+        web_start += "<div id='enemies'>"
+        for i in tmp:
+            web_start += f'<details><summary>{i}</summary><p>{tmp[i].description}</p><p>Drops: {", ".join(tmp[i].loot)}</p><p>Health range: {tmp[i].health_range[0]} to {tmp[i].health_range[1]}</p><p>Attack damage: {tmp[i].damage[0]} to {tmp[i].damage[1]}</p></details>'
+        web_start += "</div>"
+
+        tmp = game_items.dict_of_items
+        web_start += "<div id='items' style='display:none'>"
+        for i in tmp:
+            web_start += f'<details><summary>{i}</summary><p>{tmp[i].description}</p><p>Type: {tmp[i].type}{" " if tmp[i].damage == [0,0] else f"</p><p>Hit bonus: {tmp[i].hit}</p><p>Damage range: {tmp[i].damage[0]} to {tmp[i].damage[1]}</p>"}</details>'
+        web_start += "</div>"
+
+        tmp = game_objects.dict_of_objects
+        web_start += "<div id='objects' style='display:none'>"
+        for i in tmp:
+            web_start += f'<details><summary>{i}</summary><p>{tmp[i].description}</p></details>'
+        web_start += "</div>"
+        
+        web_start += web_end
+
+        data = web_start
+
+
+        s.bind((HOST, PORT))
+        s.listen()
+        conn, addr = s.accept()
+        with conn:
+            to_send:str = "HTTP/1.1 200 OK\r\nHost: "+addr[0]+"\r\nContent-Length: "+str(len(data))+"\r\nContent-Type: text/html\r\n\r\n"+data+"\r\n\r\n" 
+
+            print(f"Connected by {addr}")
+            while True:
+                data = conn.recv(1024)
+                if not data:
+                    break
+                print(data)
+                conn.sendall(to_send.encode())
+                conn.sendall(b"a")
+
+def webserver_caller() -> None:
+    to_display("website at: http://"+HOST+":"+str(PORT))
+    while True:
+        webserver()
 
 """
 blank room object
@@ -1276,152 +1363,157 @@ print(f"{bcolours.OKGREEN}done{bcolours.ENDC}\nLoading enemies:")
 game_enemies:List_of_enemies = List_of_enemies()
 print(f"{bcolours.OKGREEN}done{bcolours.ENDC}")
 
-if first_run:
-    enablePrint()
-    """
-    code that runs once on first run only
-    """
-    content = """Welcome to the game! 
-if you cant figure out anything try typing help
-keep your eye out for interesting things, and good luck
-if you want to restart just change the name of saves.json to something else
-"""
-    to_display(content)
-    enablePrint()
-    fail = True
-    print("Character creation")
-    # get character name
-    while fail:
-        name = input(f"{bcolours.OKGREEN}name{bcolours.ENDC}? ")
-        for i in name:
-            if ord(i) in range(65, 123) and not ord(i) in range(91,97):
-                fail = False
-            else:
-                fail = True
-        if fail: print("please only use letters")
-    user.name = name
-    
-    # get character age
-    fail = True
-    while fail:
-        try:
-            age = int(input(f"{bcolours.OKGREEN}age{bcolours.ENDC}? "))
-            fail = False
-            if age < 13 or age > 100:
-                os._exit(1)
-        except ValueError:
-            print("please use a number")
-    user.age = age
-
-    user.save(level_num, "startingRoom", deathcount)
-    blockPrint()
-
-else:
-    try:
-        level_num, room_name, deathcount = user.load_save()
-    except Exception as e:
-        abort(e, "./saves/save.csv")
-
-#call website
-
-try:
-    print(f"loading level: ./maps/level{level_num}.json")
-    level = Level(f"./maps/level{level_num}.json", room_name, int(deathcount))
-    deathcount = 0
-    enablePrint()
-    while True:
-        """
-        main loop
-        """
-        current_room = level.current_room.name
-        if current_room != old_room:
-            to_display(level.get_description())
-            old_room = current_room
-
+if __name__ == '__main__':
+    if first_run:
         enablePrint()
-        vals = input(f"{bcolours.OKCYAN}> {bcolours.ENDC}").strip().split(" ")
+        """
+        code that runs once on first run only
+        """
+        content = """Welcome to the game! 
+    if you cant figure out anything try typing help
+    keep your eye out for interesting things, and good luck
+    if you want to restart just change the name of saves.json to something else
+    """
+        to_display(content)
+        enablePrint()
+        fail = True
+        print("Character creation")
+        # get character name
+        while fail:
+            name = input(f"{bcolours.OKGREEN}name{bcolours.ENDC}? ")
+            for i in name:
+                if ord(i) in range(65, 123) and not ord(i) in range(91,97):
+                    fail = False
+                else:
+                    fail = True
+            if fail: print("please only use letters")
+        user.name = name
+        
+        # get character age
+        fail = True
+        while fail:
+            try:
+                age = int(input(f"{bcolours.OKGREEN}age{bcolours.ENDC}? "))
+                fail = False
+                if age < 13 or age > 100:
+                    os._exit(1)
+            except ValueError:
+                print("please use a number")
+        user.age = age
+
+        user.save(level_num, "startingRoom", deathcount)
         blockPrint()
 
-        u_input = vals.pop(0).lower()
-        
-        if len(vals) == 1:
-            content = vals[0]
-        elif len(vals) > 1:
-            content = []
-            for i in vals:
-                content.append(i.lower())
-            if u_input != "use":
-                content = " ".join(content)
-            print(content)
-        else: 
-            content = ""
+    else:
+        try:
+            level_num, room_name, deathcount = user.load_save()
+        except Exception as e:
+            abort(e, "./saves/save.csv")
 
-        if level.current_room.save == 1:
-            # if room is a save room
-            user.save(level_num, current_room, level.deathCount)
-        match u_input:
-            case "move":
-                val = level.move_room(content)
-                if val != True:
-                    to_display(val)
-            case "take":
-                # if object moveable = 0, use the too_heavy(<objname>) function
-                val = level.take(content, user)
-                to_display(val)
-            case "place":
-                val = level.place(content, user)
-                to_display(val)
-            case "look":
+
+
+    try:
+        print(f"loading webpage")
+        webserv = multiprocessing.Process(target=webserver_caller)
+        webserv.start()
+        print(f"loading level: ./maps/level{level_num}.json")
+        level = Level(f"./maps/level{level_num}.json", room_name, int(deathcount))
+        deathcount = 0
+        enablePrint()
+        while True:
+            """
+            main loop
+            """
+            current_room = level.current_room.name
+            if current_room != old_room:
                 to_display(level.get_description())
-            case "inventory":
-                val = user.display_inventory(content)
-                to_display(val)
-            case "talk":
-                pass # implement with npcs
-            case "examine":
-                #print(level.current_room.objects)
-                val = level.examine(content)
-                to_display(val)
-            case "inspect":
-                val = game_items.inspect(content)
-                to_display(val)
-            case "combine":
-                pass # implement when more items
-            case "read":
-                pass # when sign
-            case "use":
-                # uses the interaction bit of object class, and an item
-                val =level.interact(content[0], content[1], user)
-                to_display(val)
-            case "attack":
-                level, user, val = combat(user, level, current_room, thing=content)
-                print("deathcount =",level.deathCount)
-                to_display(val)
-            case "help":
-                dt = help_data.split("\n")
-                for i in dt:
-                    to_display(i)
-            case "drink":
-                if content == "tea":
-                    to_display() # tea response
-                elif content == "coffee":
-                    try: os.remove("./saves/save.csv")
-                    except: pass
-                    finally: os._exit(1)
-            case "exit":
-                raise KeyboardInterrupt
-            case "":
-                continue
-            case "game_reset_sf9riwzceosxepo6":
-                reset_check()
-            case _:
-                to_display(response_gen.invalid_move())
+                old_room = current_room
+
+            enablePrint()
+            vals = input(f"{bcolours.OKCYAN}> {bcolours.ENDC}").strip().split(" ")
+            blockPrint()
+
+            u_input = vals.pop(0).lower()
             
+            if len(vals) == 1:
+                content = vals[0]
+            elif len(vals) > 1:
+                content = []
+                for i in vals:
+                    content.append(i.lower())
+                if u_input != "use":
+                    content = " ".join(content)
+                print(content)
+            else: 
+                content = ""
+
+            if level.current_room.save == 1:
+                # if room is a save room
+                user.save(level_num, current_room, level.deathCount)
+            match u_input:
+                case "move":
+                    val = level.move_room(content)
+                    if val != True:
+                        to_display(val)
+                case "take":
+                    # if object moveable = 0, use the too_heavy(<objname>) function
+                    val = level.take(content, user)
+                    to_display(val)
+                case "place":
+                    val = level.place(content, user)
+                    to_display(val)
+                case "look":
+                    to_display(level.get_description())
+                case "inventory":
+                    val = user.display_inventory(content)
+                    to_display(val)
+                case "talk":
+                    pass # implement with npcs
+                case "examine":
+                    #print(level.current_room.objects)
+                    val = level.examine(content)
+                    to_display(val)
+                case "inspect":
+                    val = game_items.inspect(content)
+                    to_display(val)
+                case "combine":
+                    pass # implement when more items
+                case "read":
+                    pass # when sign
+                case "use":
+                    # uses the interaction bit of object class, and an item
+                    val =level.interact(content[0], content[1], user)
+                    to_display(val)
+                case "attack":
+                    level, user, val = combat(user, level, current_room, thing=content)
+                    print("deathcount =",level.deathCount)
+                    to_display(val)
+                case "help":
+                    dt = help_data.split("\n")
+                    for i in dt:
+                        to_display(i)
+                case "drink":
+                    if content == "tea":
+                        to_display() # tea response
+                    elif content == "coffee":
+                        try: os.remove("./saves/save.csv")
+                        except: pass
+                        finally: os._exit(1)
+                case "exit":
+                    raise KeyboardInterrupt
+                case "":
+                    continue
+                case "game_reset_sf9riwzceosxepo6":
+                    reset_check()
+                case _:
+                    to_display(response_gen.invalid_move())
+                
 
 
-except KeyboardInterrupt:
-    user.save(level_num, current_room, level.deathCount)
-    pass
-finally:
-    enablePrint()
-    print("bye")
+    except KeyboardInterrupt:
+        user.save(level_num, current_room, level.deathCount)
+        pass
+    finally:
+        webserv.kill()
+        enablePrint()
+        print("bye")
