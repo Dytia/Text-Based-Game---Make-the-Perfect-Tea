@@ -47,10 +47,7 @@ class Responses:
     Due to lacking creative writing ability, i used ai to help create more, good, responses to a situation
     This class, the strings are the only thing made with help of AI
     """
-    def __init__(self) -> None:
-        pass
-
-    def randomise(self, opt) -> str:
+    def _randomise(self, opt) -> str:
         '''
         select random things
         '''
@@ -73,7 +70,7 @@ class Responses:
             "You attempt to phase through the wall, RPG-style. Turns out, this isn't a superhero game.",
             "Reality check: Your character finds that walls are surprisingly good at their job."
         ]
-        return f"{self.randomise(options)}\n{bcolours.YELLOW}You remain in the same room{bcolours.ENDC}"
+        return f"{self._randomise(options)}\n{bcolours.YELLOW}You remain in the same room{bcolours.ENDC}"
 
     def invalid_move(self) -> str:
         options = [
@@ -83,7 +80,7 @@ class Responses:
             "The game system rejects your unconventional move with a virtual shake of its head. It seems the rules are more rigid than your character's imagination.",
             "Your character attempts a move straight out of a fantasy novel, only to be met with the cold, hard reality of game mechanics. The system kindly informs you that such actions are beyond its programming. Time for plan B!"
         ]
-        return f"{self.randomise(options)}\n{bcolours.BRIGHTRED}Not a valid move{bcolours.ENDC}"
+        return f"{self._randomise(options)}\n{bcolours.BRIGHTRED}Not a valid move{bcolours.ENDC}"
 
     def examine(self) -> str:
         """
@@ -96,7 +93,7 @@ class Responses:
             "No surprises here; the object is precisely what you thought it would be. A simple, unremarkable item.",
             "A closer look at the object reveals its simplicity. There's nothing remarkable or unusual about it."
         ]
-        return f"{self.randomise(options)}\nor you made a typo"
+        return f"{self._randomise(options)}\nor you made a typo"
     
     def too_heavy(self, thing) -> str:
         """
@@ -111,7 +108,7 @@ class Responses:
             f"Undeterred by the challenge, you exert considerable force in an attempt to move the {thing}. However, the immensity of the {thing} becomes apparent as it refuses to yield to your efforts. It stands stoically, a testament to the limitations of your physical strength.",
             f"Efforts to shift the {thing} are met with resistance as its formidable size and weight prove beyond your current capabilities. The {thing} seems almost rooted to the ground, offering a silent challenge to find another approach or seek assistance to overcome this obstacle."
         ]
-        return f"{self.randomise(options)}\nIt wont move"
+        return f"{self._randomise(options)}\nIt wont move"
     
     def cant_find_item(self) -> str:
         options = [
@@ -126,7 +123,7 @@ class Responses:
             "Despite your best efforts, the item stays hidden.",
             "Your search proves fruitless; the item is not present."
         ]
-        return f"{self.randomise(options)}\nOr, a typo, perhaps you just dont have it in your inventory"
+        return f"{self._randomise(options)}\nOr, a typo, perhaps you just dont have it in your inventory"
 
     def itemnt(self) -> str:
         options = [
@@ -141,7 +138,7 @@ class Responses:
             "The absence of any clues or traces strongly suggests that the item is not programmed into this game.",
             "It seems the item you were hoping to find is beyond the boundaries of this virtual world; it simply doesn't exist here."
         ]
-        return f"{self.randomise(options)}\nor a simple typo happened"
+        return f"{self._randomise(options)}\nor a simple typo happened"
 
     def item_interaction_with_object_fail(self,item,obj) -> str:
         options = [
@@ -156,7 +153,7 @@ class Responses:
             f"Your attempt to use the {item} on the {obj} meets with confusion and lack of progress.",
             f"It's clear that the {item} and the {obj} have different agendas; your attempt fails to bridge the gap."
         ]
-        return f"{self.randomise(options)}"
+        return f"{self._randomise(options)}"
     
     def none_of_that_enemy_here(self) -> str:
         options= [
@@ -170,7 +167,7 @@ class Responses:
             "The item seems to be playing a game of hide and seek.",
             "Your search proves fruitless; the enemy is not present."
         ]
-        return f"{self.randomise(options)}\nor a megre typo happened"
+        return f"{self._randomise(options)}\nor a megre typo happened"
     
     def enemy_miss_dodge(self, enemy:str) ->str:
         options = [
@@ -181,7 +178,7 @@ class Responses:
             f"Your quick reflexes allow you to dodge the {enemy}'s attack with ease.",
             f"You sidestep the {enemy}'s attack."
         ]
-        return f"{self.randomise(options)}"
+        return f"{self._randomise(options)}"
     
     def enemy_miss(self, enemy:str) -> str:
         options = [
@@ -191,7 +188,7 @@ class Responses:
             f"The {enemy}'s swing misses its mark, their frustration evident.",
             f"The {enemy}'s attack falls short, leaving them frustrated."
         ]
-        return f"{self.randomise(options)}"
+        return f"{self._randomise(options)}"
 
     def generic_enemy_hit(self, enemy:str) -> str:
         """
@@ -209,7 +206,7 @@ class Responses:
             f"You suffer the consequences as the {enemy}'s attack connects.",
             f"The {enemy}'s attack hits, causing you to wince in pain."
         ]
-        return f"{self.randomise(options)}"
+        return f"{self._randomise(options)}"
     
     def generic_player_hit(self, enemy:str) -> str:
         """
@@ -226,7 +223,7 @@ class Responses:
             f"You land a solid hit on the {enemy}, rattling them.",
             f"The {enemy} feels the impact of your successful attack."
         ]
-        return f"{self.randomise(options)}"
+        return f"{self._randomise(options)}"
 
     def player_miss(self, enemy:str) -> str:
         options = [
@@ -239,14 +236,14 @@ class Responses:
             f"Your attack fails to connect",
             f"Your strike misses its mark, leaving you momentarily exposed."
         ]
-        return f"{self.randomise(options)}"
+        return f"{self._randomise(options)}"
 
     def player_miss_dodge(self, enemy:str) -> str:
         options = [
             f"The {enemy} sidesteps your blow, avoiding harm.",
             f"The {enemy} deftly dodges your attack, mocking your effort."
         ]
-        return f"{self.randomise(options)}"
+        return f"{self._randomise(options)}"
     
     def player_death(self) -> str:
         options = [
@@ -261,7 +258,7 @@ class Responses:
             "In the end, mortality claims you, your saga ends.",
             "Your valiant effort ends in defeat, your legend fades away."
         ]
-        return f"{self.randomise(options)}\n{bcolours.BRIGHTRED}Game over.{bcolours.ENDC}"
+        return f"{self._randomise(options)}\n{bcolours.BRIGHTRED}Game over.{bcolours.ENDC}"
 
     def enemy_death(self, enemy:str) -> str:
         options = [
@@ -274,7 +271,7 @@ class Responses:
             f"The {enemy} meets its demise at your hands.",
             f"Your skill in combat prevails, the {enemy} is slain."
         ]
-        return f"{self.randomise(options)}\nDropped items are on the floor"
+        return f"{self._randomise(options)}\nDropped items are on the floor"
 
     def retreat_success(self) -> str:
         options = [
@@ -289,7 +286,7 @@ class Responses:
             "In the face of danger, you opt for a strategic retreat.",
             "You flee the battlefield, regrouping for another day."
         ]
-        return f"{self.randomise(options)}"
+        return f"{self._randomise(options)}"
 
     def retreat_fail(self, enemy) -> str:
         options = [
@@ -303,7 +300,7 @@ class Responses:
             "Your desperate attempt to escape fails, leaving you surrounded."
             "As you turn to flee, you trip and fall, unable to escape combat."
         ]
-        return f"{self.randomise(options)}"
+        return f"{self._randomise(options)}"
 
 def load_stuff(location:str, type) -> dict: #type 0, item, type 1, obj
     temporary = {}
