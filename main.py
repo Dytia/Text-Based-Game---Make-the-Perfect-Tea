@@ -5,6 +5,7 @@ import shutil
 import sys
 import socket
 import multiprocessing
+import time
 
 #https://en.wikipedia.org/wiki/ANSI_escape_code#Colors
 a = 1
@@ -17,6 +18,8 @@ save_dir = "./saves"
 
 old_room = ""
 deathcount = 0
+
+has_displayed = multiprocessing.Condition()
 
 HOST = "127.0.0.1"  # Standard loopback interface address (localhost)
 PORT = 65432  # Port to listen on (non-privileged ports are > 1023)
@@ -1200,8 +1203,10 @@ def webserver() -> None:
                 conn.sendall(to_send.encode())
                 conn.sendall(b"a")
 
-def webserver_caller() -> None:
+def webserver_caller(has_displayed_var:multiprocessing.Condition) -> None:
     to_display("website at: http://"+HOST+":"+str(PORT))
+    with has_displayed_var:
+        has_displayed_var.notify_all()
     while True:
         webserver()
 
@@ -1411,8 +1416,10 @@ if __name__ == '__main__':
 
     try:
         print(f"loading webpage")
-        webserv = multiprocessing.Process(target=webserver_caller)
-        webserv.start()
+        with has_displayed:
+            webserv = multiprocessing.Process(target=webserver_caller, args=(has_displayed,))
+            webserv.start()
+            has_displayed.wait(timeout=1)
         print(f"loading level: ./maps/level{level_num}.json")
         level = Level(f"./maps/level{level_num}.json", room_name, int(deathcount))
         deathcount = 0
