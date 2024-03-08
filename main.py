@@ -388,7 +388,6 @@ class Obj:
         try: self.interaction = obj_obj["interaction"]
         except: self.interaction = None
 
-
 class List_of_objects:
     """
     contains all objects
@@ -1292,7 +1291,8 @@ attack <enemy>      initiate combat
 help                display this list
 exit                save & close
 
-Tip: Dying 3 times in a level is permadeath
+Dying 3 times in a level is permadeath
+if you want to restart the game just look in maps_spare/readme.md
 """
 
 combat_commands = [ #i/s = item/skill
@@ -1377,7 +1377,8 @@ if __name__ == '__main__':
         content = """Welcome to the game! 
     if you cant figure out anything try typing help
     keep your eye out for interesting things, and good luck
-    if you want to restart just change the name of saves.json to something else
+    if you want to restart the game just look in maps_spare/readme.md
+    the help command is useful
     """
         to_display(content)
         enablePrint()
@@ -1425,7 +1426,6 @@ if __name__ == '__main__':
             has_displayed.wait(timeout=1)
         print(f"loading level: ./maps/level{level_num}.json")
         level = Level(f"./maps/level{level_num}.json", room_name, int(deathcount))
-        deathcount = 0
         enablePrint()
         while True:
             """
