@@ -1029,7 +1029,7 @@ def combat(user:Player, level:Level, room:str, thing=None) -> tuple[Level, Playe
                     to_display(response_gen.retreat_success())
                 else:
                     to_display(response_gen.retreat_fail(enemy_data[8]))
-                
+                break
 
             case "wait":
                 pass
