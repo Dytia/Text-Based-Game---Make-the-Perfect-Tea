@@ -1,0 +1,24 @@
+# Following the spec laid out in https://www.sqa.org.uk/sqa/files_ccc/Reference-language-for-Computing-Science-Sep2016.pdf
+
+# a dictionary is a list of key pairs such as: "item":"stick" or 4:"four", it can by dynamic in length
+# the brackets {} will be used to denote the dictionary
+# putting a key into a dictionary will result in an output
+# please update the spec of the reference to include dictionarys (they are a more dynamic record)
+
+<available classes and varnames are are Obj, Item, Enemy, each take two inputs (string name, dictionary contents_of_class)>
+
+PROCEDURE load_stuff(string location, string type) RERTUNS dictionary
+    # type is a varname, location is a file location
+    
+    SET data AS CONTENTS OF file FROM location # data will act as a dictionary
+    
+    DECLARE temporary INITALLY {} # empty dictionary
+    
+    FOR EACH i FROM data DO
+        SET temporary[i] TO type(i, data[i])
+        # set dictionary of things to have name i, then create 
+        # the appropriate object type with the name and contents 
+
+    END FOR EACH
+    RETURN temporary
+END PROCEDURE
