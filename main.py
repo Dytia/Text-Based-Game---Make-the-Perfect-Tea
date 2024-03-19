@@ -940,7 +940,7 @@ def combat(user:Player, level:Level, room:str, thing=None) -> tuple[Level, Playe
         enemy.loot        # 9 | list of drops
     ]
     
-    enemy_percent_health = enemy_data[1]/enemy_data[0] * 100
+    enemy_percent_health = int( enemy_data[1]/enemy_data[0] * 100 )
     to_display(f"{user.name}: {user.health} | {enemy_data[8]}: {enemy_percent_health}")
 
     while combat_is_happening:
@@ -1041,6 +1041,8 @@ def combat(user:Player, level:Level, room:str, thing=None) -> tuple[Level, Playe
             case _:
                 to_display("Your turn is forfit!")
 
+        if enemy_data[1] > enemy_data[0]: # stop enemy getting higher than max hp
+            enemy_data[1] = enemy_data[0]
 
         enemy_data[6] = False
         enemy_data[7] = False
@@ -1079,8 +1081,8 @@ def combat(user:Player, level:Level, room:str, thing=None) -> tuple[Level, Playe
                 else:
                     enemy_data[7] = True
         
-        enemy_percent_health = enemy_data[1]/enemy_data[0] * 100
-        to_display(f"{user.name}: {user.health} | {enemy_data[8]}: {enemy_percent_health}")
+        enemy_percent_health = int( enemy_data[1]/enemy_data[0] * 100 )
+        to_display(f"{user.name}: {user.health} | {enemy_data[8]}: {enemy_percent_health}%")
 
         # death
 
@@ -1096,6 +1098,7 @@ def combat(user:Player, level:Level, room:str, thing=None) -> tuple[Level, Playe
             level.place(item_dropped, user)
             print(level.current_room.enemies)
             return level, user, response_gen.enemy_death(enemy_data[8])
+
 
     return level, user, ""
                     
