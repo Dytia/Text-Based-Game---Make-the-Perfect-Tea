@@ -63,3 +63,8 @@ fix multi word stuff done
 
 flee chance compares hp
 less chance if have less hp than enemy and vice versa
+
+
+#  important
+
+working on implementing bubble sort to all list of objects

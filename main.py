@@ -305,6 +305,28 @@ class Responses:
         ]
         return f"{self._randomise(options)}"
 
+def sort_stuff(temp:dict) -> dict:
+    """
+    bubble sort the dictionaries
+    """
+    thing = list(temp.items())
+    swapped = True
+    n = len(thing)
+    while swapped and n>=0:
+        swapped = False
+        for i in range(0,n-1):
+            if thing[i][0].split(" ")[0] > thing[i+1][0].split(" ")[0]:
+                thing[i], thing[i+1] = thing[i+1], thing[i]
+                swapped = True
+
+        n -= 1
+
+    tmp = {}
+    for i in range(0,len(thing)):
+        tmp[thing[i][0]] = thing[i][1]
+
+    return tmp
+
 def load_stuff(location:str, type) -> dict: #type 0, item, type 1, obj
     temporary = {}
     try:
@@ -320,7 +342,7 @@ def load_stuff(location:str, type) -> dict: #type 0, item, type 1, obj
                     temporary[i] = Enemy(i, item_data[i])
     except KeyError as e:
         abort(e, location)
-    return temporary
+    return sort_stuff(temporary)
 
 class Item:
     """
@@ -894,7 +916,7 @@ def player_death(level:Level, user:Player) -> tuple[Level, Player]:
             reset()
     return level, user
 
-def combat(user:Player, level:Level, room:str, thing=None) -> tuple[Level, Player]:
+def combat(user:Player, level:Level, thing=None) -> tuple[Level, Player]:
     """
     Combat loop and whatnot
     """    

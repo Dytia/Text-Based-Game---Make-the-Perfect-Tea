@@ -19,3 +19,61 @@ function load_stuff(string location, string type) returns dictionary
     end foreach
     return temporary
 end function
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function combat(object user, object level, string thing) returns Level, Player # Level and Player are both objects in the program
+    if thing is present in area and actually exists do
+        return <all things that need returning>
+    end if
+
+    function roll() returns int
+        random int between 1 and 20
+    end function
+
+    function apply_modifiers(int damage) returns int
+        compare to flags
+        apply modifiers
+        round damage
+        return damage
+    end function
+
+    display combat warning
+
+    set basic variables
+
+    set enemy health by using object as template
+
+    display player health and enemy percentage health
+
+    while combat is combat_is_happening do
+        get input
+
+        if input is "attack" do
+            perform attack checks and apply effects
+        
+        else if "defend" do 
+            raise defend flag
+        else if "dodge" do
+            raise dodge flag
+        else if "use" do
+            perform use checks and apply effects
+        else if "flee" do
+            if they succeed do
+                return <all things that need to be returned>
+            else if 
+ 
