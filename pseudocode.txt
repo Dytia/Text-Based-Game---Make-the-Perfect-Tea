@@ -20,7 +20,31 @@ function load_stuff(string location, string type) returns dictionary
     return temporary
 end function
 
+  
 
+function sort_stuff(dictionary temporary) returns dictionary 
+    # bubble sort the dictionary 
+    convert temporary to array of tuples in the variable thing
+
+    swapped = true
+    n = length of array thing
+
+    while swapped and n >= 0:
+        swapped = false
+        for i in 0 to n-1
+            if first word of first variable of thing[i] > first word of first variable of thing[i+1] do
+                swap them
+                swapped = true
+        end for
+        n = n-1
+
+    end while    
+    
+    tmp = {}
+    for i in range 0 to length of thing:
+        set key to thing[i][0] and value to contents of thing[i][1]
+    end for
+    return tmp
 
 
 
