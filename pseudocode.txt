@@ -33,7 +33,9 @@ function sort_stuff(dictionary temporary) returns dictionary
         swapped = false
         for i in 0 to n-1
             if first word of first variable of thing[i] > first word of first variable of thing[i+1] do
-                swap them
+                tmp  = thing[i] 
+                thing[i] = thing[i+1]
+                thing[i+1] = tmp 
                 swapped = true
         end for
         n = n-1

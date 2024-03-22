@@ -328,6 +328,9 @@ def sort_stuff(temp:dict) -> dict:
     return tmp
 
 def load_stuff(location:str, type) -> dict: #type 0, item, type 1, obj
+    """
+    Loads the file contents into objects and then an array
+    """
     temporary = {}
     try:
         with open(location, "r") as f:
