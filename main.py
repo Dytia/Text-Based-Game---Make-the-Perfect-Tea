@@ -1394,6 +1394,12 @@ game_enemies:List_of_enemies = List_of_enemies()
 print(f"{bcolours.OKGREEN}done{bcolours.ENDC}")
 
 if __name__ == '__main__':
+    print(f"loading webpage")
+    with has_displayed:
+        webserv = multiprocessing.Process(target=webserver_caller, args=(has_displayed,))
+        webserv.start()
+        has_displayed.wait(timeout=1)
+
     if first_run:
         enablePrint()
         """
@@ -1444,11 +1450,6 @@ if __name__ == '__main__':
 
 
     try:
-        print(f"loading webpage")
-        with has_displayed:
-            webserv = multiprocessing.Process(target=webserver_caller, args=(has_displayed,))
-            webserv.start()
-            has_displayed.wait(timeout=1)
         print(f"loading level: ./maps/level{level_num}.json")
         level = Level(f"./maps/level{level_num}.json", room_name, int(deathcount))
         enablePrint()
@@ -1517,7 +1518,7 @@ if __name__ == '__main__':
                     val =level.interact(content[0], content[1], user)
                     to_display(val)
                 case "attack":
-                    level, user, val = combat(user, level, current_room, thing=content)
+                    level, user, val = combat(user, level, thing=content)
                     print("deathcount =",level.deathCount)
                     to_display(val)
                 case "help":
