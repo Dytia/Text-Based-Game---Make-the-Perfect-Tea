@@ -1,0 +1,62 @@
+{
+    "startingRoom": {
+        "north": "room",
+        "south": "room1",
+        "east": "room2",
+        "west": "room3",
+        "description": "starting area",
+        "properties": {
+            "examine": [],
+            "items": [
+                "vase"
+            ]
+        }
+    },
+    "room": {
+        "south": "startingRoom",
+        "description": "vase goes here, south is start",
+        "properties": {
+            "examine": [],
+            "items": [
+                
+            ],
+            "enemies": []
+        }
+    },
+    "room1": {
+        "north": "startingRoom",
+        "description": "another area, start is north",
+        "properties": {
+            "examine": [],
+            "items": [],
+            "enemies": []
+        }
+    },
+    "room2": {
+        "west": "startingRoom",
+        "description": "yet another area, start is west",
+        "properties": {
+            "examine": [],
+            "items": [],
+            "enemies": []
+        }
+    },
+    "room3": {
+        "east": "startingRoom",
+        "description": "a 4th, locked area, south is east, needs vase in room to be here",
+        "dependant": {
+            "room": "room",
+            "item": "vase",
+            "results": {
+                "description": "aa",
+                "passable": 1
+            }
+        },
+        "properties": {
+            "examine": [],
+            "passable": 0,
+            "items": [],
+            "enemies": []
+        }
+    }
+}
