@@ -480,7 +480,7 @@ class Player:
         health
         items
         skills
-        level,room
+        level,room,deathcount
         """
         row_one = self.name + "," + str(self.age) +"\n"
         health = str(self.health) +"\n"
