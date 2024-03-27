@@ -480,7 +480,7 @@ class Player:
         health
         items
         skills
-        level,room
+        level,room,deathcount
         """
         row_one = self.name + "," + str(self.age) +"\n"
         health = str(self.health) +"\n"
@@ -1449,7 +1449,7 @@ if __name__ == '__main__':
 
     try:
         print(f"loading level: ./maps/level{level_num}.json")
-        level = Level(f"./maps/level{level_num}.json", room_name, int(deathcount))
+        level = Level(f"./maps/test.json", room_name, int(deathcount)) #swap /test.json with /level{level_num}.json
         enablePrint()
         while True:
             """
