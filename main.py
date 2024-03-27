@@ -602,7 +602,7 @@ class Room:
     """
     a room file, stores the data for what happens in a room
     """
-    def __init__(self) -> None:
+    def __init__(self, name, data, objects) -> None:
         self.explored = False
         self._values = [
             "north",
@@ -611,7 +611,6 @@ class Room:
             "east"
         ]
 
-    def set_room_data(self, name, data, objects) -> bool:
         """
         connections = north, south, west, east
         """
@@ -694,8 +693,7 @@ class Level:
         self.objects = self.read_object_json()
         print(f"{bcolours.OKGREEN}done{bcolours.ENDC}\n  Setting room data")
         for i in self.data:
-            temp = Room()
-            temp.set_room_data(i, self.data[i], self.objects)
+            temp = Room(i, self.data[i], self.objects)
             self._rooms[i] = temp
 
     def read_json(self) -> dict:
